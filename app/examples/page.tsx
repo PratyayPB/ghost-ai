@@ -42,6 +42,11 @@ export default function ExamplesPage() {
       <ProjectSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        projects={[]}
+        openCreateDialog={() => {}}
+        openRenameDialog={() => {}}
+        openDeleteDialog={() => {}}
+        selectedProject={null}
       />
 
       {/* Main Content Area */}

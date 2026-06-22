@@ -1,9 +1,14 @@
-import { Button } from "@/components/ui/button";
-export default function Home() {
-  return (
-    <main>
-      <h1>Ghost AI</h1>
-      <Button>Click Me</Button>
-    </main>
-  );
+import { redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
+
+export default async function Home() {
+  const { userId } = await auth();
+
+  if (userId) {
+    redirect("/editor");
+  }
+
+  redirect("/sign-in");
+
+  return null;
 }

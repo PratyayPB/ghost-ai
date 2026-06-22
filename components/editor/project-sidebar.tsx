@@ -1,21 +1,37 @@
 "use client";
 
 import * as React from "react";
-import { Plus, PanelLeftClose } from "lucide-react";
+import { Plus, PanelLeftClose, Pencil, Trash2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Project } from "@/lib/hooks/use-project-dialogs";
 
 type ProjectSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
+  projects: Project[];
+  openCreateDialog: () => void;
+  openRenameDialog: (project: Project) => void;
+  openDeleteDialog: (project: Project) => void;
+  selectedProject: Project | null;
+  onSelectProject?: (project: Project | null) => void;
 };
 
 export default function ProjectSidebar({
   isOpen,
   onClose,
+  projects,
+  openCreateDialog,
+  openRenameDialog,
+  openDeleteDialog,
+  selectedProject,
+  onSelectProject,
 }: ProjectSidebarProps) {
+  const ownedProjects = projects.filter((p) => p.isOwned);
+  const sharedProjects = projects.filter((p) => !p.isOwned);
+
   return (
     <aside
       aria-hidden={!isOpen}
@@ -39,33 +55,117 @@ export default function ProjectSidebar({
 
         <div className="flex-1 overflow-y-auto p-4">
           <Tabs defaultValue="my-projects" className="flex flex-col h-full">
-            <TabsList>
+            <TabsList className="grid grid-cols-2">
               <TabsTrigger value="my-projects">My Projects</TabsTrigger>
               <TabsTrigger value="shared">Shared</TabsTrigger>
             </TabsList>
 
-            <div className="mt-3">
+            <div className="mt-3 flex-1">
               <TabsContent value="my-projects">
-                <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border">
-                  <p className="text-sm text-muted-foreground">
-                    No projects yet
-                  </p>
-                </div>
+                {ownedProjects.length === 0 ? (
+                  <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed border-border p-4 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      No projects yet
+                    </p>
+                    <Button variant="link" size="sm" onClick={openCreateDialog} className="mt-1">
+                      Create your first project
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    {ownedProjects.map((project) => {
+                      const isSelected = selectedProject?.id === project.id;
+                      return (
+                        <div
+                          key={project.id}
+                          className={cn(
+                            "group flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer",
+                            isSelected
+                              ? "bg-primary text-primary-foreground"
+                              : "hover:bg-muted text-foreground"
+                          )}
+                          onClick={() => onSelectProject?.(isSelected ? null : project)}
+                        >
+                          <span className="truncate font-medium">{project.name}</span>
+                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn(
+                                "size-7",
+                                isSelected 
+                                  ? "text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground" 
+                                  : "text-muted-foreground hover:text-foreground"
+                              )}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openRenameDialog(project);
+                              }}
+                              aria-label={`Rename ${project.name}`}
+                            >
+                              <Pencil className="size-3.5" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={cn(
+                                "size-7",
+                                isSelected 
+                                  ? "text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground" 
+                                  : "text-destructive hover:bg-destructive/10 hover:text-destructive"
+                              )}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openDeleteDialog(project);
+                              }}
+                              aria-label={`Delete ${project.name}`}
+                            >
+                              <Trash2 className="size-3.5" />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="shared">
-                <div className="flex h-40 items-center justify-center rounded-md border border-dashed border-border">
-                  <p className="text-sm text-muted-foreground">
-                    No shared projects
-                  </p>
-                </div>
+                {sharedProjects.length === 0 ? (
+                  <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-border p-4 text-center">
+                    <p className="text-sm text-muted-foreground">
+                      No shared projects
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    {sharedProjects.map((project) => {
+                      const isSelected = selectedProject?.id === project.id;
+                      return (
+                        <div
+                          key={project.id}
+                          className={cn(
+                            "group flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer",
+                            isSelected
+                              ? "bg-primary text-primary-foreground"
+                              : "hover:bg-muted text-foreground"
+                          )}
+                          onClick={() => onSelectProject?.(isSelected ? null : project)}
+                        >
+                          <span className="truncate font-medium">{project.name}</span>
+                          {/* Actions hidden for shared projects */}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </TabsContent>
             </div>
           </Tabs>
         </div>
 
-        <div className="p-4">
-          <Button className="w-full" variant="default">
+        <div className="p-4 border-t border-border">
+          <Button className="w-full" variant="default" onClick={openCreateDialog}>
             <Plus className="size-4 mr-2" /> New Project
           </Button>
         </div>

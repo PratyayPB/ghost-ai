@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { PanelLeftOpen, PanelLeftClose } from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -44,7 +45,7 @@ export default function EditorNavbar({
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Right section — intentionally left empty for now */}
+        <UserButton />
       </div>
     </header>
   );
