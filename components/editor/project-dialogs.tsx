@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Project, DialogType } from "@/lib/hooks/use-project-dialogs";
+import { Project, DialogType } from "@/lib/hooks/use-project-actions";
 
 interface ProjectDialogsProps {
   activeDialog: DialogType;

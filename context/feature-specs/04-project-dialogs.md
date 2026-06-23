@@ -49,6 +49,7 @@ Show actions only for owned projects.
 Hide actions for shared/collaborator projects.
 
 On mobile:
+
 - tapping outside the sidebar closes it
 - add a backdrop scrim
 

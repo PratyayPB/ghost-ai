@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { generateSlug } from "@/lib/slug";
 
 export type DialogType = "create" | "rename" | "delete" | null;
 
@@ -18,14 +19,7 @@ const INITIAL_PROJECTS: Project[] = [
   { id: "4", name: "Next.js Core Docs", slug: "nextjs-core-docs", isOwned: false },
 ];
 
-export const generateSlug = (name: string): string => {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-};
+export { generateSlug };
 
 export function useProjectDialogs() {
   const [projects, setProjects] = React.useState<Project[]>(INITIAL_PROJECTS);

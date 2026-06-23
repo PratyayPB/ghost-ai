@@ -6,7 +6,7 @@ import { Plus, PanelLeftClose, Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Project } from "@/lib/hooks/use-project-dialogs";
+import { Project } from "@/lib/hooks/use-project-actions";
 
 type ProjectSidebarProps = {
   isOpen: boolean;

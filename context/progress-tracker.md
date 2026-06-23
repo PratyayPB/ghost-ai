@@ -40,21 +40,45 @@ Build editor canvas/workspace component for code editing and integrate Monaco or
 - Added a mobile backdrop scrim overlay and click-outside handler to close the sidebar.
 - Refactored `app/editor/page.tsx` home screen layout with a minimal design to create/open projects and view the active workspace without card containers.
 - Replaced next/font/google imports in layout.tsx with local system-font stack defined in globals.css to avoid Google Font download errors during offline compilation.
+- Updated `package.json` with explicit Prisma dependencies (`@prisma/client`, `@prisma/adapter-pg`, `pg`, `prisma`, `@types/pg`).
+- Created `prisma.config.ts` CLI config file to handle schema paths and environment variables.
+- Configured split schema folder option and created `prisma/models/project.prisma` containing data models (`Project`, `ProjectCollaborator`, `ProjectStatus`).
+- Created `lib/prisma.ts` singleton client manager branching on database URL (Accelerate direct OR `@prisma/adapter-pg` driver).
+- Successfully executed first database migration (`npx prisma migrate dev --name init_project_models`) and generated client.
 - Verified successful production build via `npm run build`.
-- Completed project dialogs integration.
+- Completed Prisma database integration setup.
+- Created `app/api/projects/route.ts` with `GET` (list user's projects) and `POST` (create project, default name "Untitled Project") endpoints.
+- Created `app/api/projects/[projectId]/route.ts` with `PATCH` (rename, owner-only) and `DELETE` (delete, owner-only) endpoints.
+- Enforced `401` for unauthenticated requests and `403` for non-owner mutations on all project API routes.
+- Verified production build passes with all four project API routes registered.
+- Converted `app/editor/page.tsx` from client to server component; fetches owned and shared projects server-side via `lib/data/projects.ts`.
+- Created `lib/hooks/use-project-actions.ts` hook managing dialog state and real API mutations (create → POST, rename → PATCH, delete → DELETE) with navigation and router refresh.
+- Created `components/editor/editor-home-client.tsx` client wrapper receiving server-fetched project data as props.
+- Create dialog generates a room ID by slugifying the name + a short unique suffix.
+- Rename dialog pre-fills the current name; delete dialog shows the project name and redirects to `/editor` if deleting the active workspace.
+- Updated `project-sidebar.tsx` and `project-dialogs.tsx` imports to use the new `use-project-actions` hook types.
+- Verified production build passes with `/editor` as dynamic server-rendered route.
+- Created `lib/project-access.ts` with `getIdentity()` (Clerk userId + primary email) and `checkProjectAccess()` (owner or collaborator check) helpers.
+- Created `components/editor/access-denied.tsx` with centered layout, lock icon, short message, and link back to `/editor`.
+- Created `components/editor/workspace-shell.tsx` — full-viewport workspace layout with: top navbar showing project name, share button, AI sidebar toggle; left `ProjectSidebar` with current room highlighted; central canvas placeholder (dark bg + centered message); collapsible right AI chat sidebar placeholder.
+- Created `app/editor/[roomId]/page.tsx` as a server component with auth redirect, access check via `checkProjectAccess`, and `AccessDenied` for unauthorized/missing projects.
+- Verified production build passes with `/editor/[roomId]` registered as dynamic route.
+- Implemented project sharing behavior (Share Dialog):
+  - Created `/api/projects/[projectId]/collaborators` API endpoints supporting: GET (list with Clerk user profile enrichment), POST (invite collaborator by email, owner-only), DELETE (remove collaborator, owner-only).
+  - Created `components/editor/share-dialog.tsx` component with clipboard link sharing, collaborator invitations, user profile avatars, and a read-only view for guest collaborators.
+  - Wired the Share Dialog into the Workspace Shell and verified production build passes cleanly.
 
 ## In Progress
 
-- None — Project dialogs feature fully integrated and compilation verified.
+- None — Project sharing feature completed and build verified.
 
 ## Next Up
 
-- Build editor canvas/workspace component for code editing
-- Integrate Monaco or CodeMirror for syntax highlighting
+- Build real editor canvas with code editing (Monaco or CodeMirror)
+- Integrate Liveblocks for real-time collaboration
+- Implement AI chat sidebar logic
 - Add file tree navigation component
-- Implement AI workflow integration point
 - Create settings/preferences panel
-- Confirm Clerk auth flow by signing up and checking the UserButton appears
 
 ## Open Questions
 
