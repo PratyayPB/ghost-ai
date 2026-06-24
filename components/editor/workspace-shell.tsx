@@ -7,6 +7,7 @@ import EditorNavbar from "@/components/editor/editor-navbar";
 import ProjectSidebar from "@/components/editor/project-sidebar";
 import ProjectDialogs from "@/components/editor/project-dialogs";
 import ShareDialog from "@/components/editor/share-dialog";
+import CollaborativeCanvasWrapper from "./collaborative-canvas-wrapper";
 import { useProjectActions, type Project } from "@/lib/hooks/use-project-actions";
 import { cn } from "@/lib/utils";
 
@@ -120,21 +121,9 @@ export default function WorkspaceShell({
           onSelectProject={undefined}
         />
 
-        {/* Canvas placeholder */}
-        <main className="flex-1 flex items-center justify-center bg-zinc-950/50">
-          <div className="text-center space-y-4">
-            <div className="mx-auto flex size-16 items-center justify-center rounded-xl bg-muted/20 border border-border/50">
-              <Layers className="size-7 text-muted-foreground/60" />
-            </div>
-            <div className="space-y-1.5">
-              <p className="text-sm font-medium text-muted-foreground">
-                Canvas
-              </p>
-              <p className="text-xs text-muted-foreground/60 max-w-[240px]">
-                The architecture canvas will appear here. Coming soon.
-              </p>
-            </div>
-          </div>
+        {/* Collaborative Canvas */}
+        <main className="flex-1 overflow-hidden relative bg-zinc-950/50">
+          <CollaborativeCanvasWrapper projectId={currentProject.id} />
         </main>
 
         {/* Right sidebar placeholder — AI Chat */}

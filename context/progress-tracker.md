@@ -67,15 +67,29 @@ Build editor canvas/workspace component for code editing and integrate Monaco or
   - Created `/api/projects/[projectId]/collaborators` API endpoints supporting: GET (list with Clerk user profile enrichment), POST (invite collaborator by email, owner-only), DELETE (remove collaborator, owner-only).
   - Created `components/editor/share-dialog.tsx` component with clipboard link sharing, collaborator invitations, user profile avatars, and a read-only view for guest collaborators.
   - Wired the Share Dialog into the Workspace Shell and verified production build passes cleanly.
+- Configured Liveblocks Realtime Collaboration Infrastructure (Liveblocks Setup):
+  - Installed `@liveblocks/node@^3.20.0` package dependency.
+  - Created root `liveblocks.config.ts` specifying global TypeScript `Presence` (cursor, isThinking) and `UserMeta` (id, info: name, avatar, color) definitions.
+  - Created `lib/liveblocks.ts` backend client helper with connection caching for dev hot-reloads and a deterministic client-color mapper.
+  - Implemented `/api/liveblocks-auth` POST authentication endpoint verifying Clerk sessions, validating workspace access rights, auto-provisioning room permissions, and attaching enriched user names, avatars, and colors to identified tokens.
+  - Verified Next.js production build passes with dynamic auth matching.
+- Implemented Realtime Collaborative React Flow Base Canvas (Base Canvas Setup):
+  - Created `types/canvas.ts` declaring types `CanvasNodeShape`, `CanvasNodeData`, `CanvasNode`, and `CanvasEdge`.
+  - Created `components/editor/collaborative-canvas.tsx` client component rendering `ReactFlow` with loose connections, fitView, dots background pattern, minimap, and multiplayer collaborator cursor overlays synced via `useLiveblocksFlow`.
+  - Created `components/editor/collaborative-canvas-wrapper.tsx` managing `LiveblocksProvider`, `RoomProvider`, presence setup, loading suspense fallback, and a custom error boundary connection retry UI.
+  - Mounted the wrapper in `components/editor/workspace-shell.tsx` and verified clean compilation.
+- Implemented Shape Panel & Drag-to-Create (Shape Panel):
+  - Extended `types/canvas.ts` with `pill`, `cylinder`, `hexagon` shapes, `SHAPE_DEFAULTS` dimension map, and `DEFAULT_NODE_COLOR`.
+  - Created `components/editor/shape-panel.tsx` — floating pill-shaped toolbar at canvas bottom-center with 6 draggable Lucide icon buttons encoding shape + size in drag payload.
+  - Created `components/editor/canvas-node.tsx` — custom `canvasNode` renderer handling shape-specific CSS/SVG structures for rectangles, circles, pills, diamonds, hexagons, and cylinders.
+  - Updated `components/editor/collaborative-canvas.tsx` with `onDragOver`/`onDrop` handlers converting screen → flow coordinates via `useReactFlow`, `nodeTypes` registration, and unique ID generation (`shape-timestamp-counter`).
 
 ## In Progress
 
-- None — Project sharing feature completed and build verified.
+- None
 
 ## Next Up
 
-- Build real editor canvas with code editing (Monaco or CodeMirror)
-- Integrate Liveblocks for real-time collaboration
 - Implement AI chat sidebar logic
 - Add file tree navigation component
 - Create settings/preferences panel
