@@ -1,16 +1,22 @@
 "use client";
 
 import * as React from "react";
-import { Share2, MessageSquare, Layers } from "lucide-react";
+import { Share2, MessageSquare, Layers, Ghost } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import EditorNavbar from "@/components/editor/editor-navbar";
 import ProjectSidebar from "@/components/editor/project-sidebar";
 import ProjectDialogs from "@/components/editor/project-dialogs";
 import ShareDialog from "@/components/editor/share-dialog";
-import CollaborativeCanvasWrapper from "./collaborative-canvas-wrapper";
-import { useProjectActions, type Project } from "@/lib/hooks/use-project-actions";
+import CollaborativeCanvas from "./collaborative-canvas";
+import AiChatSidebar from "./ai-chat-sidebar";
+import { ReactFlowProvider } from "@xyflow/react";
+import {
+  useProjectActions,
+  type Project,
+} from "@/lib/hooks/use-project-actions";
 import { cn } from "@/lib/utils";
-
+import { UserButton } from "@clerk/nextjs";
 interface WorkspaceShellProps {
   /** The current project being viewed */
   currentProject: Project;
@@ -49,54 +55,44 @@ export default function WorkspaceShell({
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-background text-foreground">
       {/* ---- Navbar ---- */}
-      <header className="relative z-40 flex h-14 shrink-0 items-center border-b border-border bg-background px-4">
-        {/* Left: sidebar toggle + project name */}
-        <div className="flex items-center gap-3">
-          <EditorNavbar
-            isSidebarOpen={sidebarOpen}
-            onToggleSidebar={() => setSidebarOpen((v) => !v)}
-            className="!static !h-auto !border-0 !p-0 !bg-transparent"
-          />
-          <div className="hidden sm:flex items-center gap-2">
-            <span className="text-sm font-semibold truncate max-w-[200px]">
-              {currentProject.name}
-            </span>
-          </div>
-        </div>
-
-        {/* Center: project name on mobile */}
-        <div className="flex-1 flex items-center justify-center sm:hidden">
-          <span className="text-sm font-semibold truncate max-w-[160px]">
-            {currentProject.name}
-          </span>
-        </div>
-
-        {/* Right: actions */}
-        <div className="flex items-center gap-1 ml-auto">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-1.5 text-muted-foreground"
-            onClick={() => setShareOpen(true)}
-            aria-label="Share project"
+      <EditorNavbar
+        isSidebarOpen={sidebarOpen}
+        onToggleSidebar={() => setSidebarOpen((v) => !v)}
+        projectName={currentProject.name}
+        leftContent={
+          <Link
+            href="/editor"
+            className="flex items-center gap-2 font-bold text-lg hover:opacity-80 transition-opacity ml-2"
           >
-            <Share2 className="size-4" />
-            <span className="hidden sm:inline text-xs">Share</span>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "text-muted-foreground",
-              aiSidebarOpen && "bg-muted text-foreground",
-            )}
-            onClick={() => setAiSidebarOpen((v) => !v)}
-            aria-label={aiSidebarOpen ? "Close AI chat" : "Open AI chat"}
-          >
-            <MessageSquare className="size-4" />
-          </Button>
-        </div>
-      </header>
+            <Ghost className="size-5 text-primary" />
+            <span>Ghost-ai</span>
+          </Link>
+        }
+      >
+        <UserButton />
+        <Button
+          variant="ghost"
+          size="lg"
+          className="gap-1.5 text-muted-foreground"
+          onClick={() => setShareOpen(true)}
+          aria-label="Share project"
+        >
+          <Share2 className="size-4" />
+          <span className="hidden sm:inline text-xs">Share</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-lg"
+          className={cn(
+            "text-muted-foreground",
+            aiSidebarOpen && "bg-muted text-foreground",
+          )}
+          onClick={() => setAiSidebarOpen((v) => !v)}
+          aria-label={aiSidebarOpen ? "Close AI chat" : "Open AI chat"}
+        >
+          <MessageSquare className="size-4" />
+        </Button>
+      </EditorNavbar>
 
       {/* ---- Body ---- */}
       <div className="flex flex-1 overflow-hidden relative">
@@ -123,30 +119,14 @@ export default function WorkspaceShell({
 
         {/* Collaborative Canvas */}
         <main className="flex-1 overflow-hidden relative bg-zinc-950/50">
-          <CollaborativeCanvasWrapper projectId={currentProject.id} />
+          <ReactFlowProvider>
+            <CollaborativeCanvas projectId={currentProject.id} />
+          </ReactFlowProvider>
         </main>
 
-        {/* Right sidebar placeholder — AI Chat */}
+        {/* Right sidebar — AI Chat */}
         {aiSidebarOpen && (
-          <aside className="hidden md:flex w-80 flex-col border-l border-border bg-card">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-              <h3 className="text-sm font-medium">AI Chat</h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-7"
-                onClick={() => setAiSidebarOpen(false)}
-                aria-label="Close AI chat"
-              >
-                <MessageSquare className="size-3.5" />
-              </Button>
-            </div>
-            <div className="flex-1 flex items-center justify-center p-4">
-              <p className="text-xs text-muted-foreground/60 text-center">
-                AI assistant coming soon.
-              </p>
-            </div>
-          </aside>
+          <AiChatSidebar onClose={() => setAiSidebarOpen(false)} />
         )}
       </div>
 

@@ -5,6 +5,7 @@ import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from "@liveblock
 import { ReactFlowProvider } from "@xyflow/react";
 import { Loader2, RefreshCw, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LiveList } from "@liveblocks/client";
 import CollaborativeCanvas from "./collaborative-canvas";
 
 // Error Boundary for capturing connection issues or authentication failures
@@ -35,10 +36,12 @@ class CanvasErrorBoundary extends React.Component<
 
 interface CollaborativeCanvasWrapperProps {
   projectId: string;
+  children: React.ReactNode;
 }
 
 export default function CollaborativeCanvasWrapper({
   projectId,
+  children,
 }: CollaborativeCanvasWrapperProps) {
   const handleReload = () => {
     window.location.reload();
@@ -81,13 +84,14 @@ export default function CollaborativeCanvasWrapper({
           id={projectId}
           initialPresence={{
             cursor: null,
-            isThinking: false,
+            thinking: false,
+          }}
+          initialStorage={{
+            chatMessages: new LiveList([]),
           }}
         >
           <ClientSideSuspense fallback={loadingFallback}>
-            <ReactFlowProvider>
-              <CollaborativeCanvas />
-            </ReactFlowProvider>
+            {children}
           </ClientSideSuspense>
         </RoomProvider>
       </LiveblocksProvider>

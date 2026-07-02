@@ -4,6 +4,7 @@ import { getProjectsForUser } from "@/lib/data/projects";
 import { generateSlug } from "@/lib/slug";
 import AccessDenied from "@/components/editor/access-denied";
 import WorkspaceShell from "@/components/editor/workspace-shell";
+import CollaborativeCanvasWrapper from "@/components/editor/collaborative-canvas-wrapper";
 
 type PageProps = {
   params: Promise<{ roomId: string }>;
@@ -40,10 +41,12 @@ export default async function WorkspacePage({ params }: PageProps) {
   };
 
   return (
-    <WorkspaceShell
-      currentProject={currentProject}
-      owned={owned}
-      shared={shared}
-    />
+    <CollaborativeCanvasWrapper projectId={currentProject.id}>
+      <WorkspaceShell
+        currentProject={currentProject}
+        owned={owned}
+        shared={shared}
+      />
+    </CollaborativeCanvasWrapper>
   );
 }

@@ -136,43 +136,43 @@ export default function ShareDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md bg-card/95 border-border/80 text-foreground shadow-2xl backdrop-blur-md">
+      <DialogContent className="sm:max-w-md bg-card border-border text-foreground shadow-2xl">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-lg font-semibold tracking-tight">
-            <Share2 className="size-5 text-primary" />
+          <DialogTitle className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-foreground">
+            <Share2 className="size-6 text-primary" />
             Share Project
           </DialogTitle>
-          <DialogDescription className="text-xs text-muted-foreground">
+          <DialogDescription className="text-sm text-foreground/85 mt-1.5">
             Invite others to collaborate in real-time or share the project workspace.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-5 py-2">
           {/* Copy Link Section */}
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-foreground uppercase tracking-wider">
               Project Link
             </label>
             <div className="flex gap-2">
               <Input
                 readOnly
                 value={shareUrl}
-                className="flex-1 bg-muted/30 border-border/60 text-xs font-mono h-9 focus-visible:ring-0 focus-visible:border-border"
+                className="flex-1 bg-muted/30 border-border text-sm font-mono h-10 focus-visible:ring-0 focus-visible:border-border"
               />
               <Button
                 variant={copied ? "default" : "outline"}
-                size="sm"
-                className="h-9 shrink-0 gap-1.5 transition-all duration-200"
+                size="default"
+                className="h-10 shrink-0 gap-2 transition-all duration-200 text-sm font-semibold"
                 onClick={handleCopy}
               >
                 {copied ? (
                   <>
-                    <Check className="size-3.5" />
+                    <Check className="size-4" />
                     <span>Copied</span>
                   </>
                 ) : (
                   <>
-                    <Copy className="size-3.5" />
+                    <Copy className="size-4" />
                     <span>Copy</span>
                   </>
                 )}
@@ -182,16 +182,16 @@ export default function ShareDialog({
 
           {/* Error Message */}
           {error && (
-            <div className="flex items-center gap-2 rounded-lg bg-destructive/10 border border-destructive/20 p-2.5 text-xs text-destructive">
-              <ShieldAlert className="size-4 shrink-0" />
+            <div className="flex items-center gap-2.5 rounded-lg bg-destructive/10 border border-destructive/30 p-3 text-sm font-medium text-destructive">
+              <ShieldAlert className="size-5 shrink-0" />
               <span>{error}</span>
             </div>
           )}
 
           {/* Invite Collaborator Section (Owner Only) */}
           {isOwner && (
-            <form onSubmit={handleInvite} className="space-y-1.5">
-              <label htmlFor="invite-email" className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+            <form onSubmit={handleInvite} className="space-y-2">
+              <label htmlFor="invite-email" className="text-sm font-bold text-foreground uppercase tracking-wider">
                 Invite Collaborator
               </label>
               <div className="flex gap-2">
@@ -204,19 +204,19 @@ export default function ShareDialog({
                     setInviteEmail(e.target.value);
                     if (error) setError(null);
                   }}
-                  className="flex-1 bg-muted/20 border-border/50 h-9 text-sm focus-visible:ring-1"
+                  className="flex-1 bg-muted/20 border-border h-10 text-sm focus-visible:ring-1"
                   required
                 />
                 <Button
                   type="submit"
-                  size="sm"
+                  size="default"
                   disabled={submitting || !inviteEmail.trim()}
-                  className="h-9 shrink-0 gap-1.5 font-medium bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="h-10 shrink-0 gap-2 font-semibold text-sm bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   {submitting ? (
-                    <Loader2 className="size-3.5 animate-spin" />
+                    <Loader2 className="size-4 animate-spin" />
                   ) : (
-                    <UserPlus className="size-3.5" />
+                    <UserPlus className="size-4" />
                   )}
                   <span>Invite</span>
                 </Button>
@@ -227,19 +227,19 @@ export default function ShareDialog({
           {/* Collaborator List Section */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+              <label className="text-sm font-bold text-foreground uppercase tracking-wider">
                 Collaborators ({collaborators.length})
               </label>
-              {fetching && <Loader2 className="size-3.5 animate-spin text-muted-foreground/60" />}
+              {fetching && <Loader2 className="size-4 animate-spin text-foreground/80" />}
             </div>
 
-            <div className="max-h-[180px] overflow-y-auto rounded-lg border border-border/40 bg-zinc-950/20 p-1 space-y-1 scrollbar-thin">
+            <div className="max-h-[220px] overflow-y-auto rounded-lg border border-border bg-zinc-950/30 p-1.5 space-y-1.5 scrollbar-thin">
               {fetching && collaborators.length === 0 ? (
-                <div className="py-8 text-center text-xs text-muted-foreground/50">
+                <div className="py-8 text-center text-sm text-foreground/70 font-medium">
                   Loading collaborators...
                 </div>
               ) : collaborators.length === 0 ? (
-                <div className="py-8 text-center text-xs text-muted-foreground/60">
+                <div className="py-8 text-center text-sm text-foreground/70 font-medium">
                   No collaborators added yet.
                 </div>
               ) : (
@@ -248,33 +248,33 @@ export default function ShareDialog({
                   return (
                     <div
                       key={c.id}
-                      className="flex items-center justify-between p-2 rounded-md hover:bg-muted/30 transition-colors group"
+                      className="flex items-center justify-between p-2 rounded-md hover:bg-muted/40 transition-colors group"
                     >
-                      <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="flex items-center gap-3 min-w-0">
                         {/* Avatar */}
                         {c.imageUrl ? (
                           <img
                             src={c.imageUrl}
                             alt={c.name || c.email}
-                            className="size-8 rounded-full border border-border/60 object-cover"
+                            className="size-10 rounded-full border border-border object-cover"
                           />
                         ) : (
-                          <div className="size-8 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white font-semibold flex items-center justify-center text-xs uppercase shadow-sm">
+                          <div className="size-10 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white font-bold flex items-center justify-center text-sm uppercase shadow-sm">
                             {initial}
                           </div>
                         )}
                         <div className="min-w-0 leading-tight">
                           {c.name ? (
                             <>
-                              <p className="text-xs font-medium text-foreground truncate max-w-[180px]">
+                              <p className="text-sm font-semibold text-foreground truncate max-w-[180px]">
                                 {c.name}
                               </p>
-                              <p className="text-[10px] text-muted-foreground truncate max-w-[180px]">
+                              <p className="text-xs text-foreground/75 truncate max-w-[180px]">
                                 {c.email}
                               </p>
                             </>
                           ) : (
-                            <p className="text-xs font-medium text-foreground truncate max-w-[200px]">
+                            <p className="text-sm font-medium text-foreground truncate max-w-[200px]">
                               {c.email}
                             </p>
                           )}
@@ -286,15 +286,15 @@ export default function ShareDialog({
                         <Button
                           variant="ghost"
                           size="icon"
-                          className="size-7 opacity-0 group-hover:opacity-100 hover:bg-destructive/15 hover:text-destructive focus:opacity-100 transition-opacity"
+                          className="size-8 opacity-0 group-hover:opacity-100 hover:bg-destructive/15 hover:text-destructive focus:opacity-100 transition-opacity"
                           disabled={removingId === c.id}
                           onClick={() => handleRemove(c.email, c.id)}
                           aria-label={`Remove ${c.name || c.email}`}
                         >
                           {removingId === c.id ? (
-                            <Loader2 className="size-3 animate-spin" />
+                            <Loader2 className="size-4 animate-spin" />
                           ) : (
-                            <X className="size-3.5" />
+                            <X className="size-4" />
                           )}
                         </Button>
                       )}
@@ -308,8 +308,8 @@ export default function ShareDialog({
 
         {/* Read-Only Notice (For collaborators) */}
         {!isOwner && (
-          <div className="mt-1 flex items-start gap-2 rounded-lg bg-muted/40 border border-border/55 p-3 text-[11px] text-muted-foreground leading-normal">
-            <ShieldAlert className="size-4 shrink-0 text-muted-foreground/80 mt-0.5" />
+          <div className="mt-1 flex items-start gap-2.5 rounded-lg bg-muted/60 border border-border p-3.5 text-sm text-foreground/90 leading-relaxed">
+            <ShieldAlert className="size-5 shrink-0 text-foreground/90 mt-0.5" />
             <span>
               You have collaborator access. Only the project owner can add or remove team members.
             </span>

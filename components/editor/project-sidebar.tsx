@@ -42,7 +42,7 @@ export default function ProjectSidebar({
     >
       <div className="flex h-full flex-col bg-card border-r border-border shadow-lg">
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-medium">Projects</h3>
+          <h3 className="text-base font-semibold text-foreground">Projects</h3>
           <Button
             variant="ghost"
             size="icon"
@@ -56,18 +56,18 @@ export default function ProjectSidebar({
         <div className="flex-1 overflow-y-auto p-4">
           <Tabs defaultValue="my-projects" className="flex flex-col h-full">
             <TabsList className="grid grid-cols-2">
-              <TabsTrigger value="my-projects">My Projects</TabsTrigger>
-              <TabsTrigger value="shared">Shared</TabsTrigger>
+              <TabsTrigger value="my-projects" className="text-base font-medium text-foreground">My Projects</TabsTrigger>
+              <TabsTrigger value="shared" className="text-base font-medium text-foreground">Shared</TabsTrigger>
             </TabsList>
 
             <div className="mt-3 flex-1">
               <TabsContent value="my-projects">
                 {ownedProjects.length === 0 ? (
                   <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed border-border p-4 text-center">
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-base font-medium text-foreground">
                       No projects yet
                     </p>
-                    <Button variant="link" size="sm" onClick={openCreateDialog} className="mt-1">
+                    <Button variant="link" size="sm" onClick={openCreateDialog} className="mt-1 text-base font-medium text-foreground">
                       Create your first project
                     </Button>
                   </div>
@@ -79,7 +79,7 @@ export default function ProjectSidebar({
                         <div
                           key={project.id}
                           className={cn(
-                            "group flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer",
+                            "group flex items-center justify-between rounded-lg px-3 py-2 text-base font-medium transition-colors cursor-pointer",
                             isSelected
                               ? "bg-primary text-primary-foreground"
                               : "hover:bg-muted text-foreground"
@@ -133,7 +133,7 @@ export default function ProjectSidebar({
               <TabsContent value="shared">
                 {sharedProjects.length === 0 ? (
                   <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-border p-4 text-center">
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-base font-medium text-foreground">
                       No shared projects
                     </p>
                   </div>
@@ -145,7 +145,7 @@ export default function ProjectSidebar({
                         <div
                           key={project.id}
                           className={cn(
-                            "group flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors cursor-pointer",
+                            "group flex items-center justify-between rounded-lg px-3 py-2 text-base font-medium transition-colors cursor-pointer",
                             isSelected
                               ? "bg-primary text-primary-foreground"
                               : "hover:bg-muted text-foreground"
@@ -165,8 +165,8 @@ export default function ProjectSidebar({
         </div>
 
         <div className="p-4 border-t border-border">
-          <Button className="w-full" variant="default" onClick={openCreateDialog}>
-            <Plus className="size-4 mr-2" /> New Project
+          <Button className="w-full text-base font-semibold" variant="default" onClick={openCreateDialog}>
+            <Plus className="size-5 mr-2" /> New Project
           </Button>
         </div>
       </div>

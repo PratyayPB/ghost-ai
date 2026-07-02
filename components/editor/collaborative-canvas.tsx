@@ -3,18 +3,28 @@
 import * as React from "react";
 import {
   ReactFlow,
-  MiniMap,
   Background,
   ConnectionMode,
   BackgroundVariant,
   useReactFlow,
+  MarkerType,
   type NodeTypes,
+  type EdgeTypes,
 } from "@xyflow/react";
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow";
+import { useUpdateMyPresence, useOthers, useSelf, useEventListener } from "@liveblocks/react/suspense";
+import CustomCursor from "./custom-cursor";
 import type { CanvasNodeShape } from "@/types/canvas";
-import { DEFAULT_NODE_COLOR } from "@/types/canvas";
+import { DEFAULT_NODE_COLOR, DEFAULT_TEXT_COLOR } from "@/types/canvas";
 import CanvasNodeRenderer from "./canvas-node";
+import CanvasEdge from "./canvas-edge";
+import CanvasControls from "./canvas-controls";
 import ShapePanel from "./shape-panel";
+import StarterTemplatesModal from "./starter-templates-modal";
+import type { CanvasTemplate } from "./starter-templates";
+import PresenceAvatars from "./presence-avatars";
+import AiStatusFeed from "./ai-status-feed";
+import { useCanvasAutosave } from "@/hooks/use-canvas-autosave";
 
 import "@xyflow/react/dist/style.css";
 import "@liveblocks/react-ui/styles.css";
@@ -25,6 +35,11 @@ const nodeTypes: NodeTypes = {
   canvasNode: CanvasNodeRenderer,
 };
 
+/** Register the custom edge type. */
+const edgeTypes: EdgeTypes = {
+  canvasEdge: CanvasEdge,
+};
+
 /** Global counter for generating unique node IDs within this session. */
 let nodeIdCounter = 0;
 
@@ -33,7 +48,11 @@ function generateNodeId(shape: CanvasNodeShape): string {
   return `${shape}-${Date.now()}-${nodeIdCounter}`;
 }
 
-export default function CollaborativeCanvas() {
+interface CollaborativeCanvasProps {
+  projectId: string;
+}
+
+export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasProps) {
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onDelete } =
     useLiveblocksFlow({
       suspense: true,
@@ -45,7 +64,104 @@ export default function CollaborativeCanvas() {
       },
     });
 
-  const { screenToFlowPosition, addNodes } = useReactFlow();
+  const { screenToFlowPosition, addNodes, addEdges, setNodes, setEdges, fitView } = useReactFlow();
+
+  const updateMyPresence = useUpdateMyPresence();
+  const others = useOthers();
+  const me = useSelf();
+  
+  // Deterministic leader election: the connected client with the lowest connectionId is the leader
+  const isLeader = others.every((other) => other.connectionId > me.connectionId);
+
+  useEventListener(({ event }) => {
+    if (!isLeader) return;
+
+    if (event.type === "ai-add-node") {
+      addNodes(event.payload);
+    } else if (event.type === "ai-add-edge") {
+      addEdges(event.payload);
+    }
+  });
+
+  const [isTemplatesModalOpen, setIsTemplatesModalOpen] = React.useState(false);
+  const isInitialLoadDone = React.useRef(false);
+
+  const saveStatus = useCanvasAutosave(projectId, nodes, edges);
+
+  React.useEffect(() => {
+    document.dispatchEvent(
+      new CustomEvent("canvas-save-status", { detail: saveStatus })
+    );
+  }, [saveStatus]);
+
+  React.useEffect(() => {
+    if (isInitialLoadDone.current) return;
+    
+    // We only attempt to load from blob if the room is completely empty 
+    // and we haven't loaded yet. Since suspense is used, nodes/edges might be empty 
+    // simply because it's a new room. We wait a small tick to see if it's truly empty.
+    const loadFromBlob = async () => {
+      try {
+        const response = await fetch(`/api/projects/${projectId}/canvas`);
+        if (response.ok) {
+          const data = await response.json();
+          // if nodes and edges are still empty in Liveblocks, and blob has data, set it
+          if (nodes.length === 0 && edges.length === 0 && data.nodes?.length > 0) {
+            setNodes(data.nodes);
+            setEdges(data.edges);
+            setTimeout(() => {
+              fitView({ duration: 800 });
+            }, 100);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load initial canvas state:", err);
+      } finally {
+        isInitialLoadDone.current = true;
+      }
+    };
+
+    // Give Liveblocks a tiny moment to populate state if it has it
+    const timer = setTimeout(() => {
+      if (nodes.length === 0 && edges.length === 0) {
+        loadFromBlob();
+      } else {
+        isInitialLoadDone.current = true;
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [projectId, nodes.length, edges.length, setNodes, setEdges, fitView]);
+
+  React.useEffect(() => {
+    const handler = () => setIsTemplatesModalOpen(true);
+    document.addEventListener("open-templates-modal", handler);
+    return () => document.removeEventListener("open-templates-modal", handler);
+  }, []);
+
+  const handleImportTemplate = React.useCallback(
+    (template: CanvasTemplate) => {
+      // Use React Flow's state setters which will sync to Liveblocks via onNodesChange
+      setNodes(template.nodes);
+      setEdges(template.edges);
+      
+      setTimeout(() => {
+        fitView({ duration: 800 });
+      }, 100);
+    },
+    [setNodes, setEdges, fitView]
+  );
+
+  const handleConnect = React.useCallback(
+    (connection: any) => {
+      onConnect({
+        ...connection,
+        type: "canvasEdge",
+        data: { label: "" },
+      });
+    },
+    [onConnect]
+  );
 
   const handleDragOver = React.useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
@@ -54,6 +170,20 @@ export default function CollaborativeCanvas() {
     },
     []
   );
+
+  const handlePointerMove = React.useCallback((e: React.PointerEvent) => {
+    // Ensure coordinates are integers to avoid unnecessary re-renders
+    updateMyPresence({
+      cursor: {
+        x: Math.round(e.clientX),
+        y: Math.round(e.clientY),
+      },
+    });
+  }, [updateMyPresence]);
+
+  const handlePointerLeave = React.useCallback(() => {
+    updateMyPresence({ cursor: null });
+  }, [updateMyPresence]);
 
   const handleDrop = React.useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
@@ -82,6 +212,7 @@ export default function CollaborativeCanvas() {
         data: {
           label: "",
           color: DEFAULT_NODE_COLOR,
+          textColor: DEFAULT_TEXT_COLOR,
           shape: payload.shape,
         },
         style: {
@@ -94,33 +225,52 @@ export default function CollaborativeCanvas() {
   );
 
   return (
-    <div className="w-full h-full relative outline-none select-none">
+    <div 
+      className="w-full h-full relative outline-none select-none"
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
+    >
       <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        onConnect={handleConnect}
         onDelete={onDelete}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        defaultEdgeOptions={{
+          type: "canvasEdge",
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: "var(--text-muted)",
+          },
+        }}
         connectionMode={ConnectionMode.Loose}
         fitView
         className="bg-zinc-950/20"
       >
         <Background variant={BackgroundVariant.Dots} gap={16} size={1} className="text-muted-foreground/15" />
-        <MiniMap
-          zoomable
-          pannable
-          className="!bg-background/90 !border-border/60 !rounded-lg"
-          maskColor="rgba(0, 0, 0, 0.2)"
-        />
-        <Cursors />
+        <Cursors components={{ Cursor: CustomCursor }} />
       </ReactFlow>
+
+      {/* Zoom and History Controls */}
+      <CanvasControls />
 
       {/* Bottom floating shape toolbar */}
       <ShapePanel />
+
+      <PresenceAvatars />
+
+      <StarterTemplatesModal
+        isOpen={isTemplatesModalOpen}
+        onClose={() => setIsTemplatesModalOpen(false)}
+        onImport={handleImportTemplate}
+      />
+      
+      <AiStatusFeed />
     </div>
   );
 }

@@ -1,13 +1,45 @@
+import { LiveList } from "@liveblocks/client";
+
+type AINodePayload = {
+  id: string;
+  type: string;
+  position: { x: number; y: number };
+  data: {
+    label: string;
+    shape: string;
+    color: string;
+    textColor: string;
+  };
+  style: { width: number; height: number };
+};
+
+type AIEdgePayload = {
+  id: string;
+  source: string;
+  target: string;
+  type: string;
+  data: { label: string };
+};
+
 declare global {
   interface Liveblocks {
     // Each user's Presence, for useMyPresence, useOthers, etc.
     Presence: {
       cursor: { x: number; y: number } | null;
-      isThinking: boolean;
+      thinking: boolean;
     };
 
     // The Storage tree for the room, for useMutation, useStorage, etc.
-    Storage: {};
+    Storage: {
+      chatMessages: LiveList<{
+        id: string;
+        sender: string;
+        senderName: string;
+        role: "user" | "assistant";
+        content: string;
+        timestamp: number;
+      }>;
+    };
 
     // User metadata returned from the auth endpoint
     UserMeta: {
@@ -20,7 +52,12 @@ declare global {
     };
 
     // Custom events, for useBroadcastEvent, useEventListener
-    RoomEvent: {};
+    RoomEvent:
+      | { type: "ai-add-node"; payload: AINodePayload }
+      | { type: "ai-add-edge"; payload: AIEdgePayload }
+      | { type: "ai-status"; message: string }
+      | { type: "ai-complete" }
+      | { type: "ai-error"; message: string };
 
     // Custom metadata set on threads, for useThreads, useCreateThread, etc.
     ThreadMetadata: {};

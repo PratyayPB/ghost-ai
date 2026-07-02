@@ -83,6 +83,94 @@ Build editor canvas/workspace component for code editing and integrate Monaco or
   - Created `components/editor/shape-panel.tsx` — floating pill-shaped toolbar at canvas bottom-center with 6 draggable Lucide icon buttons encoding shape + size in drag payload.
   - Created `components/editor/canvas-node.tsx` — custom `canvasNode` renderer handling shape-specific CSS/SVG structures for rectangles, circles, pills, diamonds, hexagons, and cylinders.
   - Updated `components/editor/collaborative-canvas.tsx` with `onDragOver`/`onDrop` handlers converting screen → flow coordinates via `useReactFlow`, `nodeTypes` registration, and unique ID generation (`shape-timestamp-counter`).
+- Implemented Node Shape Visuals & Drag Preview:
+  - Refactored `canvas-node.tsx` to export `BaseShapeRenderer` for reusable shape rendering without React Flow handles.
+  - Updated `shape-panel.tsx` with `createPortal` to render a fixed-position cursor-following ghost preview of the shape matching the dragged dimensions.
+  - Disabled the default browser HTML5 drag translucent ghost using an empty image via `e.dataTransfer.setDragImage()`.
+- Implemented Node Editing & Resizing (Node Editing):
+  - Integrated `@xyflow/react` `<NodeResizer />` to show resizing handles on selected nodes, preventing them from being resized below `60x36`.
+  - Added inline text editing to nodes activated via double-click, displaying a `textarea` positioned absolutely over the label.
+  - Connected the label edits to the existing `updateNodeData` sync flow from `useReactFlow`, persisting automatically on blur or `Enter`/`Escape`.
+  - Suppressed canvas drag events while interacting with the textarea via `stopPropagation`.
+- Implemented Node Colors Toolbar (Node Colors Toolbar):
+  - Extracted the 8 predefined node color palettes from `ui-context.md` into `NODE_COLORS` in `types/canvas.ts`.
+  - Updated `CanvasNodeData` to support tracking `textColor` alongside the background `color`.
+  - Added `@xyflow/react` `<NodeToolbar>` to `CanvasNodeRenderer` that appears above selected nodes.
+  - Rendered a swatch picker that updates both the node's background and text colors simultaneously via `updateNodeData`.
+- Implemented Custom Edge Behavior (Edge Behavior):
+  - Created `components/editor/canvas-edge.tsx` utilizing `EdgeLabelRenderer` and `getSmoothStepPath` for clean right-angle edge routing.
+  - Added an invisible, thick SVG path layer to each edge, heavily improving hover and click accessibility without altering visual line thickness.
+  - Implemented inline edge label editing on double-click, persisting to `edge.data.label` via `updateEdgeData`.
+  - Added 4-sided connection handles (top, right, bottom, left) to `CanvasNodeRenderer` that smoothly fade in on node hover using `group-hover`.
+  - Configured `defaultEdgeOptions` and intercepted `onConnect` in `collaborative-canvas.tsx` to ensure all new edges utilize the custom `canvasEdge` type with closed arrow markers.
+- Implemented Canvas Ergonomics (Canvas Ergonomics):
+  - Created `components/editor/canvas-controls.tsx` containing a pill-shaped toolbar positioned at the bottom left with Zoom In, Zoom Out, Fit View, Undo, and Redo buttons.
+  - Wired zoom buttons directly into the React Flow instance via `useReactFlow()`.
+  - Wired undo/redo buttons into Liveblocks room history using `useUndo`, `useRedo`, `useCanUndo`, and `useCanRedo` from `@liveblocks/react/suspense`, ensuring buttons visually dim when history is empty.
+  - Created a global `useKeyboardShortcuts` hook bound to the window for handling `+`/`=`, `-`, `Ctrl/Cmd+Z`, and `Ctrl/Cmd+Shift+Z` / `Ctrl/Cmd+Y`, which safely ignores inputs when typing in text fields.
+  - Removed the default React Flow `<MiniMap>` from the workspace bottom right.
+- Implemented Starter Templates (Starter Templates):
+  - Created `components/editor/starter-templates.ts` containing 3 built-in diagrams: Microservices Architecture, CI/CD Pipeline, and Event-Driven System.
+  - Created `components/editor/starter-templates-modal.tsx` rendering a grid of templates with SVG-based lightweight previews.
+  - Added a "Templates" button to the editor navbar utilizing a custom DOM event `open-templates-modal`.
+  - Wired import flow in `collaborative-canvas.tsx` to completely replace the canvas nodes and edges using React Flow's state updates.
+- Implemented Presence Avatars & Live Cursors:
+  - Updated `liveblocks.config.ts` to type the `cursor` and `thinking` properties within `Presence`.
+  - Created `presence-avatars.tsx` to render an overlapping stack of collaborator avatars fetched via `useOthers()`.
+  - Rendered a duplicate Clerk `UserButton` within the avatar group to maintain visual consistency without altering the global navbar.
+  - Broadcasted mouse coordinates within `collaborative-canvas.tsx` using `updateMyPresence` on pointer move and leave events, which feeds into `@liveblocks/react-flow`'s `<Cursors />` component.
+- Implemented Trigger.dev Backend Flow for Design Generation:
+  - Created Prisma `TaskRun` model with compound indexing for secure user-project run ownership.
+  - Implemented `app/api/ai/design/route.ts` to trigger the `designAgent` and record task runs.
+  - Implemented `app/api/ai/design/token/route.ts` to generate run-scoped read-only tokens for frontend status tracking.
+  - Created minimal Trigger.dev background task `designAgent` via `@trigger.dev/sdk/v3` stubbing the AI execution phase.
+- Implemented AI Design Agent Logic:
+  - Created `AiStatusFeed` component to display real-time status and errors from the agent.
+  - Implemented Liveblocks REST API `POST /v2/rooms/{roomId}/presence` inside the `trigger/design-agent.ts` background task to inject the agent into the room visually with a custom avatar and thinking cursor state.
+  - Used `@ai-sdk/google` (`gemini-2.5-flash`) inside the background task with a strict `zod` schema to enforce structurally valid nodes and edges for the diagram.
+  - Broadcasted custom `RoomEvent`s (`ai-add-node`, `ai-add-edge`, `ai-status`, `ai-complete`) iteratively to simulate a live-drawing experience.
+  - Implemented deterministic leader election in `collaborative-canvas.tsx` using `useOthers` and `useSelf` to prevent duplicated node generation from multiple connected clients.
+- Implemented AI Presence and Status Indicators:
+  - Created `types/tasks.ts` to define the AI status message payload schema and runtime validation guards.
+  - Created `hooks/use-ai-status.ts` shared hook to track real-time AI generation events from Liveblocks.
+  - Created `components/editor/ai-chat-sidebar.tsx` with a rich AI chat UI, status indicator dot, active status bar, and disabled prompt input states.
+  - Modified `components/editor/workspace-shell.tsx` to render the custom `AiChatSidebar` instead of the placeholder text.
+  - Modified `components/editor/ai-status-feed.tsx` to utilize the shared `useAiStatus` hook.
+  - Created `components/editor/custom-cursor.tsx` showing mouse pointer, user name badge, and custom thinking spinner.
+  - Modified `components/editor/collaborative-canvas.tsx` to pass the `CustomCursor` component to `<Cursors />`.
+  - Wrapped `WorkspaceShell` with `CollaborativeCanvasWrapper` in `app/editor/[roomId]/page.tsx` to expose Liveblocks hooks workspace-wide.
+  - Verified Next.js production build compiles successfully (`npm run build`).
+- Implemented Sidebar Chat Feed:
+  - Created Zod validation schema and inferred TypeScript type `ChatMessage` in `types/tasks.ts` to validate all chat messages.
+  - Added `chatMessages` as a `LiveList` within the `Storage` definition in `liveblocks.config.ts`.
+  - Initialized `chatMessages` with an empty `LiveList` within the `initialStorage` prop on the `RoomProvider` in `collaborative-canvas-wrapper.tsx`.
+  - Created `hooks/use-ai-chat.ts` to subscribe to the Liveblocks storage feed, expose validated messages, and supply a `sendMessage` mutation with automated error logging and error state tracking.
+  - Rewired the `AiChatSidebar` panel in `components/editor/ai-chat-sidebar.tsx` to hook into `useAiChat`, rendering messages in user/assistant bubbles, formatting timestamps, auto-scrolling to the bottom, and handling sending failures gracefully.
+  - Verified Next.js production build compiles successfully (`npm run build`).
+- Implemented Design Agent Frontend Integration:
+  - Updated `use-ai-chat` hook to handle optional assistant roles and system sender overrides.
+  - Configured `AiChatSidebar` to call design trigger and token retrieval APIs sequentially on prompt submissions.
+  - Integrated `@trigger.dev/react-hooks` `useRealtimeRun` to monitor active task execution in real time.
+  - Disabled input fields, displayed a status strip above the input form using a dark base + green accent theme, and rendered a submit spinner during active runs.
+  - Implemented automatic completion message posts and state cleanup on terminal task runs.
+  - Styled user chat bubbles and submit buttons with the `#62C073` green accent.
+  - Verified the Next.js production build compiles successfully without compilation or TypeScript errors.
+- Implemented AI Spec Generation Flow (Backend):
+  - Created `POST /api/ai/spec` API route to validate session, verify workspace access using Clerk and room ID, trigger the background spec generation task, and save the task run in Prisma.
+  - Created `POST /api/ai/spec/token` API route to verify ownership of the task run and generate a 1-hour public read-scoped token for real-time tracking.
+  - Created `trigger/generate-spec.ts` background task that validates inputs via Zod, reads canvas nodes and edges, parses conversation chat history, and uses Gemini 2.5 Flash (`google("gemini-2.5-flash")`) to generate a comprehensive Markdown technical specification.
+  - Verified the Next.js production build compiles successfully.
+- Implemented AI Spec Persistence & Download Flow (Backend):
+  - Created `ProjectSpec` database model and configured the relation to the `Project` model. Created and applied database migration `add_project_spec`.
+  - Updated the Trigger.dev `generate-spec` task to generate a unique specification ID, upload the Markdown specification text directly to Vercel Blob, and store the resulting file path in the `ProjectSpec` database model.
+  - Implemented a secure download API route `GET /api/projects/[projectId]/specs/[specId]/download` verifying Clerk identity, checking project permissions, checking spec validity, and returning the file content with standard attachment download headers.
+  - Verified that the Next.js production build compiles successfully.
+- Implemented Spec UI Integration:
+  - Created `GET /api/projects/[projectId]/specs` endpoint returning project spec records sorted by newest.
+  - Added a "Specs" tab to `components/editor/ai-chat-sidebar.tsx` alongside "Chat" using shadcn/ui `Tabs` layout.
+  - Created client component `components/editor/spec-list.tsx` to retrieve and display specifications with filenames, creation timestamps, and inline download actions.
+  - Created preview modal component `components/editor/spec-preview-modal.tsx` (using shadcn/ui `Dialog` and `ScrollArea`) to retrieve and render specification Markdown content and trigger direct file downloads.
+  - Verified Next.js production build compiles successfully (`npm run build`).
 
 ## In Progress
 
@@ -90,7 +178,6 @@ Build editor canvas/workspace component for code editing and integrate Monaco or
 
 ## Next Up
 
-- Implement AI chat sidebar logic
 - Add file tree navigation component
 - Create settings/preferences panel
 

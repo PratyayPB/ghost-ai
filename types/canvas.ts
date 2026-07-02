@@ -10,7 +10,8 @@ export type CanvasNodeShape =
 
 export interface CanvasNodeData extends Record<string, unknown> {
   label: string;
-  color?: string;
+  color?: string; // Background / border color
+  textColor?: string;
   shape?: CanvasNodeShape;
 }
 
@@ -30,5 +31,18 @@ export const SHAPE_DEFAULTS: Record<
   hexagon: { width: 140, height: 120 },
 };
 
-/** Default node color (a muted border/background tint). */
-export const DEFAULT_NODE_COLOR = "#3b82f6";
+/** Defined color palettes for canvas nodes */
+export const NODE_COLORS = [
+  { fill: "#1F1F1F", text: "#EDEDED", name: "Neutral" },
+  { fill: "#10233D", text: "#52A8FF", name: "Blue" },
+  { fill: "#2E1938", text: "#BF7AF0", name: "Purple" },
+  { fill: "#331B00", text: "#FF990A", name: "Orange" },
+  { fill: "#3C1618", text: "#FF6166", name: "Red" },
+  { fill: "#3A1726", text: "#F75F8F", name: "Pink" },
+  { fill: "#0F2E18", text: "#62C073", name: "Green" },
+  { fill: "#062822", text: "#0AC7B4", name: "Teal" },
+];
+
+/** Default node color pair */
+export const DEFAULT_NODE_COLOR = NODE_COLORS[0].fill;
+export const DEFAULT_TEXT_COLOR = NODE_COLORS[0].text;

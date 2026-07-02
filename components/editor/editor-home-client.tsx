@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import EditorNavbar from "@/components/editor/editor-navbar";
 import ProjectSidebar from "@/components/editor/project-sidebar";
@@ -99,6 +100,9 @@ export default function EditorHomeClient({ owned, shared }: EditorHomeClientProp
                 Room: {openedProject.slug} • {openedProject.isOwned ? "Owned by you" : "Shared with you"}
               </p>
               <div className="flex flex-wrap justify-center gap-3 mt-4">
+                <Button asChild>
+                  <Link href={`/editor/${openedProject.id}`}>Open Project</Link>
+                </Button>
                 {openedProject.isOwned && (
                   <>
                     <Button variant="outline" onClick={() => openRenameDialog(openedProject)}>
