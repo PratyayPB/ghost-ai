@@ -16,7 +16,15 @@ export interface CanvasNodeData extends Record<string, unknown> {
 }
 
 export type CanvasNode = Node<CanvasNodeData, "canvasNode">;
-export type CanvasEdge = Edge;
+
+export type ArrowDirection = "target" | "source" | "both";
+
+export interface CanvasEdgeData extends Record<string, unknown> {
+  label?: string;
+  arrowDirection?: ArrowDirection;
+}
+
+export type CanvasEdge = Edge<CanvasEdgeData, "canvasEdge">;
 
 /** Default dimensions for each shape when dropped onto the canvas. */
 export const SHAPE_DEFAULTS: Record<

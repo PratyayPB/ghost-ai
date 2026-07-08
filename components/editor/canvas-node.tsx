@@ -38,7 +38,12 @@ export function BaseShapeRenderer({
       return (
         <div
           className={`${baseClasses} rounded-full border-2 bg-card/90 backdrop-blur-sm`}
-          style={{ borderColor: color, boxShadow: shadowStyle, backgroundColor: color, ...textStyle }}
+          style={{
+            borderColor: color,
+            boxShadow: shadowStyle,
+            backgroundColor: color,
+            ...textStyle,
+          }}
         >
           {children}
         </div>
@@ -127,7 +132,12 @@ export function BaseShapeRenderer({
       return (
         <div
           className={`${baseClasses} rounded-lg border-2 bg-card/90 backdrop-blur-sm`}
-          style={{ borderColor: color, boxShadow: shadowStyle, backgroundColor: color, ...textStyle }}
+          style={{
+            borderColor: color,
+            boxShadow: shadowStyle,
+            backgroundColor: color,
+            ...textStyle,
+          }}
         >
           {children}
         </div>
@@ -135,11 +145,7 @@ export function BaseShapeRenderer({
   }
 }
 
-export default function CanvasNodeRenderer({
-  id,
-  data,
-  selected,
-}: NodeProps) {
+export default function CanvasNodeRenderer({ id, data, selected }: NodeProps) {
   const nodeData = data as CanvasNodeData;
   const color = nodeData.color ?? "#1F1F1F";
   const textColor = nodeData.textColor ?? "#EDEDED";
@@ -197,20 +203,15 @@ export default function CanvasNodeRenderer({
       onDoubleClick={onDoubleClick}
     >
       <span className="truncate max-w-full text-center leading-tight pointer-events-none">
-        {nodeData.label || <span className="opacity-40 italic font-normal">Double click</span>}
+        {nodeData.label || (
+          <span className="opacity-40 italic font-normal">Double click</span>
+        )}
       </span>
     </div>
   );
 
   return (
     <>
-      <NodeResizer
-        color={color}
-        isVisible={selected}
-        minWidth={60}
-        minHeight={36}
-        handleClassName="!w-2 !h-2 !border-2 !border-background !rounded-full"
-      />
       <NodeToolbar
         isVisible={selected}
         position={Position.Top}
@@ -220,19 +221,37 @@ export default function CanvasNodeRenderer({
           <button
             key={c.name}
             className={`w-5 h-5 rounded-full border border-border transition-all hover:scale-110 ${
-              color === c.fill ? "ring-2 ring-offset-1 ring-offset-background" : ""
+              color === c.fill
+                ? "ring-2 ring-offset-1 ring-offset-background"
+                : ""
             }`}
-            style={{ 
-              backgroundColor: c.fill, 
+            style={{
+              backgroundColor: c.fill,
               boxShadow: color === c.fill ? `0 0 8px ${c.text}40` : "none",
-              borderColor: color === c.fill ? c.text : undefined
+              borderColor: color === c.fill ? c.text : undefined,
             }}
             title={c.name}
-            onClick={() => updateNodeData(id, { color: c.fill, textColor: c.text })}
+            onClick={() =>
+              updateNodeData(id, { color: c.fill, textColor: c.text })
+            }
           />
         ))}
       </NodeToolbar>
-      <div className="w-full h-full group">
+      <div
+        className="relative w-full h-full group"
+        style={{
+          transform: selected ? "scale(1.25)" : "scale(1)",
+          filter: selected ? "brightness(1.2) saturate(1.2)" : "none",
+          transition: "transform 0.15s ease-out, filter 0.15s ease-out",
+        }}
+      >
+        <NodeResizer
+          color={color}
+          isVisible={selected}
+          minWidth={60}
+          minHeight={36}
+          handleClassName="!w-2.5 !h-2.5 !border-2 !border-background !rounded-full !z-50"
+        />
         <BaseShapeRenderer
           shape={shape}
           color={color}

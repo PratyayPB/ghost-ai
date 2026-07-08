@@ -7,7 +7,7 @@ export function useKeyboardShortcuts(
   canUndo: boolean,
   canRedo: boolean
 ) {
-  const { zoomIn, zoomOut } = useReactFlow();
+  const { zoomIn, zoomOut, getNodes, getEdges, deleteElements } = useReactFlow();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -24,7 +24,14 @@ export function useKeyboardShortcuts(
       const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
       const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey;
 
-      if (e.key === "=" || e.key === "+") {
+      if (e.key === "Delete" || e.key === "Backspace") {
+        const selectedNodes = getNodes().filter((n) => n.selected);
+        const selectedEdges = getEdges().filter((edge) => edge.selected);
+        
+        if (selectedNodes.length > 0 || selectedEdges.length > 0) {
+          deleteElements({ nodes: selectedNodes, edges: selectedEdges });
+        }
+      } else if (e.key === "=" || e.key === "+") {
         if (!cmdOrCtrl) {
           zoomIn({ duration: 200 });
         } else {
@@ -53,5 +60,5 @@ export function useKeyboardShortcuts(
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [zoomIn, zoomOut, undo, redo, canUndo, canRedo]);
+  }, [zoomIn, zoomOut, getNodes, getEdges, deleteElements, undo, redo, canUndo, canRedo]);
 }

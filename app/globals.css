@@ -129,3 +129,29 @@
     @apply font-sans;
     }
 }
+
+/* Custom scrollbar for the starter templates modal */
+.template-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 transparent; /* zinc-700 thumb, transparent track */
+}
+
+.template-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.template-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 4px;
+}
+
+.template-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #3f3f46; /* zinc-700 */
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.template-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #52525b; /* zinc-600 */
+}

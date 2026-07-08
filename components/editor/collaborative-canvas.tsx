@@ -157,7 +157,7 @@ export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasPr
       onConnect({
         ...connection,
         type: "canvasEdge",
-        data: { label: "" },
+        data: { label: "", arrowDirection: "target" },
       });
     },
     [onConnect]
@@ -243,9 +243,14 @@ export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasPr
         edgeTypes={edgeTypes}
         defaultEdgeOptions={{
           type: "canvasEdge",
+          markerStart: {
+            type: MarkerType.ArrowClosed,
+            color: "var(--muted-foreground)",
+            orient: "auto-start-reverse",
+          },
           markerEnd: {
             type: MarkerType.ArrowClosed,
-            color: "var(--text-muted)",
+            color: "var(--muted-foreground)",
           },
         }}
         connectionMode={ConnectionMode.Loose}
