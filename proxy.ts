@@ -1,18 +1,8 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const signInUrl = process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL || "/sign-in";
-const signUpUrl = process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL || "/sign-up";
-
-const isPublicRoute = createRouteMatcher([
-  `${signInUrl}(.*)`,
-  `${signUpUrl}(.*)`,
-]);
+const isPublicRoute = createRouteMatcher(["/", "/sign-in(.*)", "/sign-up(.*)"]);
 
 export default clerkMiddleware(async (auth, request) => {
-  const authData = await auth();
-  console.log("UserID:", authData.userId); // Log the userId to the console
-  console.log("SessionID:", authData.sessionId); // Log the sessionId to the console
-  console.log("IsAuthenticated:", authData.isAuthenticated); // Log the authentication status to the console
   if (!isPublicRoute(request)) {
     await auth.protect();
   }
