@@ -11,6 +11,7 @@ import { useRealtimeRun } from "@trigger.dev/react-hooks";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SpecList from "./spec-list";
+import RoomChat from "./room-chat";
 
 interface AiChatSidebarProps {
   onClose: () => void;
@@ -235,10 +236,13 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
 
   return (
     <aside className="hidden md:flex w-[400px] flex-col border-l border-border bg-card/50 backdrop-blur-md">
-      <Tabs defaultValue="chat" className="flex flex-col h-full w-full">
+      <Tabs defaultValue="architect" className="flex flex-col h-full w-full">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
           <TabsList className="bg-muted shrink-0 h-10">
+            <TabsTrigger value="architect" className="text-sm px-4">
+              AI Architect
+            </TabsTrigger>
             <TabsTrigger value="chat" className="text-sm px-4">
               Chat
             </TabsTrigger>
@@ -280,9 +284,9 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
           </div>
         </div>
 
-        {/* Chat tab */}
+        {/* AI Architect tab */}
         <TabsContent
-          value="chat"
+          value="architect"
           className="flex flex-col flex-1 min-h-0 data-[state=inactive]:hidden"
         >
           {/* Chat Area / Empty State */}
@@ -413,6 +417,14 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
               </Button>
             </div>
           </form>
+        </TabsContent>
+
+        {/* Room Chat tab */}
+        <TabsContent
+          value="chat"
+          className="flex flex-col flex-1 min-h-0 data-[state=inactive]:hidden"
+        >
+          <RoomChat />
         </TabsContent>
 
         {/* Specs tab */}

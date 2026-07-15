@@ -33,3 +33,13 @@ export const chatMessageSchema = z.object({
 
 export type ChatMessage = z.infer<typeof chatMessageSchema>;
 
+export const roomChatMessageSchema = z.object({
+  id: z.string(),
+  sender: z.string(),
+  senderName: z.string(),
+  content: z.string().min(1),
+  timestamp: z.number(),
+});
+
+export type RoomChatMessage = z.infer<typeof roomChatMessageSchema>;
+
