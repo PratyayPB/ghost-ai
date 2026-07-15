@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getIdentity, checkProjectAccess } from "@/lib/project-access";
-import { tasks } from "@trigger.dev/sdk/v3";
+import { tasks } from "@trigger.dev/sdk";
 import type { generateSpec } from "@/trigger/generate-spec";
 import { prisma } from "@/lib/prisma";
 

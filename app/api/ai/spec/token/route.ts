@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getIdentity } from "@/lib/project-access";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@trigger.dev/sdk/v3";
+import { auth } from "@trigger.dev/sdk";
 
 export async function POST(req: Request) {
   try {

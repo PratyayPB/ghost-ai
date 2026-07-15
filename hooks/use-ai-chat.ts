@@ -67,9 +67,19 @@ export function useAiChat() {
     }
   }, []);
 
+  const clearMessages = useMutation(({ storage }) => {
+    const list = storage.get("chatMessages");
+    if (list) {
+      list.clear();
+    } else {
+      storage.set("chatMessages", new LiveList([]));
+    }
+  }, []);
+
   return {
     messages,
     sendMessage,
     sendError,
+    clearMessages,
   };
 }

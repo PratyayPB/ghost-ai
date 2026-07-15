@@ -1,4 +1,4 @@
-Implement the full AI design agent so a user prompt results in real-time updates on the collaborative canvas, with visible AI presence and status.a
+Implement the full AI design agent so a user prompt results in real-time updates on the collaborative canvas, with visible AI presence and status.
 
 ## Implementation
 
@@ -35,7 +35,8 @@ Implement the full AI design agent so a user prompt results in real-time updates
    - clear AI presence when the task finishes
 
 ## Dependencies
-   All packages are already installed.`GEMINI_API_KEY` is already in `.env.local`.
+
+All packages are already installed.`GEMINI_API_KEY` is already in `.env.local`.
 
 ## Scope Limits
 

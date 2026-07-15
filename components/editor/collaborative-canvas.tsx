@@ -12,7 +12,12 @@ import {
   type EdgeTypes,
 } from "@xyflow/react";
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow";
-import { useUpdateMyPresence, useOthers, useSelf, useEventListener } from "@liveblocks/react/suspense";
+import {
+  useUpdateMyPresence,
+  useOthers,
+  useSelf,
+  useEventListener,
+} from "@liveblocks/react/suspense";
 import CustomCursor from "./custom-cursor";
 import type { CanvasNodeShape } from "@/types/canvas";
 import { DEFAULT_NODE_COLOR, DEFAULT_TEXT_COLOR } from "@/types/canvas";
@@ -52,7 +57,9 @@ interface CollaborativeCanvasProps {
   projectId: string;
 }
 
-export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasProps) {
+export default function CollaborativeCanvas({
+  projectId,
+}: CollaborativeCanvasProps) {
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onDelete } =
     useLiveblocksFlow({
       suspense: true,
@@ -64,18 +71,27 @@ export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasPr
       },
     });
 
-  const { screenToFlowPosition, addNodes, addEdges, setNodes, setEdges, fitView } = useReactFlow();
+  const {
+    screenToFlowPosition,
+    addNodes,
+    addEdges,
+    setNodes,
+    setEdges,
+    fitView,
+  } = useReactFlow();
 
   const updateMyPresence = useUpdateMyPresence();
   const others = useOthers();
   const me = useSelf();
-  
+
   // Deterministic leader election: the connected client with the lowest connectionId is the leader
-  const isLeader = others.every((other) => other.connectionId > me.connectionId);
+  const isLeader = others.every(
+    (other) => other.connectionId > me.connectionId,
+  );
 
   useEventListener(({ event }) => {
     if (!isLeader) return;
-
+    console.log("Received event:", event);
     if (event.type === "ai-add-node") {
       addNodes(event.payload);
     } else if (event.type === "ai-add-edge") {
@@ -90,15 +106,15 @@ export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasPr
 
   React.useEffect(() => {
     document.dispatchEvent(
-      new CustomEvent("canvas-save-status", { detail: saveStatus })
+      new CustomEvent("canvas-save-status", { detail: saveStatus }),
     );
   }, [saveStatus]);
 
   React.useEffect(() => {
     if (isInitialLoadDone.current) return;
-    
-    // We only attempt to load from blob if the room is completely empty 
-    // and we haven't loaded yet. Since suspense is used, nodes/edges might be empty 
+
+    // We only attempt to load from blob if the room is completely empty
+    // and we haven't loaded yet. Since suspense is used, nodes/edges might be empty
     // simply because it's a new room. We wait a small tick to see if it's truly empty.
     const loadFromBlob = async () => {
       try {
@@ -106,7 +122,11 @@ export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasPr
         if (response.ok) {
           const data = await response.json();
           // if nodes and edges are still empty in Liveblocks, and blob has data, set it
-          if (nodes.length === 0 && edges.length === 0 && data.nodes?.length > 0) {
+          if (
+            nodes.length === 0 &&
+            edges.length === 0 &&
+            data.nodes?.length > 0
+          ) {
             setNodes(data.nodes);
             setEdges(data.edges);
             setTimeout(() => {
@@ -144,12 +164,12 @@ export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasPr
       // Use React Flow's state setters which will sync to Liveblocks via onNodesChange
       setNodes(template.nodes);
       setEdges(template.edges);
-      
+
       setTimeout(() => {
         fitView({ duration: 800 });
       }, 100);
     },
-    [setNodes, setEdges, fitView]
+    [setNodes, setEdges, fitView],
   );
 
   const handleConnect = React.useCallback(
@@ -160,7 +180,7 @@ export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasPr
         data: { label: "", arrowDirection: "target" },
       });
     },
-    [onConnect]
+    [onConnect],
   );
 
   const handleDragOver = React.useCallback(
@@ -168,18 +188,21 @@ export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasPr
       e.preventDefault();
       e.dataTransfer.dropEffect = "move";
     },
-    []
+    [],
   );
 
-  const handlePointerMove = React.useCallback((e: React.PointerEvent) => {
-    // Ensure coordinates are integers to avoid unnecessary re-renders
-    updateMyPresence({
-      cursor: {
-        x: Math.round(e.clientX),
-        y: Math.round(e.clientY),
-      },
-    });
-  }, [updateMyPresence]);
+  const handlePointerMove = React.useCallback(
+    (e: React.PointerEvent) => {
+      // Ensure coordinates are integers to avoid unnecessary re-renders
+      updateMyPresence({
+        cursor: {
+          x: Math.round(e.clientX),
+          y: Math.round(e.clientY),
+        },
+      });
+    },
+    [updateMyPresence],
+  );
 
   const handlePointerLeave = React.useCallback(() => {
     updateMyPresence({ cursor: null });
@@ -221,11 +244,11 @@ export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasPr
         },
       });
     },
-    [screenToFlowPosition, addNodes]
+    [screenToFlowPosition, addNodes],
   );
 
   return (
-    <div 
+    <div
       className="w-full h-full relative outline-none select-none"
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
@@ -257,7 +280,12 @@ export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasPr
         fitView
         className="bg-zinc-950/20"
       >
-        <Background variant={BackgroundVariant.Dots} gap={16} size={1} className="text-muted-foreground/15" />
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={16}
+          size={1}
+          className="text-muted-foreground/15"
+        />
         <Cursors components={{ Cursor: CustomCursor }} />
       </ReactFlow>
 
@@ -274,7 +302,7 @@ export default function CollaborativeCanvas({ projectId }: CollaborativeCanvasPr
         onClose={() => setIsTemplatesModalOpen(false)}
         onImport={handleImportTemplate}
       />
-      
+
       <AiStatusFeed />
     </div>
   );

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { get } from "@vercel/blob";
 import { getIdentity, checkProjectAccess } from "@/lib/project-access";
 import { prisma } from "@/lib/prisma";
 
@@ -33,16 +34,16 @@ export async function GET(
       return NextResponse.json({ error: "Specification not found" }, { status: 404 });
     }
 
-    // Fetch the Markdown content from Vercel Blob
-    const response = await fetch(spec.filePath, {
-      next: { revalidate: 0 }, // always get latest
+    // Fetch the Markdown content from Vercel Blob using get()
+    const result = await get(spec.filePath, {
+      access: "private",
     });
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch spec from storage: ${response.statusText}`);
+    if (!result || result.statusCode !== 200) {
+      throw new Error("Failed to fetch spec from private store");
     }
 
-    const markdown = await response.text();
+    const markdown = await new Response(result.stream).text();
 
     // Return the markdown content as an attachment to force a browser download
     return new NextResponse(markdown, {

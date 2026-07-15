@@ -16,6 +16,7 @@ export function useCanvasAutosave(projectId: string, nodes: Node[], edges: Edge[
 
     const saveCanvas = async () => {
       setStatus("saving");
+      console.log("Canvas JSON data on autosave:", JSON.stringify({ nodes, edges }, null, 2));
       try {
         const response = await fetch(`/api/projects/${projectId}/canvas`, {
           method: "PUT",

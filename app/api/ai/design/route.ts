@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getIdentity, checkProjectAccess } from "@/lib/project-access";
-import { tasks } from "@trigger.dev/sdk/v3";
-import { designAgent } from "@/trigger/design-agent";
+import { tasks } from "@trigger.dev/sdk";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
@@ -18,13 +17,17 @@ export async function POST(req: Request) {
     }
 
     // Verify project access
-    const project = await checkProjectAccess(projectId, identity.userId, identity.email);
+    const project = await checkProjectAccess(
+      projectId,
+      identity.userId,
+      identity.email,
+    );
     if (!project) {
       return new NextResponse("Forbidden", { status: 403 });
     }
 
     // Trigger the background task
-    const handle = await tasks.trigger<typeof designAgent>("design-agent", {
+    const handle = await tasks.trigger(`design-agent`, {
       prompt,
       roomId,
     });

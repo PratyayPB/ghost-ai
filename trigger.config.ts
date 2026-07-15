@@ -1,7 +1,7 @@
-import { defineConfig } from "@trigger.dev/sdk/v3";
+import { defineConfig } from "@trigger.dev/sdk";
 
 export default defineConfig({
-  project: "proj_rpqfzqfanujdrclbioxk",
+  project: "proj_mgglgfqplcmxvzgzuumh",
   dirs: ["./trigger"],
   maxDuration: 300,
 });

@@ -1,4 +1,4 @@
-import { task } from "@trigger.dev/sdk/v3";
+import { task } from "@trigger.dev/sdk";
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { z } from "zod";
@@ -116,7 +116,7 @@ Output the technical specification as a clean, valid Markdown document. Use clea
       // Upload the spec content to Vercel Blob
       const fileName = `projects/${payload.projectId}/specs/${specId}.md`;
       const blob = await put(fileName, text, {
-        access: "public",
+        access: "private",
         contentType: "text/markdown",
         addRandomSuffix: false,
       });

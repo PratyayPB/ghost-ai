@@ -82,19 +82,19 @@ export default function SpecList({ projectId }: SpecListProps) {
   return (
     <div className="flex flex-col h-full bg-transparent">
       {/* List Header Actions */}
-      <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card/10">
-        <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-border bg-card/10">
+        <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
           Generated Specifications ({specs.length})
         </span>
         <Button
           variant="ghost"
           size="icon"
-          className="size-6 text-muted-foreground hover:text-foreground hover:bg-muted"
+          className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted"
           onClick={fetchSpecs}
           disabled={isLoading}
           aria-label="Refresh specifications"
         >
-          <RefreshCw className={`size-3 ${isLoading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`size-4 ${isLoading ? "animate-spin" : ""}`} />
         </Button>
       </div>
 
@@ -102,22 +102,22 @@ export default function SpecList({ projectId }: SpecListProps) {
       <div className="flex-1 min-h-0 relative">
         {isLoading && specs.length === 0 && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
-            <Loader2 className="size-6 animate-spin text-[#62C073]" />
-            <p className="text-[11px] text-muted-foreground">Loading specs list...</p>
+            <Loader2 className="size-8 animate-spin text-[#62C073]" />
+            <p className="text-xs text-muted-foreground">Loading specs list...</p>
           </div>
         )}
 
         {error && specs.length === 0 && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center gap-2">
-            <AlertCircle className="size-8 text-red-500/80" />
-            <p className="text-xs font-medium">Failed to load specs</p>
-            <p className="text-[11px] text-muted-foreground max-w-[200px] leading-relaxed mb-1">
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center gap-3">
+            <AlertCircle className="size-10 text-red-500/80" />
+            <p className="text-sm font-semibold">Failed to load specs</p>
+            <p className="text-xs text-muted-foreground max-w-[250px] leading-relaxed mb-1.5">
               {error}
             </p>
             <Button
               variant="outline"
               size="sm"
-              className="h-7 text-xs px-3 border-border hover:bg-muted"
+              className="h-9 text-xs px-4 border-border hover:bg-muted"
               onClick={fetchSpecs}
             >
               Retry
@@ -127,11 +127,11 @@ export default function SpecList({ projectId }: SpecListProps) {
 
         {!isLoading && !error && specs.length === 0 && (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-            <div className="size-10 rounded-full bg-muted flex items-center justify-center mb-3">
-              <FileText className="size-5 text-muted-foreground/40" />
+            <div className="size-12 rounded-full bg-muted flex items-center justify-center mb-3">
+              <FileText className="size-6 text-muted-foreground/40" />
             </div>
-            <p className="text-xs font-medium mb-1">No Specifications Yet</p>
-            <p className="text-[10px] text-muted-foreground/60 leading-relaxed max-w-[200px]">
+            <p className="text-sm font-semibold mb-1.5">No Specifications Yet</p>
+            <p className="text-xs text-muted-foreground/60 leading-relaxed max-w-[250px]">
               Use the AI chat to request canvas specifications. Once generated, they will appear here.
             </p>
           </div>
@@ -139,22 +139,22 @@ export default function SpecList({ projectId }: SpecListProps) {
 
         {/* Scrollable list */}
         <ScrollArea className="h-full w-full">
-          <div className="p-2 space-y-1.5">
+          <div className="p-3 space-y-2.5">
             {specs.map((spec) => (
               <div
                 key={spec.id}
                 onClick={() => handleOpenPreview(spec)}
-                className="group flex items-center justify-between p-2.5 rounded-lg border border-border bg-card/30 hover:bg-[#62C073]/5 hover:border-[#62C073]/30 transition-all duration-150 cursor-pointer select-none"
+                className="group flex items-center justify-between p-3.5 rounded-lg border border-border bg-card/30 hover:bg-[#62C073]/5 hover:border-[#62C073]/30 transition-all duration-150 cursor-pointer select-none"
               >
-                <div className="flex items-start gap-2.5 min-w-0 flex-1">
-                  <div className="size-8 rounded bg-muted flex items-center justify-center shrink-0 group-hover:bg-[#62C073]/10 transition-colors">
-                    <FileText className="size-4 text-muted-foreground group-hover:text-[#62C073] transition-colors" />
+                <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                  <div className="size-10 rounded bg-muted flex items-center justify-center shrink-0 group-hover:bg-[#62C073]/10 transition-colors">
+                    <FileText className="size-5 text-muted-foreground group-hover:text-[#62C073] transition-colors" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-medium truncate text-foreground group-hover:text-white transition-colors">
+                    <p className="text-sm font-medium truncate text-foreground group-hover:text-white transition-colors">
                       specification-{spec.id.substring(0, 8)}.md
                     </p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {formatItemTime(spec.createdAt)}
                     </p>
                   </div>
@@ -163,11 +163,11 @@ export default function SpecList({ projectId }: SpecListProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-7 opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-muted text-muted-foreground hover:text-[#62C073] transition-opacity shrink-0 ml-2"
+                  className="size-9 opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-muted text-muted-foreground hover:text-[#62C073] transition-opacity shrink-0 ml-2"
                   onClick={(e) => handleDownload(e, spec)}
                   aria-label="Download specification"
                 >
-                  <Download className="size-3.5" />
+                  <Download className="size-4" />
                 </Button>
               </div>
             ))}

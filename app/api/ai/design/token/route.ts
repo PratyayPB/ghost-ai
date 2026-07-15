@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getIdentity } from "@/lib/project-access";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@trigger.dev/sdk/v3";
+import { auth } from "@trigger.dev/sdk";
 
 export async function POST(req: Request) {
   try {
@@ -11,6 +11,9 @@ export async function POST(req: Request) {
     }
 
     const { runId } = await req.json();
+    console.log(
+      `Requesting token for runId: ${runId} by user: ${identity.userId}`,
+    );
 
     if (!runId) {
       return new NextResponse("Missing runId", { status: 400 });
@@ -34,6 +37,7 @@ export async function POST(req: Request) {
       },
       expirationTime: "1h",
     });
+    console.log(`Generated public token for runId: ${runId}`);
 
     return NextResponse.json({ token: publicToken });
   } catch (error) {
