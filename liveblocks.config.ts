@@ -39,13 +39,6 @@ declare global {
         content: string;
         timestamp: number;
       }>;
-      roomChatMessages: LiveList<{
-        id: string;
-        sender: string;
-        senderName: string;
-        content: string;
-        timestamp: number;
-      }>;
     };
 
     // User metadata returned from the auth endpoint

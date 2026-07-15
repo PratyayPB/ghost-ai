@@ -118,16 +118,16 @@ export default function WorkspaceShell({
         />
 
         {/* Collaborative Canvas */}
-        <main className="flex-1 overflow-hidden relative bg-zinc-950/50">
-          <ReactFlowProvider>
+        <ReactFlowProvider>
+          <main className="flex-1 overflow-hidden relative bg-zinc-950/50">
             <CollaborativeCanvas projectId={currentProject.id} />
-          </ReactFlowProvider>
-        </main>
+          </main>
 
-        {/* Right sidebar — AI Chat */}
-        {aiSidebarOpen && (
-          <AiChatSidebar onClose={() => setAiSidebarOpen(false)} />
-        )}
+          {/* Right sidebar — AI Chat */}
+          {aiSidebarOpen && (
+            <AiChatSidebar onClose={() => setAiSidebarOpen(false)} />
+          )}
+        </ReactFlowProvider>
       </div>
 
       {/* Dialogs */}

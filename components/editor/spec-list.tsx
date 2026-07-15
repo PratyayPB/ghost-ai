@@ -15,9 +15,12 @@ interface SpecItem {
 
 interface SpecListProps {
   projectId: string;
+  onGenerateSpec?: () => void;
+  isGenerating?: boolean;
+  refreshKey?: number;
 }
 
-export default function SpecList({ projectId }: SpecListProps) {
+export default function SpecList({ projectId, onGenerateSpec, isGenerating, refreshKey }: SpecListProps) {
   const [specs, setSpecs] = React.useState<SpecItem[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
@@ -47,7 +50,7 @@ export default function SpecList({ projectId }: SpecListProps) {
 
   React.useEffect(() => {
     fetchSpecs();
-  }, [fetchSpecs]);
+  }, [fetchSpecs, refreshKey]);
 
   const handleOpenPreview = (spec: SpecItem) => {
     setSelectedSpecId(spec.id);
@@ -86,16 +89,36 @@ export default function SpecList({ projectId }: SpecListProps) {
         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
           Generated Specifications ({specs.length})
         </span>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted"
-          onClick={fetchSpecs}
-          disabled={isLoading}
-          aria-label="Refresh specifications"
-        >
-          <RefreshCw className={`size-4 ${isLoading ? "animate-spin" : ""}`} />
-        </Button>
+        <div className="flex items-center gap-2">
+          {onGenerateSpec && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 text-xs bg-[#62C073]/10 hover:bg-[#62C073]/20 text-[#62C073] border-[#62C073]/30"
+              onClick={onGenerateSpec}
+              disabled={isGenerating || isLoading}
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="size-3.5 mr-1.5 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                "Generate Spec"
+              )}
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8 text-muted-foreground hover:text-foreground hover:bg-muted"
+            onClick={fetchSpecs}
+            disabled={isLoading}
+            aria-label="Refresh specifications"
+          >
+            <RefreshCw className={`size-4 ${isLoading ? "animate-spin" : ""}`} />
+          </Button>
+        </div>
       </div>
 
       {/* Main Area */}

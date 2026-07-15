@@ -1,10 +1,14 @@
 import { task } from "@trigger.dev/sdk";
-import { google } from "@ai-sdk/google";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { z } from "zod";
 import { put } from "@vercel/blob";
 import { prisma } from "../lib/prisma";
 import crypto from "crypto";
+
+const google = createGoogleGenerativeAI({
+  apiKey: process.env.GOOGLE_AI_API_KEY,
+});
 
 // Input schema validation using Zod
 const specPayloadSchema = z.object({
@@ -18,7 +22,7 @@ const specPayloadSchema = z.object({
       role: z.enum(["user", "assistant"]),
       content: z.string(),
       timestamp: z.number(),
-    })
+    }),
   ),
   nodes: z.array(
     z.object({
@@ -32,13 +36,24 @@ const specPayloadSchema = z.object({
         label: z.string(),
         color: z.string().optional(),
         textColor: z.string().optional(),
-        shape: z.enum(["rectangle", "circle", "diamond", "pill", "cylinder", "hexagon"]).optional(),
+        shape: z
+          .enum([
+            "rectangle",
+            "circle",
+            "diamond",
+            "pill",
+            "cylinder",
+            "hexagon",
+          ])
+          .optional(),
       }),
-      style: z.object({
-        width: z.number().optional(),
-        height: z.number().optional(),
-      }).optional(),
-    })
+      style: z
+        .object({
+          width: z.number().optional(),
+          height: z.number().optional(),
+        })
+        .optional(),
+    }),
   ),
   edges: z.array(
     z.object({
@@ -46,10 +61,12 @@ const specPayloadSchema = z.object({
       source: z.string(),
       target: z.string(),
       type: z.string().optional(),
-      data: z.object({
-        label: z.string().optional(),
-      }).optional(),
-    })
+      data: z
+        .object({
+          label: z.string().optional(),
+        })
+        .optional(),
+    }),
   ),
 });
 
@@ -59,24 +76,37 @@ export const generateSpec = task({
   id: "generate-spec",
   run: async (payloadInput: unknown) => {
     console.log("Validating payload input for generate-spec task...");
-    
+
     // Validate inputs
     const payload = specPayloadSchema.parse(payloadInput);
 
-    console.log(`Spec generation task triggered for project ${payload.projectId}, room ${payload.roomId}`);
-    console.log(`Payload summary: ${payload.nodes.length} nodes, ${payload.edges.length} edges, ${payload.chatHistory.length} chat messages.`);
+    console.log(
+      `Spec generation task triggered for project ${payload.projectId}, room ${payload.roomId}`,
+    );
+    console.log(
+      `Payload summary: ${payload.nodes.length} nodes, ${payload.edges.length} edges, ${payload.chatHistory.length} chat messages.`,
+    );
 
     try {
       const chatContext = payload.chatHistory
-        .map((msg) => `[${new Date(msg.timestamp).toISOString()}] ${msg.senderName} (${msg.role}): ${msg.content}`)
+        .map(
+          (msg) =>
+            `[${new Date(msg.timestamp).toISOString()}] ${msg.senderName} (${msg.role}): ${msg.content}`,
+        )
         .join("\n");
 
       const nodeContext = payload.nodes
-        .map((node) => `- Node ID: "${node.id}", Label: "${node.data.label}", Shape: "${node.data.shape || "rectangle"}"`)
+        .map(
+          (node) =>
+            `- Node ID: "${node.id}", Label: "${node.data.label}", Shape: "${node.data.shape || "rectangle"}"`,
+        )
         .join("\n");
 
       const edgeContext = payload.edges
-        .map((edge) => `- Edge ID: "${edge.id}", Source: "${edge.source}", Target: "${edge.target}", Label: "${edge.data?.label || "connected"}"`)
+        .map(
+          (edge) =>
+            `- Edge ID: "${edge.id}", Source: "${edge.source}", Target: "${edge.target}", Label: "${edge.data?.label || "connected"}"`,
+        )
         .join("\n");
 
       const promptText = `
@@ -104,11 +134,14 @@ Output the technical specification as a clean, valid Markdown document. Use clea
 `;
 
       const { text } = await generateText({
-        model: google("gemini-2.5-flash"),
+        model: google("gemini-3.5-flash"),
         prompt: promptText,
       });
 
-      console.log("Successfully generated technical specification. Persisting...");
+      console.log(text);
+      console.log(
+        "Successfully generated technical specification. Persisting...",
+      );
 
       // Generate a unique ID for the spec
       const specId = crypto.randomUUID();

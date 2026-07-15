@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../trigger/example.ts"],
+  "sourcesContent": ["import { task } from \"@trigger.dev/sdk\";\n\nexport const myFirstTask = task({\n  id: \"my-first-task\",\n  run: async (payload: { name: string }) => {\n    console.log(`Hello, ${payload.name}!`);\n    return { message: `Processed ${payload.name}` };\n  },\n});\n"],
+  "mappings": ";;;;;;;;;;AAAA;AAEO,IAAM,cAAc,KAAK;AAAA,EAC9B,IAAI;AAAA,EACJ,KAAK,8BAAO,YAA8B;AACxC,YAAQ,IAAI,UAAU,QAAQ,IAAI,GAAG;AACrC,WAAO,EAAE,SAAS,aAAa,QAAQ,IAAI,GAAG;AAAA,EAChD,GAHK;AAIP,CAAC;",
+  "names": []
+}

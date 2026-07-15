@@ -1,0 +1,39 @@
+{
+  "configPath": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-Pw2rkF\\trigger.config.mjs",
+  "customConditions": [
+  ],
+  "prompts": [
+  ],
+  "queues": [
+  ],
+  "runtime": "node",
+  "runtimeVersion": "23.6.1",
+  "skills": [
+  ],
+  "tasks": [
+    {
+      "entryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-Pw2rkF\\design-agent.mjs",
+      "filePath": "trigger/design-agent.ts",
+      "id": "design-agent",
+      "maxDuration": 300
+    },
+    {
+      "entryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-Pw2rkF\\example.mjs",
+      "filePath": "trigger/example.ts",
+      "id": "my-first-task",
+      "maxDuration": 300
+    },
+    {
+      "entryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-Pw2rkF\\generate-spec.mjs",
+      "filePath": "trigger/generate-spec.ts",
+      "id": "generate-spec",
+      "maxDuration": 300
+    }
+  ],
+  "timings": {
+    "trigger/design-agent.ts": 74.09249999999997,
+    "trigger/example.ts": 4.769499999999994,
+    "trigger/generate-spec.ts": 168.2276
+  },
+  "workerEntryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-Pw2rkF\\dev-run-worker.mjs"
+}

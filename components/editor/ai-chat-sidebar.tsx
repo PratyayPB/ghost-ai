@@ -11,7 +11,7 @@ import { useRealtimeRun } from "@trigger.dev/react-hooks";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import SpecList from "./spec-list";
-import RoomChat from "./room-chat";
+import { useReactFlow } from "@xyflow/react";
 
 interface AiChatSidebarProps {
   onClose: () => void;
@@ -33,11 +33,14 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
   const { messages, sendMessage, sendError, clearMessages } = useAiChat();
   const self = useSelf();
   const room = useRoom();
+  const { getNodes, getEdges } = useReactFlow();
 
   const [prompt, setPrompt] = React.useState("");
   const [runId, setRunId] = React.useState<string | null>(null);
   const [publicToken, setPublicToken] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [runType, setRunType] = React.useState<"design" | "spec" | null>(null);
+  const [specRefreshKey, setSpecRefreshKey] = React.useState(0);
 
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
@@ -82,9 +85,11 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
     if (event.type === "ai-complete") {
       setRunId(null);
       setPublicToken(null);
+      setRunType(null);
     } else if (event.type === "ai-error") {
       setRunId(null);
       setPublicToken(null);
+      setRunType(null);
     }
   });
 
@@ -98,6 +103,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
       setRunId(null);
       setPublicToken(null);
       setIsSubmitting(false);
+      setRunType(null);
     }, 120000);
 
     return () => clearTimeout(timer);
@@ -109,10 +115,11 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
 
     const timer = setTimeout(() => {
       console.warn("Task queued timeout after 15s - worker likely offline");
-      sendMessage("Task is queued but no worker is processing it. Did you forget to run `npx trigger.dev@latest dev` locally?", "assistant");
+      sendMessage("Task is queued but no worker is processing it. Did you forget to run \`npx trigger.dev@latest dev\` locally?", "assistant");
       setRunId(null);
       setPublicToken(null);
       setIsSubmitting(false);
+      setRunType(null);
     }, 15000);
 
     return () => clearTimeout(timer);
@@ -137,6 +144,12 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
           `AI Generation failed: ${output.error || "Unknown error"}`,
           "assistant"
         );
+      } else if (runType === "spec") {
+        sendMessage(
+          "Specification generated successfully! Check the Specs tab to view or download it.",
+          "assistant"
+        );
+        setSpecRefreshKey((k) => k + 1);
       } else {
         const summary = output?.summary || `Generated ${output?.nodesGenerated ?? 0} nodes and ${output?.edgesGenerated ?? 0} edges.`;
         sendMessage(
@@ -146,16 +159,19 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
       }
       setRunId(null);
       setPublicToken(null);
+      setRunType(null);
     } else if (run.status === "FAILED") {
       sendMessage("AI Generation failed due to a system error. Please try again.", "assistant");
       setRunId(null);
       setPublicToken(null);
+      setRunType(null);
     } else if (run.status === "CANCELED") {
       sendMessage("AI Generation was canceled.", "assistant");
       setRunId(null);
       setPublicToken(null);
+      setRunType(null);
     }
-  }, [run, sendMessage]);
+  }, [run, runType, sendMessage]);
 
   // Handle realtime tracking connection error
   React.useEffect(() => {
@@ -164,8 +180,70 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
       sendMessage(`Error tracking AI status: ${runError.message || "Unknown error"}`, "assistant");
       setRunId(null);
       setPublicToken(null);
+      setRunType(null);
     }
   }, [runError, sendMessage]);
+
+  const handleGenerateSpec = async () => {
+    if (isRunActive) return;
+    setRunType("spec");
+    
+    sendMessage("Generate a technical specification.", "user");
+    setIsSubmitting(true);
+    try {
+      const nodes = getNodes();
+      const edges = getEdges();
+
+      const specRes = await fetch("/api/ai/spec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          roomId: room.id,
+          chatHistory: messages,
+          nodes,
+          edges,
+        }),
+      });
+
+      if (!specRes.ok) {
+        const errorText = await specRes.text();
+        throw new Error(errorText || "Failed to trigger AI spec generation");
+      }
+
+      const specData = await specRes.json();
+      const newRunId = specData.runId;
+
+      if (!newRunId) {
+        throw new Error("No runId returned from spec API");
+      }
+
+      const tokenRes = await fetch("/api/ai/spec/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ runId: newRunId }),
+      });
+
+      if (!tokenRes.ok) {
+        const errorText = await tokenRes.text();
+        throw new Error(errorText || "Failed to get real-time tracking token");
+      }
+
+      const tokenData = await tokenRes.json();
+      const newToken = tokenData.token;
+
+      if (!newToken) {
+        throw new Error("No token returned from token API");
+      }
+
+      setRunId(newRunId);
+      setPublicToken(newToken);
+    } catch (err: any) {
+      console.error("Failed to start AI spec agent:", err);
+      sendMessage(`Failed to start spec generation: ${err.message || "Unknown error"}`, "assistant");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -175,6 +253,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
     sendMessage(userPrompt);
     setPrompt("");
     
+    setRunType("design");
     setIsSubmitting(true);
     try {
       const designRes = await fetch("/api/ai/design", {
@@ -236,13 +315,10 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
 
   return (
     <aside className="hidden md:flex w-[400px] flex-col border-l border-border bg-card/50 backdrop-blur-md">
-      <Tabs defaultValue="architect" className="flex flex-col h-full w-full">
+      <Tabs defaultValue="chat" className="flex flex-col h-full w-full">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
           <TabsList className="bg-muted shrink-0 h-10">
-            <TabsTrigger value="architect" className="text-sm px-4">
-              AI Architect
-            </TabsTrigger>
             <TabsTrigger value="chat" className="text-sm px-4">
               Chat
             </TabsTrigger>
@@ -284,9 +360,9 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
           </div>
         </div>
 
-        {/* AI Architect tab */}
+        {/* Chat tab */}
         <TabsContent
-          value="architect"
+          value="chat"
           className="flex flex-col flex-1 min-h-0 data-[state=inactive]:hidden"
         >
           {/* Chat Area / Empty State */}
@@ -419,20 +495,17 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
           </form>
         </TabsContent>
 
-        {/* Room Chat tab */}
-        <TabsContent
-          value="chat"
-          className="flex flex-col flex-1 min-h-0 data-[state=inactive]:hidden"
-        >
-          <RoomChat />
-        </TabsContent>
-
         {/* Specs tab */}
         <TabsContent
           value="specs"
           className="flex flex-col flex-1 min-h-0 data-[state=inactive]:hidden"
         >
-          <SpecList projectId={room.id} />
+          <SpecList 
+            projectId={room.id} 
+            onGenerateSpec={handleGenerateSpec}
+            isGenerating={isRunActive}
+            refreshKey={specRefreshKey}
+          />
         </TabsContent>
       </Tabs>
     </aside>

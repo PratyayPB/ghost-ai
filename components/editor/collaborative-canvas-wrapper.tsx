@@ -88,7 +88,6 @@ export default function CollaborativeCanvasWrapper({
           }}
           initialStorage={{
             chatMessages: new LiveList([]),
-            roomChatMessages: new LiveList([]),
           }}
         >
           <ClientSideSuspense fallback={loadingFallback}>
