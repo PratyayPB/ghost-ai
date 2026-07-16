@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { FileText, Download, Loader2, AlertCircle, RefreshCw } from "lucide-react";
+import { FileText, Download, Loader2, AlertCircle, RefreshCw, Trash2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import SpecPreviewModal from "./spec-preview-modal";
@@ -24,6 +24,10 @@ export default function SpecList({ projectId, onGenerateSpec, isGenerating, refr
   const [specs, setSpecs] = React.useState<SpecItem[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
+  
+  // Deletion state
+  const [deletingSpecId, setDeletingSpecId] = React.useState<string | null>(null);
+  const [deleteError, setDeleteError] = React.useState<string | null>(null);
 
   // Preview modal state
   const [selectedSpecId, setSelectedSpecId] = React.useState<string | null>(null);
@@ -69,6 +73,29 @@ export default function SpecList({ projectId, onGenerateSpec, isGenerating, refr
     document.body.removeChild(link);
   };
 
+  const handleDelete = async (e: React.MouseEvent, spec: SpecItem) => {
+    e.stopPropagation();
+    if (deletingSpecId) return;
+
+    setDeletingSpecId(spec.id);
+    setDeleteError(null);
+    try {
+      const res = await fetch(`/api/projects/${projectId}/specs/${spec.id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        throw new Error("Failed to delete spec");
+      }
+      setSpecs((prev) => prev.filter((s) => s.id !== spec.id));
+    } catch (err: any) {
+      console.error(err);
+      setDeleteError(`Failed to delete ${spec.id.substring(0, 8)}`);
+      setTimeout(() => setDeleteError(null), 3000);
+    } finally {
+      setDeletingSpecId(null);
+    }
+  };
+
   const formatItemTime = (timestamp: string) => {
     try {
       return new Date(timestamp).toLocaleString([], {
@@ -85,7 +112,7 @@ export default function SpecList({ projectId, onGenerateSpec, isGenerating, refr
   return (
     <div className="flex flex-col h-full bg-transparent">
       {/* List Header Actions */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-border bg-card/10">
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-border bg-card/10 relative">
         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
           Generated Specifications ({specs.length})
         </span>
@@ -119,6 +146,14 @@ export default function SpecList({ projectId, onGenerateSpec, isGenerating, refr
             <RefreshCw className={`size-4 ${isLoading ? "animate-spin" : ""}`} />
           </Button>
         </div>
+        
+        {deleteError && (
+          <div className="absolute -bottom-8 left-0 right-0 z-10 flex justify-center animate-in fade-in slide-in-from-top-2">
+            <div className="bg-red-500/90 text-white text-[11px] font-medium px-3 py-1 rounded shadow-sm border border-red-600">
+              {deleteError}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Main Area */}
@@ -183,15 +218,31 @@ export default function SpecList({ projectId, onGenerateSpec, isGenerating, refr
                   </div>
                 </div>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-9 opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-muted text-muted-foreground hover:text-[#62C073] transition-opacity shrink-0 ml-2"
-                  onClick={(e) => handleDownload(e, spec)}
-                  aria-label="Download specification"
-                >
-                  <Download className="size-4" />
-                </Button>
+                <div className="flex shrink-0">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-9 opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-muted text-muted-foreground hover:text-[#62C073] transition-opacity shrink-0"
+                    onClick={(e) => handleDownload(e, spec)}
+                    aria-label="Download specification"
+                  >
+                    <Download className="size-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-9 opacity-0 group-hover:opacity-100 focus:opacity-100 hover:bg-red-500/10 text-muted-foreground hover:text-red-500 transition-opacity shrink-0 ml-1"
+                    onClick={(e) => handleDelete(e, spec)}
+                    disabled={deletingSpecId === spec.id}
+                    aria-label="Delete specification"
+                  >
+                    {deletingSpecId === spec.id ? (
+                      <Loader2 className="size-4 animate-spin text-red-500" />
+                    ) : (
+                      <Trash2 className="size-4" />
+                    )}
+                  </Button>
+                </div>
               </div>
             ))}
           </div>

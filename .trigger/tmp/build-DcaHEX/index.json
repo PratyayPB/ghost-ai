@@ -1,0 +1,39 @@
+{
+  "configPath": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-DcaHEX\\trigger.config.mjs",
+  "customConditions": [
+  ],
+  "prompts": [
+  ],
+  "queues": [
+  ],
+  "runtime": "node",
+  "runtimeVersion": "23.6.1",
+  "skills": [
+  ],
+  "tasks": [
+    {
+      "entryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-DcaHEX\\design-agent.mjs",
+      "filePath": "trigger/design-agent.ts",
+      "id": "design-agent",
+      "maxDuration": 300
+    },
+    {
+      "entryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-DcaHEX\\example.mjs",
+      "filePath": "trigger/example.ts",
+      "id": "my-first-task",
+      "maxDuration": 300
+    },
+    {
+      "entryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-DcaHEX\\generate-spec.mjs",
+      "filePath": "trigger/generate-spec.ts",
+      "id": "generate-spec",
+      "maxDuration": 300
+    }
+  ],
+  "timings": {
+    "trigger/design-agent.ts": 66.57560000000001,
+    "trigger/example.ts": 3.6551999999999794,
+    "trigger/generate-spec.ts": 95.214
+  },
+  "workerEntryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-DcaHEX\\dev-run-worker.mjs"
+}
