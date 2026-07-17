@@ -39,6 +39,7 @@ export function useProjectActions(initial: {
   const [formName, setFormName] = React.useState("");
   const [formSlug, setFormSlug] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [formError, setFormError] = React.useState<string | null>(null);
 
   // Keep in sync with server-provided data on navigation
   React.useEffect(() => {
@@ -77,11 +78,13 @@ export function useProjectActions(initial: {
     setSelectedProject(null);
     setFormName("");
     setFormSlug("");
+    setFormError(null);
   };
 
   const handleNameChange = (name: string) => {
     setFormName(name);
     setFormSlug(generateSlug(name));
+    setFormError(null); // clear error when user edits the name
   };
 
   /* ---- Mutations ---- */
@@ -101,7 +104,12 @@ export function useProjectActions(initial: {
         body: JSON.stringify({ name: formName.trim() }),
       });
 
-      if (!res.ok) throw new Error("Failed to create project");
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        const msg = body?.error || "Failed to create project";
+        setFormError(msg);
+        return;
+      }
 
       const created = await res.json();
       const newProject: Project = {
@@ -135,7 +143,12 @@ export function useProjectActions(initial: {
         body: JSON.stringify({ name: formName.trim() }),
       });
 
-      if (!res.ok) throw new Error("Failed to rename project");
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        const msg = body?.error || "Failed to rename project";
+        setFormError(msg);
+        return;
+      }
 
       const updated = await res.json();
       setOwnedProjects((prev) =>
@@ -189,6 +202,7 @@ export function useProjectActions(initial: {
     selectedProject,
     formName,
     formSlug,
+    formError,
     loading,
     openCreateDialog,
     openRenameDialog,

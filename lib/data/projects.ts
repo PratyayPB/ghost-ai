@@ -12,21 +12,26 @@ export interface ProjectData {
  * Fetch owned and shared projects for a given user.
  * Used server-side in the editor page.
  */
-export async function getProjectsForUser(userId: string): Promise<{
+export async function getProjectsForUser(
+  userId: string,
+  email?: string | null
+): Promise<{
   owned: ProjectData[];
   shared: ProjectData[];
 }> {
-  const [ownedRaw, sharedCollabs] = await Promise.all([
-    prisma.project.findMany({
-      where: { ownerId: userId },
-      orderBy: { createdAt: "desc" },
-    }),
-    prisma.projectCollaborator.findMany({
-      where: { email: userId },
+  const ownedRaw = await prisma.project.findMany({
+    where: { ownerId: userId },
+    orderBy: { createdAt: "desc" },
+  });
+
+  let sharedCollabs: any[] = [];
+  if (email) {
+    sharedCollabs = await prisma.projectCollaborator.findMany({
+      where: { email },
       include: { project: true },
       orderBy: { createdAt: "desc" },
-    }),
-  ]);
+    });
+  }
 
   const owned: ProjectData[] = ownedRaw.map((p) => ({
     id: p.id,

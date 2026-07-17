@@ -38,6 +38,7 @@ declare global {
         role: "user" | "assistant";
         content: string;
         timestamp: number;
+        channel?: "design" | "chat";
       }>;
     };
 

@@ -24,6 +24,7 @@ export default function EditorHomeClient({ owned, shared }: EditorHomeClientProp
     selectedProject,
     formName,
     formSlug,
+    formError,
     loading,
     openCreateDialog,
     openRenameDialog,
@@ -127,6 +128,7 @@ export default function EditorHomeClient({ owned, shared }: EditorHomeClientProp
         selectedProject={selectedProject}
         formName={formName}
         formSlug={formSlug}
+        formError={formError}
         loading={loading}
         closeDialog={closeDialog}
         handleNameChange={handleNameChange}

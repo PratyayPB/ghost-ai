@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AlertCircle, Info } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Project, DialogType } from "@/lib/hooks/use-project-actions";
 
 interface ProjectDialogsProps {
@@ -18,6 +20,7 @@ interface ProjectDialogsProps {
   selectedProject: Project | null;
   formName: string;
   formSlug: string;
+  formError: string | null;
   loading: boolean;
   closeDialog: () => void;
   handleNameChange: (name: string) => void;
@@ -26,11 +29,66 @@ interface ProjectDialogsProps {
   handleDeleteProject: () => void;
 }
 
+const MAX_NAME_LENGTH = 50;
+
+function NameInput({
+  id,
+  value,
+  onChange,
+  disabled,
+  placeholder = "e.g. E-Commerce Backend",
+}: {
+  id: string;
+  value: string;
+  onChange: (v: string) => void;
+  disabled: boolean;
+  placeholder?: string;
+}) {
+  const remaining = MAX_NAME_LENGTH - value.length;
+  const isOverLimit = remaining < 0;
+  const isNearLimit = remaining <= 10 && remaining >= 0;
+
+  return (
+    <div className="space-y-1.5">
+      <div className="relative">
+        <Input
+          id={id}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value.slice(0, MAX_NAME_LENGTH))}
+          disabled={disabled}
+          required
+          autoFocus
+          maxLength={MAX_NAME_LENGTH}
+          className={cn(
+            "pr-14",
+            isOverLimit && "border-red-500 focus-visible:ring-red-500"
+          )}
+        />
+        <span
+          className={cn(
+            "absolute right-3 top-1/2 -translate-y-1/2 text-[11px] font-mono tabular-nums pointer-events-none",
+            isNearLimit ? "text-amber-500" : "text-muted-foreground/50",
+            isOverLimit && "text-red-500"
+          )}
+        >
+          {value.length}/{MAX_NAME_LENGTH}
+        </span>
+      </div>
+      <p className="flex items-center gap-1.5 text-[11px] text-muted-foreground/60">
+        <Info className="size-3 shrink-0" />
+        Each project name must be unique. Letters, numbers, spaces and hyphens are recommended.
+      </p>
+    </div>
+  );
+}
+
 export default function ProjectDialogs({
   activeDialog,
   selectedProject,
   formName,
   formSlug,
+  formError,
   loading,
   closeDialog,
   handleNameChange,
@@ -50,21 +108,25 @@ export default function ProjectDialogs({
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleCreateProject} className="space-y-4 py-2">
-            <div className="space-y-2">
+            {/* Error banner */}
+            {formError && (
+              <div className="flex items-start gap-2.5 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-sm text-red-400">
+                <AlertCircle className="size-4 mt-0.5 shrink-0" />
+                <span>{formError}</span>
+              </div>
+            )}
+            <div className="space-y-1.5">
               <label htmlFor="create-project-name" className="text-xs font-medium text-muted-foreground">
                 Project Name
               </label>
-              <Input
+              <NameInput
                 id="create-project-name"
-                placeholder="My Awesome Project"
                 value={formName}
-                onChange={(e) => handleNameChange(e.target.value)}
+                onChange={handleNameChange}
                 disabled={loading}
-                required
-                autoFocus
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label htmlFor="create-project-slug" className="text-xs font-medium text-muted-foreground">
                 Live Slug Preview
               </label>
@@ -98,18 +160,23 @@ export default function ProjectDialogs({
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleRenameProject} className="space-y-4 py-2">
-            <div className="space-y-2">
+            {/* Error banner */}
+            {formError && (
+              <div className="flex items-start gap-2.5 rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-sm text-red-400">
+                <AlertCircle className="size-4 mt-0.5 shrink-0" />
+                <span>{formError}</span>
+              </div>
+            )}
+            <div className="space-y-1.5">
               <label htmlFor="rename-project-name" className="text-xs font-medium text-muted-foreground">
                 Project Name
               </label>
-              <Input
+              <NameInput
                 id="rename-project-name"
-                placeholder="Rename Project"
                 value={formName}
-                onChange={(e) => handleNameChange(e.target.value)}
+                onChange={handleNameChange}
                 disabled={loading}
-                required
-                autoFocus
+                placeholder="Rename Project"
               />
             </div>
             <DialogFooter className="pt-2">

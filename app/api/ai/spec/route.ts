@@ -41,7 +41,18 @@ export async function POST(req: Request) {
       },
     });
 
-    return NextResponse.json({ runId: handle.id });
+    // Generate run-scoped public token
+    const { auth } = await import("@trigger.dev/sdk");
+    const publicToken = await auth.createPublicToken({
+      scopes: {
+        read: {
+          runs: [handle.id],
+        },
+      },
+      expirationTime: "1h",
+    });
+
+    return NextResponse.json({ runId: handle.id, publicToken });
   } catch (error) {
     console.error("[SPEC_POST]", error);
     return new NextResponse("Internal Error", { status: 500 });

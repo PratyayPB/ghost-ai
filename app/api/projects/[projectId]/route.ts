@@ -47,6 +47,23 @@ export async function PATCH(request: Request, context: RouteContext) {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
+  // Enforce uniqueness: no two projects with the same name (case-insensitive) per owner
+  // Exclude the current project itself from the check
+  const duplicate = await prisma.project.findFirst({
+    where: {
+      ownerId: userId,
+      name: { equals: name, mode: "insensitive" },
+      NOT: { id: projectId },
+    },
+  });
+
+  if (duplicate) {
+    return NextResponse.json(
+      { error: `You already have a project named "${name}". Please choose a different name.` },
+      { status: 409 }
+    );
+  }
+
   const updated = await prisma.project.update({
     where: { id: projectId },
     data: { name },

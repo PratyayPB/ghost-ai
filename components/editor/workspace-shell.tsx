@@ -41,6 +41,7 @@ export default function WorkspaceShell({
     selectedProject,
     formName,
     formSlug,
+    formError,
     loading,
     openCreateDialog,
     openRenameDialog,
@@ -136,6 +137,7 @@ export default function WorkspaceShell({
         selectedProject={selectedProject}
         formName={formName}
         formSlug={formSlug}
+        formError={formError}
         loading={loading}
         closeDialog={closeDialog}
         handleNameChange={handleNameChange}

@@ -31,7 +31,7 @@ export default async function WorkspacePage({ params }: PageProps) {
   }
 
   // 3. Fetch sidebar data
-  const { owned, shared } = await getProjectsForUser(identity.userId);
+  const { owned, shared } = await getProjectsForUser(identity.userId, identity.email);
 
   const currentProject = {
     id: project.id,

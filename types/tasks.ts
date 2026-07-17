@@ -29,6 +29,7 @@ export const chatMessageSchema = z.object({
   role: z.enum(["user", "assistant"]),
   content: z.string().min(1),
   timestamp: z.number(),    // Date.now() epoch ms
+  channel: z.enum(["design", "chat"]).default("design"),
 });
 
 export type ChatMessage = z.infer<typeof chatMessageSchema>;

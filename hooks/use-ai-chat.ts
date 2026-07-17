@@ -11,8 +11,8 @@ export function useAiChat() {
   const [sendError, setSendError] = React.useState<string | null>(null);
 
   // Validate messages before exposing them to the UI
-  const messages = React.useMemo(() => {
-    if (!rawMessages) return [];
+  const { messages, designMessages, chatMessages } = React.useMemo(() => {
+    if (!rawMessages) return { messages: [], designMessages: [], chatMessages: [] };
     
     const validMessages: ChatMessage[] = [];
     for (const msg of rawMessages) {
@@ -25,10 +25,16 @@ export function useAiChat() {
     }
     
     // Sort by timestamp ascending just in case, though LiveList preserves order
-    return validMessages.sort((a, b) => a.timestamp - b.timestamp);
+    const sorted = validMessages.sort((a, b) => a.timestamp - b.timestamp);
+    
+    return {
+      messages: sorted,
+      designMessages: sorted.filter((m) => m.channel === "design" || !m.channel),
+      chatMessages: sorted.filter((m) => m.channel === "chat"),
+    };
   }, [rawMessages]);
 
-  const sendMessage = useMutation(({ storage, self }, content: string, role: "user" | "assistant" = "user") => {
+  const sendMessage = useMutation(({ storage, self }, content: string, role: "user" | "assistant" = "user", channel: "design" | "chat" = "design") => {
     setSendError(null);
     try {
       if (!content.trim()) return;
@@ -43,6 +49,7 @@ export function useAiChat() {
         role,
         content: content.trim(),
         timestamp: Date.now(),
+        channel,
       };
 
       const parsed = chatMessageSchema.safeParse(message);
@@ -67,17 +74,33 @@ export function useAiChat() {
     }
   }, []);
 
-  const clearMessages = useMutation(({ storage }) => {
+  const clearMessages = useMutation(({ storage }, channel?: "design" | "chat") => {
     const list = storage.get("chatMessages");
-    if (list) {
-      list.clear();
-    } else {
+    if (!list) {
       storage.set("chatMessages", new LiveList([]));
+      return;
+    }
+    
+    if (!channel) {
+      list.clear();
+      return;
+    }
+
+    // Remove in reverse to avoid index shifting
+    for (let i = list.length - 1; i >= 0; i--) {
+      const msg = list.get(i);
+      // Existing messages without a channel default to "design"
+      const msgChannel = msg?.channel || "design";
+      if (msgChannel === channel) {
+        list.delete(i);
+      }
     }
   }, []);
 
   return {
     messages,
+    designMessages,
+    chatMessages,
     sendMessage,
     sendError,
     clearMessages,

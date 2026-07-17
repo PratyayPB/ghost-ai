@@ -44,6 +44,21 @@ export async function POST(request: Request) {
     // No body or invalid JSON — use default name
   }
 
+  // Enforce uniqueness: no two projects with the same name (case-insensitive) per owner
+  const existing = await prisma.project.findFirst({
+    where: {
+      ownerId: userId,
+      name: { equals: name, mode: "insensitive" },
+    },
+  });
+
+  if (existing) {
+    return NextResponse.json(
+      { error: `You already have a project named "${name}". Please choose a different name.` },
+      { status: 409 }
+    );
+  }
+
   const project = await prisma.project.create({
     data: {
       ownerId: userId,
