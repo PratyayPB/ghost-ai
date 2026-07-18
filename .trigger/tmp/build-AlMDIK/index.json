@@ -1,0 +1,39 @@
+{
+  "configPath": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-AlMDIK\\trigger.config.mjs",
+  "customConditions": [
+  ],
+  "prompts": [
+  ],
+  "queues": [
+  ],
+  "runtime": "node",
+  "runtimeVersion": "23.6.1",
+  "skills": [
+  ],
+  "tasks": [
+    {
+      "entryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-AlMDIK\\design-agent.mjs",
+      "filePath": "trigger/design-agent.ts",
+      "id": "design-agent",
+      "maxDuration": 300
+    },
+    {
+      "entryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-AlMDIK\\example.mjs",
+      "filePath": "trigger/example.ts",
+      "id": "my-first-task",
+      "maxDuration": 300
+    },
+    {
+      "entryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-AlMDIK\\generate-spec.mjs",
+      "filePath": "trigger/generate-spec.ts",
+      "id": "generate-spec",
+      "maxDuration": 300
+    }
+  ],
+  "timings": {
+    "trigger/design-agent.ts": 94.59349999999995,
+    "trigger/example.ts": 5.122200000000021,
+    "trigger/generate-spec.ts": 133.27980000000002
+  },
+  "workerEntryPoint": "D:\\Courses\\Web Dev\\Projects\\Portfolio\\ghost-ai\\.trigger\\tmp\\build-AlMDIK\\dev-run-worker.mjs"
+}

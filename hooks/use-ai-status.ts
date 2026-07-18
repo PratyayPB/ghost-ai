@@ -4,6 +4,8 @@ import * as React from "react";
 import { useEventListener } from "@liveblocks/react/suspense";
 import { type AiStatusMessage, isAiStatusMessage } from "@/types/tasks";
 
+export const aiStatusEmitter = new EventTarget();
+
 export function useAiStatus() {
   const [status, setStatus] = React.useState<AiStatusMessage | null>(null);
 
@@ -25,6 +27,15 @@ export function useAiStatus() {
       }
     }
   });
+
+  React.useEffect(() => {
+    const handleOverride = (e: Event) => {
+      const customEvent = e as CustomEvent<AiStatusMessage | null>;
+      setStatus(customEvent.detail);
+    };
+    aiStatusEmitter.addEventListener("override", handleOverride);
+    return () => aiStatusEmitter.removeEventListener("override", handleOverride);
+  }, []);
 
   React.useEffect(() => {
     if (!status) return;

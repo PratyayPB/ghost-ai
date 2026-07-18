@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { MessageSquare, SendHorizontal, Loader2, Sparkles, PlusCircle } from "lucide-react";
+import { MessageSquare, SendHorizontal, Loader2, Sparkles, PlusCircle, StopCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useAiStatus } from "@/hooks/use-ai-status";
+import { useAiStatus, aiStatusEmitter } from "@/hooks/use-ai-status";
 import { useAiChat } from "@/hooks/use-ai-chat";
 import { useSelf, useRoom, useEventListener } from "@liveblocks/react/suspense";
 import { useRealtimeRun } from "@trigger.dev/react-hooks";
@@ -34,7 +34,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
   const { messages, designMessages, chatMessages, sendMessage, sendError, clearMessages } = useAiChat();
   const self = useSelf();
   const room = useRoom();
-  const { getNodes, getEdges } = useReactFlow();
+  const { getNodes, getEdges, setNodes, setEdges } = useReactFlow();
 
   const [prompt, setPrompt] = React.useState("");
   const [chatPrompt, setChatPrompt] = React.useState("");
@@ -43,6 +43,8 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [runType, setRunType] = React.useState<"design" | "spec" | null>(null);
   const [specRefreshKey, setSpecRefreshKey] = React.useState(0);
+  const [isCanceling, setIsCanceling] = React.useState(false);
+  const [preRunNodeIds, setPreRunNodeIds] = React.useState<Set<string>>(new Set());
 
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
@@ -78,7 +80,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
     return null;
   };
 
-  const currentStatusText = statusText || getMetadataStatusText() || "Starting AI Agent...";
+  const currentStatusText = isCanceling ? "Terminating request..." : (statusText || getMetadataStatusText() || "Starting AI Agent...");
 
   // Fallback: listen directly to Liveblocks events to clear state if Trigger.dev misses the transition
   useEventListener(({ event }) => {
@@ -171,12 +173,14 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
       setPublicToken(null);
       setRunType(null);
     } else if (run.status === "CANCELED") {
-      sendMessage("AI Generation was canceled.", "assistant", "design");
-      setRunId(null);
-      setPublicToken(null);
-      setRunType(null);
+      if (!isCanceling) {
+        sendMessage("AI Generation was canceled.", "assistant", "design");
+        setRunId(null);
+        setPublicToken(null);
+        setRunType(null);
+      }
     }
-  }, [run, runType, sendMessage]);
+  }, [run, runType, sendMessage, isCanceling]);
 
   // Handle realtime tracking connection error
   React.useEffect(() => {
@@ -242,6 +246,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
     setPrompt("");
     
     setRunType("design");
+    setPreRunNodeIds(new Set(getNodes().map(n => n.id)));
     setIsSubmitting(true);
     try {
       const designRes = await fetch("/api/ai/design", {
@@ -274,6 +279,49 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
       sendMessage(`Failed to start diagram generation: ${err.message || "Unknown error"}`, "assistant", "design");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    if (!runId || isCanceling) return;
+    setIsCanceling(true);
+
+    aiStatusEmitter.dispatchEvent(
+      new CustomEvent("override", {
+        detail: { type: "ai-status", text: "Terminating request..." },
+      })
+    );
+
+    try {
+      const res = await fetch("/api/ai/design/cancel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ runId, projectId: room.id }),
+      });
+      if (res.ok) {
+        // Cleanup nodes
+        setNodes((nds) => nds.filter((n) => preRunNodeIds.has(n.id)));
+        setEdges((eds) => eds.filter((e) => preRunNodeIds.has(e.source) && preRunNodeIds.has(e.target)));
+        sendMessage("Design generation was terminated.", "assistant", "design");
+        
+        aiStatusEmitter.dispatchEvent(
+          new CustomEvent("override", {
+            detail: { type: "ai-error", text: "Generation canceled" },
+          })
+        );
+        
+        setRunId(null);
+        setPublicToken(null);
+        setRunType(null);
+        setPreRunNodeIds(new Set());
+      }
+    } catch (err) {
+      console.error("Failed to cancel run:", err);
+      aiStatusEmitter.dispatchEvent(
+        new CustomEvent("override", { detail: null })
+      );
+    } finally {
+      setIsCanceling(false);
     }
   };
 
@@ -479,24 +527,41 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
                 rows={1}
                 className="flex-1 min-h-[48px] max-h-[140px] resize-none border-0 p-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent text-sm md:text-[15px]"
               />
-              <Button
-                type="submit"
-                size="icon"
-                disabled={isRunActive || !prompt.trim()}
-                className={cn(
-                  "size-9 rounded-sm shrink-0 transition-colors",
-                  isRunActive || !prompt.trim()
-                    ? "bg-muted text-muted-foreground"
-                    : "bg-[#62C073] hover:bg-[#62C073]/90 text-black"
-                )}
-                aria-label="Send prompt"
-              >
-                {isRunActive ? (
-                  <Loader2 className="size-5 animate-spin" />
-                ) : (
-                  <SendHorizontal className="size-5" />
-                )}
-              </Button>
+              {isRunActive && runType === "design" ? (
+                <Button
+                  type="button"
+                  size="icon"
+                  disabled={isCanceling}
+                  onClick={handleCancel}
+                  className="size-9 rounded-sm shrink-0 transition-colors bg-red-500 hover:bg-red-600 text-white"
+                  aria-label="Stop generation"
+                >
+                  {isCanceling ? (
+                    <Loader2 className="size-5 animate-spin" />
+                  ) : (
+                    <StopCircle className="size-5" />
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={isRunActive || !prompt.trim()}
+                  className={cn(
+                    "size-9 rounded-sm shrink-0 transition-colors",
+                    isRunActive || !prompt.trim()
+                      ? "bg-muted text-muted-foreground"
+                      : "bg-[#62C073] hover:bg-[#62C073]/90 text-black"
+                  )}
+                  aria-label="Send prompt"
+                >
+                  {isRunActive ? (
+                    <Loader2 className="size-5 animate-spin" />
+                  ) : (
+                    <SendHorizontal className="size-5" />
+                  )}
+                </Button>
+              )}
             </div>
           </form>
         </TabsContent>
