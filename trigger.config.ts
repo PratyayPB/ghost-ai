@@ -9,7 +9,7 @@ export default defineConfig({
     extensions: [
       prismaExtension({
         mode: "legacy",
-        schema: "prisma/schema.prisma",
+        schema: "prisma",
         migrate: true,
       }),
     ],
