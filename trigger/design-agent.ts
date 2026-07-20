@@ -15,9 +15,18 @@ export const designAgent = task({
       secret: process.env.LIVEBLOCKS_SECRET_KEY!,
     });
 
+    // Helper to safely broadcast events
+    const safeBroadcastEvent = async (event: any) => {
+      try {
+        await liveblocks.broadcastEvent(payload.roomId, event);
+      } catch (err) {
+        console.warn("Liveblocks broadcast failed:", err);
+      }
+    };
+
     // Helper to broadcast status
     const broadcastStatus = async (message: string) => {
-      await liveblocks.broadcastEvent(payload.roomId, {
+      await safeBroadcastEvent({
         type: "ai-status",
         message,
       });
@@ -134,7 +143,7 @@ export const designAgent = task({
         await updatePresence(true, node.x, node.y);
 
         // Broadcast the node to the leader client
-        await liveblocks.broadcastEvent(payload.roomId, {
+        await safeBroadcastEvent({
           type: "ai-add-node",
           payload: flowNode,
         });
@@ -166,7 +175,7 @@ export const designAgent = task({
           );
         }
 
-        await liveblocks.broadcastEvent(payload.roomId, {
+        await safeBroadcastEvent({
           type: "ai-add-edge",
           payload: flowEdge,
         });
@@ -181,7 +190,7 @@ export const designAgent = task({
       // Clear thinking state and notify complete
       metadata.set("nodesGenerated", object.nodes.length);
       metadata.set("edgesGenerated", object.edges.length);
-      await liveblocks.broadcastEvent(payload.roomId, { type: "ai-complete" });
+      await safeBroadcastEvent({ type: "ai-complete" });
       await updatePresence(false, 0, 0); // Presence will expire due to TTL anyway
 
       return {
@@ -192,7 +201,7 @@ export const designAgent = task({
       };
     } catch (error) {
       console.error(error);
-      await liveblocks.broadcastEvent(payload.roomId, {
+      await safeBroadcastEvent({
         type: "ai-error",
         message: "Generation failed.",
       });
