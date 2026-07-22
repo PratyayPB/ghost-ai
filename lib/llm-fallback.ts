@@ -7,14 +7,14 @@ const google = createGoogleGenerativeAI({
 });
 
 /**
- * Ordered chain of Gemini models to attempt.
+ * Ordered chain of valid Google Gemini models to attempt.
  * If the primary model fails due to high demand, rate limits, or transient errors,
  * the failover mechanism automatically tries the next model in sequence.
  */
 export const DEFAULT_GEMINI_FALLBACK_CHAIN = [
-  "gemini-3.5-flash",
-  "gemini-3.5-flash-lite",
-  "gemini-2.5-pro",
+  "gemini-2.0-flash",
+  "gemini-1.5-flash",
+  "gemini-1.5-pro",
 ];
 
 export interface FallbackOptions {
@@ -54,6 +54,7 @@ export async function generateObjectWithFallback<T>({
         model: google(modelName),
         schema,
         prompt,
+        maxRetries: 1, // Fail fast to try the next model in our fallback chain
       });
 
       const duration = Date.now() - startTime;
@@ -129,6 +130,7 @@ export async function generateTextWithFallback({
       const result = await generateText({
         model: google(modelName),
         prompt,
+        maxRetries: 1, // Fail fast to try the next model in our fallback chain
       });
 
       const duration = Date.now() - startTime;
