@@ -45,6 +45,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
   const [specRefreshKey, setSpecRefreshKey] = React.useState(0);
   const [isCanceling, setIsCanceling] = React.useState(false);
   const [preRunNodeIds, setPreRunNodeIds] = React.useState<Set<string>>(new Set());
+  const handledRunRef = React.useRef<string | null>(null);
 
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
@@ -145,8 +146,11 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
   // Handle run completion/failure transitions
   React.useEffect(() => {
     if (!run) return;
+    // Prevent duplicate handling when the run object reference changes
+    if (handledRunRef.current === run.id) return;
 
     if (run.status === "COMPLETED") {
+      handledRunRef.current = run.id;
       const output = run.output as any;
       console.log(`[AI_CHAT_SIDEBAR] ✅ Task run ${run.id} completed!`, output);
       if (output?.success === false) {
@@ -174,12 +178,14 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
       setPublicToken(null);
       setRunType(null);
     } else if (run.status === "FAILED") {
+      handledRunRef.current = run.id;
       console.error(`[AI_CHAT_SIDEBAR] ❌ Task run ${run.id} FAILED!`);
       sendMessage("AI Generation failed due to a system error. Please try again.", "assistant", "design");
       setRunId(null);
       setPublicToken(null);
       setRunType(null);
     } else if (run.status === "CANCELED") {
+      handledRunRef.current = run.id;
       console.log(`[AI_CHAT_SIDEBAR] ℹ️ Task run ${run.id} was CANCELED.`);
       if (!isCanceling) {
         sendMessage("AI Generation was canceled.", "assistant", "design");

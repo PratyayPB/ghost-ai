@@ -14,8 +14,6 @@ import {
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow";
 import {
   useUpdateMyPresence,
-  useOthers,
-  useSelf,
   useEventListener,
 } from "@liveblocks/react/suspense";
 import CustomCursor from "./custom-cursor";
@@ -77,25 +75,27 @@ export default function CollaborativeCanvas({
     addEdges,
     setNodes,
     setEdges,
+    getNodes,
+    getEdges,
     fitView,
   } = useReactFlow();
 
   const updateMyPresence = useUpdateMyPresence();
-  const others = useOthers();
-  const me = useSelf();
-
-  // Deterministic leader election: the connected client with the lowest connectionId is the leader
-  const isLeader = others.every(
-    (other) => other.connectionId > me.connectionId,
-  );
 
   useEventListener(({ event }) => {
-    if (!isLeader) return;
-    console.log("[CANVAS] Received Liveblocks event:", event);
     if (event.type === "ai-add-node") {
-      addNodes(event.payload);
+      // Deduplicate: only add if not already present in the flow
+      const currentNodes = getNodes();
+      if (!currentNodes.some(n => n.id === event.payload.id)) {
+        addNodes(event.payload);
+        console.log(`[CANVAS] ✅ Added AI node: ${event.payload.id}`);
+      }
     } else if (event.type === "ai-add-edge") {
-      addEdges(event.payload);
+      const currentEdges = getEdges();
+      if (!currentEdges.some(e => e.id === event.payload.id)) {
+        addEdges(event.payload);
+        console.log(`[CANVAS] ✅ Added AI edge: ${event.payload.id}`);
+      }
     }
   });
 
