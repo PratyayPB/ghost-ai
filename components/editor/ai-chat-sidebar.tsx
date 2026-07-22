@@ -63,9 +63,14 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
   const { run, error: runError } = useRealtimeRun(runId || undefined, {
     accessToken: publicToken || undefined,
     enabled: !!runId && !!publicToken,
+    baseURL: process.env.NEXT_PUBLIC_TRIGGER_API_URL,
   });
 
   const isRunActive = isSubmitting || !!runId;
+
+  // Track isRunActive in a ref so event listeners always see the latest value
+  const isRunActiveRef = React.useRef(isRunActive);
+  React.useEffect(() => { isRunActiveRef.current = isRunActive; }, [isRunActive]);
 
   const getMetadataStatusText = () => {
     if (run?.status === "QUEUED") return "Task queued (waiting for worker)...";
@@ -84,7 +89,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
 
   // Fallback: listen directly to Liveblocks events to clear state if Trigger.dev misses the transition
   useEventListener(({ event }) => {
-    if (!isRunActive) return;
+    if (!isRunActiveRef.current) return;
     
     if (event.type === "ai-complete") {
       setRunId(null);
@@ -102,13 +107,13 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
     if (!isRunActive) return;
 
     const timer = setTimeout(() => {
-      console.warn("[AI_CHAT_SIDEBAR] ⚠️ AI generation timed out after 120s");
+      console.warn("[AI_CHAT_SIDEBAR] ⚠️ AI generation timed out after 300s");
       sendMessage("AI Generation timed out. Please try again.", "assistant", "design");
       setRunId(null);
       setPublicToken(null);
       setIsSubmitting(false);
       setRunType(null);
-    }, 120000);
+    }, 300000); // 5 minutes — matches Trigger.dev maxDuration
 
     return () => clearTimeout(timer);
   }, [isRunActive, sendMessage]);
