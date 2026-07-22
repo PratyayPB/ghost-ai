@@ -108,7 +108,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
       setPublicToken(null);
       setIsSubmitting(false);
       setRunType(null);
-    }, 120000);
+    }, 1200000);
 
     return () => clearTimeout(timer);
   }, [isRunActive, sendMessage]);
