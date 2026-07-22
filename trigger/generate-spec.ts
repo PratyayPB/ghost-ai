@@ -1,14 +1,11 @@
 import { task } from "@trigger.dev/sdk";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateText } from "ai";
 import { z } from "zod";
 import { put } from "@vercel/blob";
 import { prisma } from "../lib/prisma";
 import crypto from "crypto";
+import { generateTextWithFallback } from "../lib/llm-fallback";
 
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_AI_API_KEY,
-});
+
 
 // Input schema validation using Zod
 const specPayloadSchema = z.object({
@@ -134,28 +131,11 @@ Please generate a professional Markdown technical specification document contain
 Output the technical specification as a clean, valid Markdown document. Use clear, nested headings (H1, H2, H3), lists, tables, and code snippets where appropriate. Do not include any wrapper HTML or markdown block decorators (like wrapping the output in a markdown code block itself unless you are showing a code example). Return ONLY the Markdown content.
 `;
 
-      const llmModel = "gemini-3.5-flash";
-      const llmStartTime = Date.now();
-      console.log(`[LLM:Gemini] Calling generateText — model: ${llmModel}, prompt length: ${promptText.length} chars`);
+      const result = await generateTextWithFallback({
+        prompt: promptText,
+      });
 
-      let text: string;
-      try {
-        const result = await generateText({
-          model: google(llmModel),
-          prompt: promptText,
-        });
-        text = result.text;
-
-        const llmDuration = Date.now() - llmStartTime;
-        console.log(`[LLM:Gemini] ✅ generateText completed in ${llmDuration}ms — model: ${llmModel}`);
-        console.log(`[LLM:Gemini] 📊 Token usage — input: ${result.usage?.inputTokens ?? "N/A"}, output: ${result.usage?.outputTokens ?? "N/A"}, total: ${result.usage?.totalTokens ?? "N/A"}`);
-        console.log(`[LLM:Gemini] 📦 Result — generated spec: ${text.length} chars`);
-      } catch (llmError) {
-        const llmDuration = Date.now() - llmStartTime;
-        console.error(`[LLM:Gemini] ❌ generateText FAILED after ${llmDuration}ms — model: ${llmModel}`);
-        console.error(`[LLM:Gemini] ❌ Error details:`, llmError);
-        throw llmError;
-      }
+      const text = result.text;
 
       console.log(
         "[GENERATE_SPEC] ✅ Technical specification generated. Persisting to storage and database...",

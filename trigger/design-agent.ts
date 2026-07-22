@@ -1,12 +1,7 @@
 import { task, metadata } from "@trigger.dev/sdk";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateObject } from "ai";
 import { Liveblocks } from "@liveblocks/node";
 import { z } from "zod";
-
-const google = createGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_AI_API_KEY,
-});
+import { generateObjectWithFallback } from "../lib/llm-fallback";
 
 export const designAgent = task({
   id: "design-agent",
@@ -114,34 +109,24 @@ export const designAgent = task({
         ),
       });
 
-      const llmModel = "gemini-3.5-flash";
-      const llmStartTime = Date.now();
-      console.log(`[LLM:Gemini] Calling generateObject — model: ${llmModel}, prompt length: ${payload.prompt.length} chars`);
-
-      let object: z.infer<typeof schema>;
-      try {
-        const result = await generateObject({
-          model: google(llmModel),
-          schema,
-          prompt: `You are an expert software architect. The user requested: "${payload.prompt}". 
+      const promptText = `You are an expert software architect. The user requested: "${payload.prompt}". 
         Generate a system architecture diagram composed of nodes and edges.
         Position the nodes logically (e.g. clients on left/top, databases on right/bottom) using absolute coordinates (x, y).
         Keep typical distances between connected nodes to 200-400px.
         Avoid overlapping nodes.
-        Standard dimensions: rectangle (180x80), circle (100x100), cylinder (120x100), diamond (140x140).`,
-        });
-        object = result.object;
+        Standard dimensions: rectangle (180x80), circle (100x100), cylinder (120x100), diamond (140x140).`;
 
-        const llmDuration = Date.now() - llmStartTime;
-        console.log(`[LLM:Gemini] ✅ generateObject completed in ${llmDuration}ms — model: ${llmModel}`);
-        console.log(`[LLM:Gemini] 📊 Token usage — input: ${result.usage?.inputTokens ?? "N/A"}, output: ${result.usage?.outputTokens ?? "N/A"}, total: ${result.usage?.totalTokens ?? "N/A"}`);
-        console.log(`[LLM:Gemini] 📦 Result — ${object.nodes.length} nodes, ${object.edges.length} edges, summary: "${object.summary.substring(0, 80)}..."`);
-      } catch (llmError) {
-        const llmDuration = Date.now() - llmStartTime;
-        console.error(`[LLM:Gemini] ❌ generateObject FAILED after ${llmDuration}ms — model: ${llmModel}`);
-        console.error(`[LLM:Gemini] ❌ Error details:`, llmError);
-        throw llmError;
-      }
+      const result = await generateObjectWithFallback({
+        schema,
+        prompt: promptText,
+        options: {
+          onFallback: async (failedModel, nextModel) => {
+            await broadcastStatus(`Switching to backup model (${nextModel})...`);
+          },
+        },
+      });
+
+      const object = result.object;
 
       metadata.set("status", "drawing");
       await broadcastStatus("Drawing components...");

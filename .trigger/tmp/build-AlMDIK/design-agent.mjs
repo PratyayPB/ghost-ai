@@ -1,49 +1,50 @@
 import {
   createGoogleGenerativeAI,
   external_exports,
-  generateObject
+  generateObject,
 } from "./chunk-B522NYNG.mjs";
 import "./chunk-BRN2L6B5.mjs";
-import {
-  metadata,
-  task
-} from "./chunk-IGBMFRKF.mjs";
+import { metadata, task } from "./chunk-IGBMFRKF.mjs";
 import "./chunk-UXG3MEYK.mjs";
-import {
-  __commonJS,
-  __name,
-  __toESM,
-  init_esm
-} from "./chunk-OA5TDGRQ.mjs";
+import { __commonJS, __name, __toESM, init_esm } from "./chunk-OA5TDGRQ.mjs";
 
 // node_modules/@stablelib/base64/lib/base64.js
 var require_base64 = __commonJS({
   "node_modules/@stablelib/base64/lib/base64.js"(exports) {
     "use strict";
     init_esm();
-    var __extends = exports && exports.__extends || /* @__PURE__ */ function() {
-      var extendStatics = /* @__PURE__ */ __name(function(d, b) {
-        extendStatics = Object.setPrototypeOf || { __proto__: [] } instanceof Array && function(d2, b2) {
-          d2.__proto__ = b2;
-        } || function(d2, b2) {
-          for (var p in b2) if (b2.hasOwnProperty(p)) d2[p] = b2[p];
+    var __extends =
+      (exports && exports.__extends) ||
+      /* @__PURE__ */ (function () {
+        var extendStatics = /* @__PURE__ */ __name(function (d, b) {
+          extendStatics =
+            Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array &&
+              function (d2, b2) {
+                d2.__proto__ = b2;
+              }) ||
+            function (d2, b2) {
+              for (var p in b2) if (b2.hasOwnProperty(p)) d2[p] = b2[p];
+            };
+          return extendStatics(d, b);
+        }, "extendStatics");
+        return function (d, b) {
+          extendStatics(d, b);
+          function __() {
+            this.constructor = d;
+          }
+          __name(__, "__");
+          d.prototype =
+            b === null
+              ? Object.create(b)
+              : ((__.prototype = b.prototype), new __());
         };
-        return extendStatics(d, b);
-      }, "extendStatics");
-      return function(d, b) {
-        extendStatics(d, b);
-        function __() {
-          this.constructor = d;
-        }
-        __name(__, "__");
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-      };
-    }();
+      })();
     Object.defineProperty(exports, "__esModule", { value: true });
     var INVALID_BYTE = 256;
-    var Coder = (
+    var Coder =
       /** @class */
-      function() {
+      (function () {
         function Coder2(_paddingCharacter) {
           if (_paddingCharacter === void 0) {
             _paddingCharacter = "=";
@@ -51,29 +52,29 @@ var require_base64 = __commonJS({
           this._paddingCharacter = _paddingCharacter;
         }
         __name(Coder2, "Coder");
-        Coder2.prototype.encodedLength = function(length) {
+        Coder2.prototype.encodedLength = function (length) {
           if (!this._paddingCharacter) {
-            return (length * 8 + 5) / 6 | 0;
+            return ((length * 8 + 5) / 6) | 0;
           }
-          return (length + 2) / 3 * 4 | 0;
+          return (((length + 2) / 3) * 4) | 0;
         };
-        Coder2.prototype.encode = function(data) {
+        Coder2.prototype.encode = function (data) {
           var out = "";
           var i = 0;
           for (; i < data.length - 2; i += 3) {
-            var c = data[i] << 16 | data[i + 1] << 8 | data[i + 2];
-            out += this._encodeByte(c >>> 3 * 6 & 63);
-            out += this._encodeByte(c >>> 2 * 6 & 63);
-            out += this._encodeByte(c >>> 1 * 6 & 63);
-            out += this._encodeByte(c >>> 0 * 6 & 63);
+            var c = (data[i] << 16) | (data[i + 1] << 8) | data[i + 2];
+            out += this._encodeByte((c >>> (3 * 6)) & 63);
+            out += this._encodeByte((c >>> (2 * 6)) & 63);
+            out += this._encodeByte((c >>> (1 * 6)) & 63);
+            out += this._encodeByte((c >>> (0 * 6)) & 63);
           }
           var left = data.length - i;
           if (left > 0) {
-            var c = data[i] << 16 | (left === 2 ? data[i + 1] << 8 : 0);
-            out += this._encodeByte(c >>> 3 * 6 & 63);
-            out += this._encodeByte(c >>> 2 * 6 & 63);
+            var c = (data[i] << 16) | (left === 2 ? data[i + 1] << 8 : 0);
+            out += this._encodeByte((c >>> (3 * 6)) & 63);
+            out += this._encodeByte((c >>> (2 * 6)) & 63);
             if (left === 2) {
-              out += this._encodeByte(c >>> 1 * 6 & 63);
+              out += this._encodeByte((c >>> (1 * 6)) & 63);
             } else {
               out += this._paddingCharacter || "";
             }
@@ -81,16 +82,16 @@ var require_base64 = __commonJS({
           }
           return out;
         };
-        Coder2.prototype.maxDecodedLength = function(length) {
+        Coder2.prototype.maxDecodedLength = function (length) {
           if (!this._paddingCharacter) {
-            return (length * 6 + 7) / 8 | 0;
+            return ((length * 6 + 7) / 8) | 0;
           }
-          return length / 4 * 3 | 0;
+          return ((length / 4) * 3) | 0;
         };
-        Coder2.prototype.decodedLength = function(s) {
+        Coder2.prototype.decodedLength = function (s) {
           return this.maxDecodedLength(s.length - this._getPaddingLength(s));
         };
-        Coder2.prototype.decode = function(s) {
+        Coder2.prototype.decode = function (s) {
           if (s.length === 0) {
             return new Uint8Array(0);
           }
@@ -100,15 +101,18 @@ var require_base64 = __commonJS({
           var op = 0;
           var i = 0;
           var haveBad = 0;
-          var v0 = 0, v1 = 0, v2 = 0, v3 = 0;
+          var v0 = 0,
+            v1 = 0,
+            v2 = 0,
+            v3 = 0;
           for (; i < length - 4; i += 4) {
             v0 = this._decodeChar(s.charCodeAt(i + 0));
             v1 = this._decodeChar(s.charCodeAt(i + 1));
             v2 = this._decodeChar(s.charCodeAt(i + 2));
             v3 = this._decodeChar(s.charCodeAt(i + 3));
-            out[op++] = v0 << 2 | v1 >>> 4;
-            out[op++] = v1 << 4 | v2 >>> 2;
-            out[op++] = v2 << 6 | v3;
+            out[op++] = (v0 << 2) | (v1 >>> 4);
+            out[op++] = (v1 << 4) | (v2 >>> 2);
+            out[op++] = (v2 << 6) | v3;
             haveBad |= v0 & INVALID_BYTE;
             haveBad |= v1 & INVALID_BYTE;
             haveBad |= v2 & INVALID_BYTE;
@@ -117,18 +121,18 @@ var require_base64 = __commonJS({
           if (i < length - 1) {
             v0 = this._decodeChar(s.charCodeAt(i));
             v1 = this._decodeChar(s.charCodeAt(i + 1));
-            out[op++] = v0 << 2 | v1 >>> 4;
+            out[op++] = (v0 << 2) | (v1 >>> 4);
             haveBad |= v0 & INVALID_BYTE;
             haveBad |= v1 & INVALID_BYTE;
           }
           if (i < length - 2) {
             v2 = this._decodeChar(s.charCodeAt(i + 2));
-            out[op++] = v1 << 4 | v2 >>> 2;
+            out[op++] = (v1 << 4) | (v2 >>> 2);
             haveBad |= v2 & INVALID_BYTE;
           }
           if (i < length - 3) {
             v3 = this._decodeChar(s.charCodeAt(i + 3));
-            out[op++] = v2 << 6 | v3;
+            out[op++] = (v2 << 6) | v3;
             haveBad |= v3 & INVALID_BYTE;
           }
           if (haveBad !== 0) {
@@ -136,25 +140,30 @@ var require_base64 = __commonJS({
           }
           return out;
         };
-        Coder2.prototype._encodeByte = function(b) {
+        Coder2.prototype._encodeByte = function (b) {
           var result = b;
           result += 65;
-          result += 25 - b >>> 8 & 0 - 65 - 26 + 97;
-          result += 51 - b >>> 8 & 26 - 97 - 52 + 48;
-          result += 61 - b >>> 8 & 52 - 48 - 62 + 43;
-          result += 62 - b >>> 8 & 62 - 43 - 63 + 47;
+          result += ((25 - b) >>> 8) & (0 - 65 - 26 + 97);
+          result += ((51 - b) >>> 8) & (26 - 97 - 52 + 48);
+          result += ((61 - b) >>> 8) & (52 - 48 - 62 + 43);
+          result += ((62 - b) >>> 8) & (62 - 43 - 63 + 47);
           return String.fromCharCode(result);
         };
-        Coder2.prototype._decodeChar = function(c) {
+        Coder2.prototype._decodeChar = function (c) {
           var result = INVALID_BYTE;
-          result += (42 - c & c - 44) >>> 8 & -INVALID_BYTE + c - 43 + 62;
-          result += (46 - c & c - 48) >>> 8 & -INVALID_BYTE + c - 47 + 63;
-          result += (47 - c & c - 58) >>> 8 & -INVALID_BYTE + c - 48 + 52;
-          result += (64 - c & c - 91) >>> 8 & -INVALID_BYTE + c - 65 + 0;
-          result += (96 - c & c - 123) >>> 8 & -INVALID_BYTE + c - 97 + 26;
+          result +=
+            (((42 - c) & (c - 44)) >>> 8) & (-INVALID_BYTE + c - 43 + 62);
+          result +=
+            (((46 - c) & (c - 48)) >>> 8) & (-INVALID_BYTE + c - 47 + 63);
+          result +=
+            (((47 - c) & (c - 58)) >>> 8) & (-INVALID_BYTE + c - 48 + 52);
+          result +=
+            (((64 - c) & (c - 91)) >>> 8) & (-INVALID_BYTE + c - 65 + 0);
+          result +=
+            (((96 - c) & (c - 123)) >>> 8) & (-INVALID_BYTE + c - 97 + 26);
           return result;
         };
-        Coder2.prototype._getPaddingLength = function(s) {
+        Coder2.prototype._getPaddingLength = function (s) {
           var paddingLength = 0;
           if (this._paddingCharacter) {
             for (var i = s.length - 1; i >= 0; i--) {
@@ -170,8 +179,7 @@ var require_base64 = __commonJS({
           return paddingLength;
         };
         return Coder2;
-      }()
-    );
+      })();
     exports.Coder = Coder;
     var stdCoder = new Coder();
     function encode2(data) {
@@ -184,35 +192,39 @@ var require_base64 = __commonJS({
     }
     __name(decode, "decode");
     exports.decode = decode;
-    var URLSafeCoder = (
+    var URLSafeCoder =
       /** @class */
-      function(_super) {
+      (function (_super) {
         __extends(URLSafeCoder2, _super);
         function URLSafeCoder2() {
-          return _super !== null && _super.apply(this, arguments) || this;
+          return (_super !== null && _super.apply(this, arguments)) || this;
         }
         __name(URLSafeCoder2, "URLSafeCoder");
-        URLSafeCoder2.prototype._encodeByte = function(b) {
+        URLSafeCoder2.prototype._encodeByte = function (b) {
           var result = b;
           result += 65;
-          result += 25 - b >>> 8 & 0 - 65 - 26 + 97;
-          result += 51 - b >>> 8 & 26 - 97 - 52 + 48;
-          result += 61 - b >>> 8 & 52 - 48 - 62 + 45;
-          result += 62 - b >>> 8 & 62 - 45 - 63 + 95;
+          result += ((25 - b) >>> 8) & (0 - 65 - 26 + 97);
+          result += ((51 - b) >>> 8) & (26 - 97 - 52 + 48);
+          result += ((61 - b) >>> 8) & (52 - 48 - 62 + 45);
+          result += ((62 - b) >>> 8) & (62 - 45 - 63 + 95);
           return String.fromCharCode(result);
         };
-        URLSafeCoder2.prototype._decodeChar = function(c) {
+        URLSafeCoder2.prototype._decodeChar = function (c) {
           var result = INVALID_BYTE;
-          result += (44 - c & c - 46) >>> 8 & -INVALID_BYTE + c - 45 + 62;
-          result += (94 - c & c - 96) >>> 8 & -INVALID_BYTE + c - 95 + 63;
-          result += (47 - c & c - 58) >>> 8 & -INVALID_BYTE + c - 48 + 52;
-          result += (64 - c & c - 91) >>> 8 & -INVALID_BYTE + c - 65 + 0;
-          result += (96 - c & c - 123) >>> 8 & -INVALID_BYTE + c - 97 + 26;
+          result +=
+            (((44 - c) & (c - 46)) >>> 8) & (-INVALID_BYTE + c - 45 + 62);
+          result +=
+            (((94 - c) & (c - 96)) >>> 8) & (-INVALID_BYTE + c - 95 + 63);
+          result +=
+            (((47 - c) & (c - 58)) >>> 8) & (-INVALID_BYTE + c - 48 + 52);
+          result +=
+            (((64 - c) & (c - 91)) >>> 8) & (-INVALID_BYTE + c - 65 + 0);
+          result +=
+            (((96 - c) & (c - 123)) >>> 8) & (-INVALID_BYTE + c - 97 + 26);
           return result;
         };
         return URLSafeCoder2;
-      }(Coder)
-    );
+      })(Coder);
     exports.URLSafeCoder = URLSafeCoder;
     var urlSafeCoder = new URLSafeCoder();
     function encodeURLSafe(data) {
@@ -225,23 +237,23 @@ var require_base64 = __commonJS({
     }
     __name(decodeURLSafe, "decodeURLSafe");
     exports.decodeURLSafe = decodeURLSafe;
-    exports.encodedLength = function(length) {
+    exports.encodedLength = function (length) {
       return stdCoder.encodedLength(length);
     };
-    exports.maxDecodedLength = function(length) {
+    exports.maxDecodedLength = function (length) {
       return stdCoder.maxDecodedLength(length);
     };
-    exports.decodedLength = function(s) {
+    exports.decodedLength = function (s) {
       return stdCoder.decodedLength(s);
     };
-  }
+  },
 });
 
 // node_modules/fast-sha256/sha256.js
 var require_sha256 = __commonJS({
   "node_modules/fast-sha256/sha256.js"(exports, module) {
     init_esm();
-    (function(root, factory) {
+    (function (root, factory) {
       var exports2 = {};
       factory(exports2);
       var sha2562 = exports2["default"];
@@ -251,82 +263,29 @@ var require_sha256 = __commonJS({
       if (typeof module === "object" && typeof module.exports === "object") {
         module.exports = sha2562;
       } else if (typeof define === "function" && define.amd) {
-        define(function() {
+        define(function () {
           return sha2562;
         });
       } else {
         root.sha256 = sha2562;
       }
-    })(exports, function(exports2) {
+    })(exports, function (exports2) {
       "use strict";
       exports2.__esModule = true;
       exports2.digestLength = 32;
       exports2.blockSize = 64;
       var K = new Uint32Array([
-        1116352408,
-        1899447441,
-        3049323471,
-        3921009573,
-        961987163,
-        1508970993,
-        2453635748,
-        2870763221,
-        3624381080,
-        310598401,
-        607225278,
-        1426881987,
-        1925078388,
-        2162078206,
-        2614888103,
-        3248222580,
-        3835390401,
-        4022224774,
-        264347078,
-        604807628,
-        770255983,
-        1249150122,
-        1555081692,
-        1996064986,
-        2554220882,
-        2821834349,
-        2952996808,
-        3210313671,
-        3336571891,
-        3584528711,
-        113926993,
-        338241895,
-        666307205,
-        773529912,
-        1294757372,
-        1396182291,
-        1695183700,
-        1986661051,
-        2177026350,
-        2456956037,
-        2730485921,
-        2820302411,
-        3259730800,
-        3345764771,
-        3516065817,
-        3600352804,
-        4094571909,
-        275423344,
-        430227734,
-        506948616,
-        659060556,
-        883997877,
-        958139571,
-        1322822218,
-        1537002063,
-        1747873779,
-        1955562222,
-        2024104815,
-        2227730452,
-        2361852424,
-        2428436474,
-        2756734187,
-        3204031479,
-        3329325298
+        1116352408, 1899447441, 3049323471, 3921009573, 961987163, 1508970993,
+        2453635748, 2870763221, 3624381080, 310598401, 607225278, 1426881987,
+        1925078388, 2162078206, 2614888103, 3248222580, 3835390401, 4022224774,
+        264347078, 604807628, 770255983, 1249150122, 1555081692, 1996064986,
+        2554220882, 2821834349, 2952996808, 3210313671, 3336571891, 3584528711,
+        113926993, 338241895, 666307205, 773529912, 1294757372, 1396182291,
+        1695183700, 1986661051, 2177026350, 2456956037, 2730485921, 2820302411,
+        3259730800, 3345764771, 3516065817, 3600352804, 4094571909, 275423344,
+        430227734, 506948616, 659060556, 883997877, 958139571, 1322822218,
+        1537002063, 1747873779, 1955562222, 2024104815, 2227730452, 2361852424,
+        2428436474, 2756734187, 3204031479, 3329325298,
       ]);
       function hashBlocks(w, v, p, pos, len) {
         var a, b, c, d, e, f, g2, h, u, i, j, t1, t2;
@@ -341,26 +300,48 @@ var require_sha256 = __commonJS({
           h = v[7];
           for (i = 0; i < 16; i++) {
             j = pos + i * 4;
-            w[i] = (p[j] & 255) << 24 | (p[j + 1] & 255) << 16 | (p[j + 2] & 255) << 8 | p[j + 3] & 255;
+            w[i] =
+              ((p[j] & 255) << 24) |
+              ((p[j + 1] & 255) << 16) |
+              ((p[j + 2] & 255) << 8) |
+              (p[j + 3] & 255);
           }
           for (i = 16; i < 64; i++) {
             u = w[i - 2];
-            t1 = (u >>> 17 | u << 32 - 17) ^ (u >>> 19 | u << 32 - 19) ^ u >>> 10;
+            t1 =
+              ((u >>> 17) | (u << (32 - 17))) ^
+              ((u >>> 19) | (u << (32 - 19))) ^
+              (u >>> 10);
             u = w[i - 15];
-            t2 = (u >>> 7 | u << 32 - 7) ^ (u >>> 18 | u << 32 - 18) ^ u >>> 3;
-            w[i] = (t1 + w[i - 7] | 0) + (t2 + w[i - 16] | 0);
+            t2 =
+              ((u >>> 7) | (u << (32 - 7))) ^
+              ((u >>> 18) | (u << (32 - 18))) ^
+              (u >>> 3);
+            w[i] = ((t1 + w[i - 7]) | 0) + ((t2 + w[i - 16]) | 0);
           }
           for (i = 0; i < 64; i++) {
-            t1 = (((e >>> 6 | e << 32 - 6) ^ (e >>> 11 | e << 32 - 11) ^ (e >>> 25 | e << 32 - 25)) + (e & f ^ ~e & g2) | 0) + (h + (K[i] + w[i] | 0) | 0) | 0;
-            t2 = ((a >>> 2 | a << 32 - 2) ^ (a >>> 13 | a << 32 - 13) ^ (a >>> 22 | a << 32 - 22)) + (a & b ^ a & c ^ b & c) | 0;
+            t1 =
+              ((((((e >>> 6) | (e << (32 - 6))) ^
+                ((e >>> 11) | (e << (32 - 11))) ^
+                ((e >>> 25) | (e << (32 - 25)))) +
+                ((e & f) ^ (~e & g2))) |
+                0) +
+                ((h + ((K[i] + w[i]) | 0)) | 0)) |
+              0;
+            t2 =
+              ((((a >>> 2) | (a << (32 - 2))) ^
+                ((a >>> 13) | (a << (32 - 13))) ^
+                ((a >>> 22) | (a << (32 - 22)))) +
+                ((a & b) ^ (a & c) ^ (b & c))) |
+              0;
             h = g2;
             g2 = f;
             f = e;
-            e = d + t1 | 0;
+            e = (d + t1) | 0;
             d = c;
             c = b;
             b = a;
-            a = t1 + t2 | 0;
+            a = (t1 + t2) | 0;
           }
           v[0] += a;
           v[1] += b;
@@ -376,9 +357,9 @@ var require_sha256 = __commonJS({
         return pos;
       }
       __name(hashBlocks, "hashBlocks");
-      var Hash = (
+      var Hash =
         /** @class */
-        function() {
+        (function () {
           function Hash2() {
             this.digestLength = exports2.digestLength;
             this.blockSize = exports2.blockSize;
@@ -391,7 +372,7 @@ var require_sha256 = __commonJS({
             this.reset();
           }
           __name(Hash2, "Hash");
-          Hash2.prototype.reset = function() {
+          Hash2.prototype.reset = function () {
             this.state[0] = 1779033703;
             this.state[1] = 3144134277;
             this.state[2] = 1013904242;
@@ -405,7 +386,7 @@ var require_sha256 = __commonJS({
             this.finished = false;
             return this;
           };
-          Hash2.prototype.clean = function() {
+          Hash2.prototype.clean = function () {
             for (var i = 0; i < this.buffer.length; i++) {
               this.buffer[i] = 0;
             }
@@ -414,12 +395,14 @@ var require_sha256 = __commonJS({
             }
             this.reset();
           };
-          Hash2.prototype.update = function(data, dataLength) {
+          Hash2.prototype.update = function (data, dataLength) {
             if (dataLength === void 0) {
               dataLength = data.length;
             }
             if (this.finished) {
-              throw new Error("SHA256: can't update because hash was finished.");
+              throw new Error(
+                "SHA256: can't update because hash was finished.",
+              );
             }
             var dataPos = 0;
             this.bytesHashed += dataLength;
@@ -434,7 +417,13 @@ var require_sha256 = __commonJS({
               }
             }
             if (dataLength >= 64) {
-              dataPos = hashBlocks(this.temp, this.state, data, dataPos, dataLength);
+              dataPos = hashBlocks(
+                this.temp,
+                this.state,
+                data,
+                dataPos,
+                dataLength,
+              );
               dataLength %= 64;
             }
             while (dataLength > 0) {
@@ -443,47 +432,47 @@ var require_sha256 = __commonJS({
             }
             return this;
           };
-          Hash2.prototype.finish = function(out) {
+          Hash2.prototype.finish = function (out) {
             if (!this.finished) {
               var bytesHashed = this.bytesHashed;
               var left = this.bufferLength;
-              var bitLenHi = bytesHashed / 536870912 | 0;
+              var bitLenHi = (bytesHashed / 536870912) | 0;
               var bitLenLo = bytesHashed << 3;
               var padLength = bytesHashed % 64 < 56 ? 64 : 128;
               this.buffer[left] = 128;
               for (var i = left + 1; i < padLength - 8; i++) {
                 this.buffer[i] = 0;
               }
-              this.buffer[padLength - 8] = bitLenHi >>> 24 & 255;
-              this.buffer[padLength - 7] = bitLenHi >>> 16 & 255;
-              this.buffer[padLength - 6] = bitLenHi >>> 8 & 255;
-              this.buffer[padLength - 5] = bitLenHi >>> 0 & 255;
-              this.buffer[padLength - 4] = bitLenLo >>> 24 & 255;
-              this.buffer[padLength - 3] = bitLenLo >>> 16 & 255;
-              this.buffer[padLength - 2] = bitLenLo >>> 8 & 255;
-              this.buffer[padLength - 1] = bitLenLo >>> 0 & 255;
+              this.buffer[padLength - 8] = (bitLenHi >>> 24) & 255;
+              this.buffer[padLength - 7] = (bitLenHi >>> 16) & 255;
+              this.buffer[padLength - 6] = (bitLenHi >>> 8) & 255;
+              this.buffer[padLength - 5] = (bitLenHi >>> 0) & 255;
+              this.buffer[padLength - 4] = (bitLenLo >>> 24) & 255;
+              this.buffer[padLength - 3] = (bitLenLo >>> 16) & 255;
+              this.buffer[padLength - 2] = (bitLenLo >>> 8) & 255;
+              this.buffer[padLength - 1] = (bitLenLo >>> 0) & 255;
               hashBlocks(this.temp, this.state, this.buffer, 0, padLength);
               this.finished = true;
             }
             for (var i = 0; i < 8; i++) {
-              out[i * 4 + 0] = this.state[i] >>> 24 & 255;
-              out[i * 4 + 1] = this.state[i] >>> 16 & 255;
-              out[i * 4 + 2] = this.state[i] >>> 8 & 255;
-              out[i * 4 + 3] = this.state[i] >>> 0 & 255;
+              out[i * 4 + 0] = (this.state[i] >>> 24) & 255;
+              out[i * 4 + 1] = (this.state[i] >>> 16) & 255;
+              out[i * 4 + 2] = (this.state[i] >>> 8) & 255;
+              out[i * 4 + 3] = (this.state[i] >>> 0) & 255;
             }
             return this;
           };
-          Hash2.prototype.digest = function() {
+          Hash2.prototype.digest = function () {
             var out = new Uint8Array(this.digestLength);
             this.finish(out);
             return out;
           };
-          Hash2.prototype._saveState = function(out) {
+          Hash2.prototype._saveState = function (out) {
             for (var i = 0; i < this.state.length; i++) {
               out[i] = this.state[i];
             }
           };
-          Hash2.prototype._restoreState = function(from, bytesHashed) {
+          Hash2.prototype._restoreState = function (from, bytesHashed) {
             for (var i = 0; i < this.state.length; i++) {
               this.state[i] = from[i];
             }
@@ -492,12 +481,11 @@ var require_sha256 = __commonJS({
             this.bufferLength = 0;
           };
           return Hash2;
-        }()
-      );
+        })();
       exports2.Hash = Hash;
-      var HMAC = (
+      var HMAC =
         /** @class */
-        function() {
+        (function () {
           function HMAC2(key) {
             this.inner = new Hash();
             this.outer = new Hash();
@@ -528,23 +516,23 @@ var require_sha256 = __commonJS({
             }
           }
           __name(HMAC2, "HMAC");
-          HMAC2.prototype.reset = function() {
+          HMAC2.prototype.reset = function () {
             this.inner._restoreState(this.istate, this.inner.blockSize);
             this.outer._restoreState(this.ostate, this.outer.blockSize);
             return this;
           };
-          HMAC2.prototype.clean = function() {
+          HMAC2.prototype.clean = function () {
             for (var i = 0; i < this.istate.length; i++) {
               this.ostate[i] = this.istate[i] = 0;
             }
             this.inner.clean();
             this.outer.clean();
           };
-          HMAC2.prototype.update = function(data) {
+          HMAC2.prototype.update = function (data) {
             this.inner.update(data);
             return this;
           };
-          HMAC2.prototype.finish = function(out) {
+          HMAC2.prototype.finish = function (out) {
             if (this.outer.finished) {
               this.outer.finish(out);
             } else {
@@ -553,14 +541,13 @@ var require_sha256 = __commonJS({
             }
             return this;
           };
-          HMAC2.prototype.digest = function() {
+          HMAC2.prototype.digest = function () {
             var out = new Uint8Array(this.digestLength);
             this.finish(out);
             return out;
           };
           return HMAC2;
-        }()
-      );
+        })();
       exports2.HMAC = HMAC;
       function hash(data) {
         var h = new Hash().update(data);
@@ -633,10 +620,10 @@ var require_sha256 = __commonJS({
         var dk = new Uint8Array(dkLen);
         for (var i = 0; i * len < dkLen; i++) {
           var c = i + 1;
-          ctr[0] = c >>> 24 & 255;
-          ctr[1] = c >>> 16 & 255;
-          ctr[2] = c >>> 8 & 255;
-          ctr[3] = c >>> 0 & 255;
+          ctr[0] = (c >>> 24) & 255;
+          ctr[1] = (c >>> 16) & 255;
+          ctr[2] = (c >>> 8) & 255;
+          ctr[3] = (c >>> 0) & 255;
           prf.reset();
           prf.update(salt);
           prf.update(ctr);
@@ -667,7 +654,7 @@ var require_sha256 = __commonJS({
       __name(pbkdf2, "pbkdf2");
       exports2.pbkdf2 = pbkdf2;
     });
-  }
+  },
 });
 
 // trigger/design-agent.ts
@@ -686,7 +673,14 @@ var __export = /* @__PURE__ */ __name((target, all) => {
 var PKG_NAME = "@liveblocks/core";
 var PKG_VERSION = "3.20.0";
 var PKG_FORMAT = "esm";
-var g = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {};
+var g =
+  typeof globalThis !== "undefined"
+    ? globalThis
+    : typeof window !== "undefined"
+      ? window
+      : typeof global !== "undefined"
+        ? global
+        : {};
 var crossLinkedDocs = "https://liveblocks.io/docs/errors/cross-linked";
 var dupesDocs = "https://liveblocks.io/docs/errors/dupes";
 var SPACE = " ";
@@ -700,7 +694,9 @@ function error(msg) {
 __name(error, "error");
 function detectDupes(pkgName, pkgVersion, pkgFormat) {
   const pkgId = Symbol.for(pkgName);
-  const pkgBuildInfo = pkgFormat ? `${pkgVersion || "dev"} (${pkgFormat})` : pkgVersion || "dev";
+  const pkgBuildInfo = pkgFormat
+    ? `${pkgVersion || "dev"} (${pkgFormat})`
+    : pkgVersion || "dev";
   if (!g[pkgId]) {
     g[pkgId] = pkgBuildInfo;
   } else if (g[pkgId] === pkgBuildInfo) {
@@ -710,7 +706,7 @@ function detectDupes(pkgName, pkgVersion, pkgFormat) {
       "",
       "Conflicts:",
       `- ${pkgName} ${g[pkgId]} (already loaded)`,
-      `- ${pkgName} ${pkgBuildInfo} (trying to load this now)`
+      `- ${pkgName} ${pkgBuildInfo} (trying to load this now)`,
     ].join("\n");
     error(msg);
   }
@@ -723,8 +719,8 @@ function detectDupes(pkgName, pkgVersion, pkgFormat) {
         `- ${PKG_NAME} is at ${PKG_VERSION}`,
         `- ${pkgName} is at ${pkgVersion}`,
         "",
-        "Always upgrade all Liveblocks packages to the same version number."
-      ].join("\n")
+        "Always upgrade all Liveblocks packages to the same version number.",
+      ].join("\n"),
     );
   }
 }
@@ -782,15 +778,16 @@ function makeEventSource() {
     observable: {
       subscribe,
       subscribeOnce,
-      waitUntil
-    }
+      waitUntil,
+    },
   };
 }
 __name(makeEventSource, "makeEventSource");
-var freeze = process.env.NODE_ENV === "production" ? (
-  /* istanbul ignore next */
-  (x) => x
-) : Object.freeze;
+var freeze =
+  process.env.NODE_ENV === "production"
+    ? /* istanbul ignore next */
+      (x) => x
+    : Object.freeze;
 function raise(msg) {
   throw new Error(msg);
 }
@@ -1008,7 +1005,7 @@ function bisectRight(arr, x, lt) {
   let lo = 0;
   let hi = arr.length;
   while (lo < hi) {
-    const mid = lo + (hi - lo >> 1);
+    const mid = lo + ((hi - lo) >> 1);
     if (lt(x, arr[mid])) {
       hi = mid;
     } else {
@@ -1147,7 +1144,10 @@ var SortedList = class _SortedList {
       this.#data[newIdx] = value;
       return newIdx;
     }
-    while (newIdx < this.#data.length - 1 && !this.#lt(value, this.#data[newIdx + 1])) {
+    while (
+      newIdx < this.#data.length - 1 &&
+      !this.#lt(value, this.#data[newIdx + 1])
+    ) {
       this.#data[newIdx] = this.#data[newIdx + 1];
       newIdx++;
     }
@@ -1169,7 +1169,11 @@ var SortedList = class _SortedList {
    * which is true for any item currently in the list.
    */
   includes(value) {
-    for (let i = bisectRight(this.#data, value, this.#lt) - 1; i >= 0 && !this.#lt(this.#data[i], value); i--) {
+    for (
+      let i = bisectRight(this.#data, value, this.#lt) - 1;
+      i >= 0 && !this.#lt(this.#data[i], value);
+      i--
+    ) {
       if (this.#data[i] === value) {
         return true;
       }
@@ -1237,14 +1241,14 @@ function convertToCommentData(data) {
   const createdAt = new Date(data.createdAt);
   const reactions = data.reactions.map((reaction) => ({
     ...reaction,
-    createdAt: new Date(reaction.createdAt)
+    createdAt: new Date(reaction.createdAt),
   }));
   if (data.body) {
     return {
       ...data,
       reactions,
       createdAt,
-      editedAt
+      editedAt,
     };
   } else {
     const deletedAt = new Date(data.deletedAt);
@@ -1253,7 +1257,7 @@ function convertToCommentData(data) {
       reactions,
       createdAt,
       editedAt,
-      deletedAt
+      deletedAt,
     };
   }
 }
@@ -1261,21 +1265,21 @@ __name(convertToCommentData, "convertToCommentData");
 function convertToThreadData(data) {
   const createdAt = new Date(data.createdAt);
   const updatedAt = new Date(data.updatedAt);
-  const comments = data.comments.map(
-    (comment) => convertToCommentData(comment)
+  const comments = data.comments.map((comment) =>
+    convertToCommentData(comment),
   );
   return {
     ...data,
     createdAt,
     updatedAt,
-    comments
+    comments,
   };
 }
 __name(convertToThreadData, "convertToThreadData");
 function convertToCommentUserReaction(data) {
   return {
     ...data,
-    createdAt: new Date(data.createdAt)
+    createdAt: new Date(data.createdAt),
   };
 }
 __name(convertToCommentUserReaction, "convertToCommentUserReaction");
@@ -1285,19 +1289,19 @@ function convertToInboxNotificationData(data) {
   if ("activities" in data) {
     const activities = data.activities.map((activity) => ({
       ...activity,
-      createdAt: new Date(activity.createdAt)
+      createdAt: new Date(activity.createdAt),
     }));
     return {
       ...data,
       notifiedAt,
       readAt,
-      activities
+      activities,
     };
   }
   return {
     ...data,
     notifiedAt,
-    readAt
+    readAt,
   };
 }
 __name(convertToInboxNotificationData, "convertToInboxNotificationData");
@@ -1305,7 +1309,7 @@ function convertToSubscriptionData(data) {
   const createdAt = new Date(data.createdAt);
   return {
     ...data,
-    createdAt
+    createdAt,
   };
 }
 __name(convertToSubscriptionData, "convertToSubscriptionData");
@@ -1313,7 +1317,7 @@ function convertToUserSubscriptionData(data) {
   const createdAt = new Date(data.createdAt);
   return {
     ...data,
-    createdAt
+    createdAt,
   };
 }
 __name(convertToUserSubscriptionData, "convertToUserSubscriptionData");
@@ -1322,13 +1326,13 @@ function convertToGroupData(data) {
   const updatedAt = new Date(data.updatedAt);
   const members = data.members.map((member) => ({
     ...member,
-    addedAt: new Date(member.addedAt)
+    addedAt: new Date(member.addedAt),
   }));
   return {
     ...data,
     createdAt,
     updatedAt,
-    members
+    members,
   };
 }
 __name(convertToGroupData, "convertToGroupData");
@@ -1354,38 +1358,48 @@ __name(nn, "nn");
 var fancy_console_exports = {};
 __export(fancy_console_exports, {
   error: /* @__PURE__ */ __name(() => error2, "error"),
-  errorWithTitle: /* @__PURE__ */ __name(() => errorWithTitle, "errorWithTitle"),
+  errorWithTitle: /* @__PURE__ */ __name(
+    () => errorWithTitle,
+    "errorWithTitle",
+  ),
   warn: /* @__PURE__ */ __name(() => warn, "warn"),
-  warnWithTitle: /* @__PURE__ */ __name(() => warnWithTitle, "warnWithTitle")
+  warnWithTitle: /* @__PURE__ */ __name(() => warnWithTitle, "warnWithTitle"),
 });
-var badge = "background:#0e0d12;border-radius:9999px;color:#fff;padding:3px 7px;font-family:sans-serif;font-weight:600;";
+var badge =
+  "background:#0e0d12;border-radius:9999px;color:#fff;padding:3px 7px;font-family:sans-serif;font-weight:600;";
 var bold = "font-weight:600";
 function wrap(method) {
-  return typeof window === "undefined" || process.env.NODE_ENV === "test" ? console[method] : (
-    /* istanbul ignore next */
-    (message, ...args) => console[method]("%cLiveblocks", badge, message, ...args)
-  );
+  return typeof window === "undefined" || process.env.NODE_ENV === "test"
+    ? console[method]
+    : /* istanbul ignore next */
+      (message, ...args) =>
+        console[method]("%cLiveblocks", badge, message, ...args);
 }
 __name(wrap, "wrap");
 var warn = wrap("warn");
 var error2 = wrap("error");
 function wrapWithTitle(method) {
-  return typeof window === "undefined" || process.env.NODE_ENV === "test" ? console[method] : (
-    /* istanbul ignore next */
-    (title, message, ...args) => console[method](
-      `%cLiveblocks%c ${title}`,
-      badge,
-      bold,
-      message,
-      ...args
-    )
-  );
+  return typeof window === "undefined" || process.env.NODE_ENV === "test"
+    ? console[method]
+    : /* istanbul ignore next */
+      (title, message, ...args) =>
+        console[method](
+          `%cLiveblocks%c ${title}`,
+          badge,
+          bold,
+          message,
+          ...args,
+        );
 }
 __name(wrapWithTitle, "wrapWithTitle");
 var warnWithTitle = wrapWithTitle("warn");
 var errorWithTitle = wrapWithTitle("error");
 function isPlainObject(blob) {
-  return blob !== null && typeof blob === "object" && Object.prototype.toString.call(blob) === "[object Object]";
+  return (
+    blob !== null &&
+    typeof blob === "object" &&
+    Object.prototype.toString.call(blob) === "[object Object]"
+  );
 }
 __name(isPlainObject, "isPlainObject");
 function isStartsWithOperator(blob) {
@@ -1393,13 +1407,33 @@ function isStartsWithOperator(blob) {
 }
 __name(isStartsWithOperator, "isStartsWithOperator");
 function isNumberOperator(blob) {
-  return isPlainObject(blob) && (typeof blob.lt === "number" || typeof blob.gt === "number" || typeof blob.lte === "number" || typeof blob.gte === "number");
+  return (
+    isPlainObject(blob) &&
+    (typeof blob.lt === "number" ||
+      typeof blob.gt === "number" ||
+      typeof blob.lte === "number" ||
+      typeof blob.gte === "number")
+  );
 }
 __name(isNumberOperator, "isNumberOperator");
-var nanoid = /* @__PURE__ */ __name((t = 21) => crypto.getRandomValues(new Uint8Array(t)).reduce(
-  (t2, e) => t2 += (e &= 63) < 36 ? e.toString(36) : e < 62 ? (e - 26).toString(36).toUpperCase() : e < 63 ? "_" : "-",
-  ""
-), "nanoid");
+var nanoid = /* @__PURE__ */ __name(
+  (t = 21) =>
+    crypto
+      .getRandomValues(new Uint8Array(t))
+      .reduce(
+        (t2, e) =>
+          (t2 +=
+            (e &= 63) < 36
+              ? e.toString(36)
+              : e < 62
+                ? (e - 26).toString(36).toUpperCase()
+                : e < 63
+                  ? "_"
+                  : "-"),
+        "",
+      ),
+  "nanoid",
+);
 var identifierRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 function objectToQuery(obj) {
   let filterList = [];
@@ -1423,7 +1457,7 @@ function objectToQuery(obj) {
   });
   filterList = [
     ...getFiltersFromKeyValuePairs(keyValuePairs),
-    ...getFiltersFromKeyValuePairsWithOperator(keyValuePairsWithOperator)
+    ...getFiltersFromKeyValuePairsWithOperator(keyValuePairsWithOperator),
   ];
   indexedKeys.forEach(([key, value]) => {
     const nestedEntries = Object.entries(value);
@@ -1435,20 +1469,25 @@ function objectToQuery(obj) {
       }
       if (isSimpleValue(nestedValue)) {
         nKeyValuePairs.push([formatFilterKey(key, nestedKey), nestedValue]);
-      } else if (isStartsWithOperator(nestedValue) || isNumberOperator(nestedValue)) {
+      } else if (
+        isStartsWithOperator(nestedValue) ||
+        isNumberOperator(nestedValue)
+      ) {
         nKeyValuePairsWithOperator.push([
           formatFilterKey(key, nestedKey),
-          nestedValue
+          nestedValue,
         ]);
       }
     });
     filterList = [
       ...filterList,
       ...getFiltersFromKeyValuePairs(nKeyValuePairs),
-      ...getFiltersFromKeyValuePairsWithOperator(nKeyValuePairsWithOperator)
+      ...getFiltersFromKeyValuePairsWithOperator(nKeyValuePairsWithOperator),
     ];
   });
-  return filterList.map(({ key, operator, value }) => `${key}${operator}${quote(value)}`).join(" ");
+  return filterList
+    .map(({ key, operator, value }) => `${key}${operator}${quote(value)}`)
+    .join(" ");
 }
 __name(objectToQuery, "objectToQuery");
 var getFiltersFromKeyValuePairs = /* @__PURE__ */ __name((keyValuePairs) => {
@@ -1457,54 +1496,62 @@ var getFiltersFromKeyValuePairs = /* @__PURE__ */ __name((keyValuePairs) => {
     filters.push({
       key,
       operator: ":",
-      value
+      value,
     });
   });
   return filters;
 }, "getFiltersFromKeyValuePairs");
-var getFiltersFromKeyValuePairsWithOperator = /* @__PURE__ */ __name((keyValuePairsWithOperator) => {
-  const filters = [];
-  keyValuePairsWithOperator.forEach(([key, value]) => {
-    if ("startsWith" in value && typeof value.startsWith === "string") {
-      filters.push({
-        key,
-        operator: "^",
-        value: value.startsWith
-      });
-    }
-    if ("lt" in value && typeof value.lt === "number") {
-      filters.push({
-        key,
-        operator: "<",
-        value: value.lt
-      });
-    }
-    if ("gt" in value && typeof value.gt === "number") {
-      filters.push({
-        key,
-        operator: ">",
-        value: value.gt
-      });
-    }
-    if ("gte" in value && typeof value.gte === "number") {
-      filters.push({
-        key,
-        operator: ">=",
-        value: value.gte
-      });
-    }
-    if ("lte" in value && typeof value.lte === "number") {
-      filters.push({
-        key,
-        operator: "<=",
-        value: value.lte
-      });
-    }
-  });
-  return filters;
-}, "getFiltersFromKeyValuePairsWithOperator");
+var getFiltersFromKeyValuePairsWithOperator = /* @__PURE__ */ __name(
+  (keyValuePairsWithOperator) => {
+    const filters = [];
+    keyValuePairsWithOperator.forEach(([key, value]) => {
+      if ("startsWith" in value && typeof value.startsWith === "string") {
+        filters.push({
+          key,
+          operator: "^",
+          value: value.startsWith,
+        });
+      }
+      if ("lt" in value && typeof value.lt === "number") {
+        filters.push({
+          key,
+          operator: "<",
+          value: value.lt,
+        });
+      }
+      if ("gt" in value && typeof value.gt === "number") {
+        filters.push({
+          key,
+          operator: ">",
+          value: value.gt,
+        });
+      }
+      if ("gte" in value && typeof value.gte === "number") {
+        filters.push({
+          key,
+          operator: ">=",
+          value: value.gte,
+        });
+      }
+      if ("lte" in value && typeof value.lte === "number") {
+        filters.push({
+          key,
+          operator: "<=",
+          value: value.lte,
+        });
+      }
+    });
+    return filters;
+  },
+  "getFiltersFromKeyValuePairsWithOperator",
+);
 var isSimpleValue = /* @__PURE__ */ __name((value) => {
-  return typeof value === "string" || typeof value === "number" || typeof value === "boolean" || value === null;
+  return (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean" ||
+    value === null
+  );
 }, "isSimpleValue");
 var formatFilterKey = /* @__PURE__ */ __name((key, nestedKey) => {
   if (nestedKey) {
@@ -1539,14 +1586,16 @@ __name(toURLSearchParams, "toURLSearchParams");
 function urljoin(baseUrl, path, params) {
   const url2 = new URL(path, baseUrl);
   if (params !== void 0) {
-    url2.search = (params instanceof URLSearchParams ? params : toURLSearchParams(params)).toString();
+    url2.search = (
+      params instanceof URLSearchParams ? params : toURLSearchParams(params)
+    ).toString();
   }
   return url2.toString();
 }
 __name(urljoin, "urljoin");
 function url(strings, ...values2) {
   return strings.reduce(
-    (result, str, i) => result + encodeURIComponent(values2[i - 1] ?? "") + str
+    (result, str, i) => result + encodeURIComponent(values2[i - 1] ?? "") + str,
   );
 }
 __name(url, "url");
@@ -1589,17 +1638,14 @@ var ServerMsgCode = Object.freeze({
   FEED_MESSAGES_DELETED: 507,
   FEED_REQUEST_FAILED: 508,
   // Error codes
-  REJECT_STORAGE_OP: 299
+  REJECT_STORAGE_OP: 299,
   // Sent if a mutation was not allowed on the server (i.e. due to permissions, limit exceeded, etc)
 });
 var BACKOFF_DELAYS = [250, 500, 1e3, 2e3, 4e3, 8e3, 1e4];
 var RESET_DELAY = BACKOFF_DELAYS[0] - 1;
 function log(level, message) {
-  const logger = level === 2 ? error2 : level === 1 ? warn : (
-    /* black hole */
-    () => {
-    }
-  );
+  const logger =
+    level === 2 ? error2 : level === 1 ? warn : /* black hole */ () => {};
   return () => {
     logger(message);
   };
@@ -1607,7 +1653,7 @@ function log(level, message) {
 __name(log, "log");
 var logPermanentClose = log(
   1,
-  "Connection to WebSocket closed permanently. Won't retry."
+  "Connection to WebSocket closed permanently. Won't retry.",
 );
 var EMPTY_OBJECT = Object.freeze({});
 var NULL_KEYWORD_CHARS = Array.from(new Set("null"));
@@ -1646,37 +1692,37 @@ var Permission = {
   /**
    * Legacy
    */
-  LegacyRoomPresenceWrite: "room:presence:write"
+  LegacyRoomPresenceWrite: "room:presence:write",
 };
 var basePermissionScopes = /* @__PURE__ */ new Set([
   Permission.Read,
   Permission.Write,
   Permission.RoomRead,
-  Permission.RoomWrite
+  Permission.RoomWrite,
 ]);
 var PERMISSIONS_BY_RESOURCE = {
   room: {
     read: [Permission.Read, Permission.RoomRead],
-    write: [Permission.Write, Permission.RoomWrite]
+    write: [Permission.Write, Permission.RoomWrite],
   },
   personal: {
-    write: []
+    write: [],
   },
   storage: {
     write: [Permission.StorageWrite],
     read: [Permission.StorageRead],
-    none: [Permission.StorageNone]
+    none: [Permission.StorageNone],
   },
   comments: {
     write: [Permission.CommentsWrite],
     read: [Permission.CommentsRead],
-    none: [Permission.CommentsNone]
+    none: [Permission.CommentsNone],
   },
   feeds: {
     write: [Permission.FeedsWrite],
     read: [Permission.FeedsRead],
-    none: [Permission.FeedsNone]
-  }
+    none: [Permission.FeedsNone],
+  },
 };
 var VALID_PERMISSIONS = new Set(Object.values(Permission));
 function isPermission(permission) {
@@ -1704,8 +1750,8 @@ function normalizeRoomAccesses(accesses) {
   return Object.fromEntries(
     Object.entries(accesses).map(([id, permissions]) => [
       id,
-      normalizeRoomPermissions(permissions)
-    ])
+      normalizeRoomPermissions(permissions),
+    ]),
   );
 }
 __name(normalizeRoomAccesses, "normalizeRoomAccesses");
@@ -1716,8 +1762,8 @@ function normalizeUpdateRoomAccesses(accesses) {
   return Object.fromEntries(
     Object.entries(accesses).map(([id, permissions]) => [
       id,
-      permissions === null ? null : normalizeRoomPermissions(permissions)
-    ])
+      permissions === null ? null : normalizeRoomPermissions(permissions),
+    ]),
   );
 }
 __name(normalizeUpdateRoomAccesses, "normalizeUpdateRoomAccesses");
@@ -1730,17 +1776,22 @@ var OpCode = Object.freeze({
   DELETE_CRDT: 5,
   DELETE_OBJECT_KEY: 6,
   CREATE_MAP: 7,
-  CREATE_REGISTER: 8
+  CREATE_REGISTER: 8,
 });
 function isCreateOp(op) {
-  return op.type === OpCode.CREATE_OBJECT || op.type === OpCode.CREATE_REGISTER || op.type === OpCode.CREATE_MAP || op.type === OpCode.CREATE_LIST;
+  return (
+    op.type === OpCode.CREATE_OBJECT ||
+    op.type === OpCode.CREATE_REGISTER ||
+    op.type === OpCode.CREATE_MAP ||
+    op.type === OpCode.CREATE_LIST
+  );
 }
 __name(isCreateOp, "isCreateOp");
 var CrdtType = Object.freeze({
   OBJECT: 0,
   LIST: 1,
   MAP: 2,
-  REGISTER: 3
+  REGISTER: 3,
 });
 function isRootStorageNode(node) {
   return node[0] === "root";
@@ -1825,7 +1876,9 @@ function after(pos) {
   }
   let viewport = VIEWPORT_START;
   if (pos.length > VIEWPORT_START) {
-    viewport = VIEWPORT_START + Math.ceil((pos.length - VIEWPORT_START) / VIEWPORT_STEP) * VIEWPORT_STEP;
+    viewport =
+      VIEWPORT_START +
+      Math.ceil((pos.length - VIEWPORT_START) / VIEWPORT_STEP) * VIEWPORT_STEP;
   }
   const result = incrementWithinViewport(pos, viewport);
   if (result !== null) {
@@ -1866,7 +1919,10 @@ function incrementWithinViewport(pos, viewport) {
   for (const d of digits) {
     result += String.fromCharCode(d + MIN_CODE);
   }
-  while (result.length > 1 && result.charCodeAt(result.length - 1) === MIN_CODE) {
+  while (
+    result.length > 1 &&
+    result.charCodeAt(result.length - 1) === MIN_CODE
+  ) {
     result = result.slice(0, -1);
   }
   return result;
@@ -1903,13 +1959,15 @@ function _between(lo, hi) {
       const nines = "";
       return prefix + _between(suffix, nines);
     } else {
-      return takeN(lo, index) + String.fromCharCode(hiCode + loCode >> 1);
+      return takeN(lo, index) + String.fromCharCode((hiCode + loCode) >> 1);
     }
   }
 }
 __name(_between, "_between");
 function takeN(pos, n) {
-  return n < pos.length ? pos.substring(0, n) : pos + ZERO.repeat(n - pos.length);
+  return n < pos.length
+    ? pos.substring(0, n)
+    : pos + ZERO.repeat(n - pos.length);
 }
 __name(takeN, "takeN");
 var MIN_NON_ZERO_CODE = MIN_CODE + 1;
@@ -1940,10 +1998,10 @@ function convertToPos(str) {
   while (codes.length > 0 && codes[codes.length - 1] === MIN_CODE) {
     codes.length--;
   }
-  return codes.length > 0 ? String.fromCharCode(...codes) : (
-    // Edge case: the str was a 0-only string, which is invalid. Default back to .1
-    ONE
-  );
+  return codes.length > 0
+    ? String.fromCharCode(...codes)
+    : // Edge case: the str was a 0-only string, which is invalid. Default back to .1
+      ONE;
 }
 __name(convertToPos, "convertToPos");
 function asPos(str) {
@@ -2023,7 +2081,11 @@ ${parentKey}`;
    * Empty if none.
    */
   getByParentIdAndKey(parentId, parentKey) {
-    return this.#createOpsByPosition.get(this.#posKey(parentId, parentKey))?.values() ?? [];
+    return (
+      this.#createOpsByPosition
+        .get(this.#posKey(parentId, parentKey))
+        ?.values() ?? []
+    );
   }
   /**
    * The still-unacknowledged Create ops with the given `parentId` (across all
@@ -2055,7 +2117,7 @@ function createManagedPool(roomId, options2) {
     getCurrentConnectionId,
     onDispatch,
     isStorageWritable = /* @__PURE__ */ __name(() => true, "isStorageWritable"),
-    unacknowledgedOps = new UnacknowledgedOps()
+    unacknowledgedOps = new UnacknowledgedOps(),
   } = options2;
   let clock = 0;
   let opClock = 0;
@@ -2064,21 +2126,33 @@ function createManagedPool(roomId, options2) {
     roomId,
     nodes,
     getNode: /* @__PURE__ */ __name((id) => nodes.get(id), "getNode"),
-    addNode: /* @__PURE__ */ __name((id, node) => void nodes.set(id, node), "addNode"),
-    deleteNode: /* @__PURE__ */ __name((id) => void nodes.delete(id), "deleteNode"),
-    generateId: /* @__PURE__ */ __name(() => `${getCurrentConnectionId()}:${clock++}`, "generateId"),
-    generateOpId: /* @__PURE__ */ __name(() => `${getCurrentConnectionId()}:${opClock++}`, "generateOpId"),
+    addNode: /* @__PURE__ */ __name(
+      (id, node) => void nodes.set(id, node),
+      "addNode",
+    ),
+    deleteNode: /* @__PURE__ */ __name(
+      (id) => void nodes.delete(id),
+      "deleteNode",
+    ),
+    generateId: /* @__PURE__ */ __name(
+      () => `${getCurrentConnectionId()}:${clock++}`,
+      "generateId",
+    ),
+    generateOpId: /* @__PURE__ */ __name(
+      () => `${getCurrentConnectionId()}:${opClock++}`,
+      "generateOpId",
+    ),
     dispatch(ops, reverse, storageUpdates) {
       onDispatch?.(ops, reverse, storageUpdates);
     },
     assertStorageIsWritable: /* @__PURE__ */ __name(() => {
       if (!isStorageWritable()) {
         throw new Error(
-          "Cannot write to storage with a read only user, please ensure the user has write permissions"
+          "Cannot write to storage with a read only user, please ensure the user has write permissions",
         );
       }
     }, "assertStorageIsWritable"),
-    unacknowledgedOps
+    unacknowledgedOps,
   };
 }
 __name(createManagedPool, "createManagedPool");
@@ -2229,7 +2303,7 @@ var AbstractCrdt = class {
   _toOpsWithOpId(parentId, parentKey, pool) {
     return this._toOps(parentId, parentKey).map((op) => ({
       opId: pool.generateOpId(),
-      ...op
+      ...op,
     }));
   }
   /** This caches the result of the last .toJSON() call for this Live node. */
@@ -2306,7 +2380,7 @@ var LiveRegister = class _LiveRegister extends AbstractCrdt {
   _toOps(parentId, parentKey) {
     if (this._id === void 0) {
       throw new Error(
-        "Cannot serialize register if parentId or parentKey is undefined"
+        "Cannot serialize register if parentId or parentKey is undefined",
       );
     }
     return [
@@ -2315,8 +2389,8 @@ var LiveRegister = class _LiveRegister extends AbstractCrdt {
         id: this._id,
         parentId,
         parentKey,
-        data: this.data
-      }
+        data: this.data,
+      },
     ];
   }
   /** @internal */
@@ -2328,7 +2402,7 @@ var LiveRegister = class _LiveRegister extends AbstractCrdt {
       type: CrdtType.REGISTER,
       parentId: nn(this.parent.node._id, "Parent node expected to have ID"),
       parentKey: this.parent.key,
-      data: this.data
+      data: this.data,
     };
   }
   /** @internal */
@@ -2349,7 +2423,7 @@ var LiveRegister = class _LiveRegister extends AbstractCrdt {
       type: "Json",
       id: this._id ?? nanoid(),
       key,
-      payload: this.#data
+      payload: this.#data,
     };
   }
   /** @internal */
@@ -2419,14 +2493,14 @@ var LiveList = class _LiveList extends AbstractCrdt {
       id: this._id,
       type: OpCode.CREATE_LIST,
       parentId,
-      parentKey
+      parentKey,
     };
     ops.push(op);
     for (const item of this.#items) {
       const parentKey2 = item._getParentKeyOrThrow();
       const childOps = addIntentToRootOp(
         item._toOps(this._id, parentKey2),
-        "set"
+        "set",
       );
       for (const childOp of childOps) {
         ops.push(childOp);
@@ -2465,7 +2539,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
   /** @internal */
   _indexOfPosition(position) {
     return this.#items.findIndex(
-      (item) => item._getParentKeyOrThrow() === position
+      (item) => item._getParentKeyOrThrow() === position,
     );
   }
   /**
@@ -2482,7 +2556,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
     let opId;
     for (const op of this._pool.unacknowledgedOps.getByParentIdAndKey(
       this._id,
-      position
+      position,
     )) {
       if (op.intent === "set") {
         opId = op.opId;
@@ -2516,39 +2590,37 @@ var LiveList = class _LiveList extends AbstractCrdt {
     const indexOfItemWithSamePosition = this._indexOfPosition(key);
     if (indexOfItemWithSamePosition !== -1) {
       const itemWithSamePosition = nn(
-        this.#items.removeAt(indexOfItemWithSamePosition)
+        this.#items.removeAt(indexOfItemWithSamePosition),
       );
       if (itemWithSamePosition._id === deletedId) {
         itemWithSamePosition._detach();
         this.#items.add(child);
         return {
           modified: makeUpdate(this, [
-            setDelta(indexOfItemWithSamePosition, child)
+            setDelta(indexOfItemWithSamePosition, child),
           ]),
-          reverse: []
+          reverse: [],
         };
       } else {
         this.#implicitlyDeletedItems.add(itemWithSamePosition);
         this.#items.remove(itemWithSamePosition);
         this.#items.add(child);
-        const delta = [
-          setDelta(indexOfItemWithSamePosition, child)
-        ];
+        const delta = [setDelta(indexOfItemWithSamePosition, child)];
         const deleteDelta2 = this.#detachItemAssociatedToSetOperation(
-          op.deletedId
+          op.deletedId,
         );
         if (deleteDelta2) {
           delta.push(deleteDelta2);
         }
         return {
           modified: makeUpdate(this, delta),
-          reverse: []
+          reverse: [],
         };
       }
     } else {
       const updates = [];
       const deleteDelta2 = this.#detachItemAssociatedToSetOperation(
-        op.deletedId
+        op.deletedId,
       );
       if (deleteDelta2) {
         updates.push(deleteDelta2);
@@ -2557,7 +2629,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
       updates.push(insertDelta(this._indexOfPosition(key), child));
       return {
         reverse: [],
-        modified: makeUpdate(this, updates)
+        modified: makeUpdate(this, updates),
       };
     }
   }
@@ -2572,7 +2644,9 @@ var LiveList = class _LiveList extends AbstractCrdt {
     }
     const unacknowledgedOpId = this.#unacknowledgedSetOpIdAt(op.parentKey);
     if (unacknowledgedOpId !== void 0 && unacknowledgedOpId !== op.opId) {
-      return delta.length === 0 ? { modified: false } : { modified: makeUpdate(this, delta), reverse: [] };
+      return delta.length === 0
+        ? { modified: false }
+        : { modified: makeUpdate(this, delta), reverse: [] };
     }
     const indexOfItemWithSamePosition = this._indexOfPosition(op.parentKey);
     const existingItem = this.#items.find((item) => item._id === op.id);
@@ -2580,12 +2654,12 @@ var LiveList = class _LiveList extends AbstractCrdt {
       if (existingItem._parentKey === op.parentKey) {
         return {
           modified: delta.length > 0 ? makeUpdate(this, delta) : false,
-          reverse: []
+          reverse: [],
         };
       }
       if (indexOfItemWithSamePosition !== -1) {
         const itemAtPosition = nn(
-          this.#items.removeAt(indexOfItemWithSamePosition)
+          this.#items.removeAt(indexOfItemWithSamePosition),
         );
         this.#implicitlyDeletedItems.add(itemAtPosition);
         delta.push(deleteDelta(indexOfItemWithSamePosition, itemAtPosition));
@@ -2598,7 +2672,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
       }
       return {
         modified: delta.length > 0 ? makeUpdate(this, delta) : false,
-        reverse: []
+        reverse: [],
       };
     } else {
       const orphan = this._pool.getNode(op.id);
@@ -2609,29 +2683,33 @@ var LiveList = class _LiveList extends AbstractCrdt {
         return {
           modified: makeUpdate(this, [
             // If there is an item at this position, update is a set, else it's an insert
-            indexOfItemWithSamePosition === -1 ? insertDelta(recreatedItemIndex, orphan) : setDelta(recreatedItemIndex, orphan),
-            ...delta
+            indexOfItemWithSamePosition === -1
+              ? insertDelta(recreatedItemIndex, orphan)
+              : setDelta(recreatedItemIndex, orphan),
+            ...delta,
           ]),
-          reverse: []
+          reverse: [],
         };
       } else {
         if (indexOfItemWithSamePosition !== -1) {
           const displaced = nn(
-            this.#items.removeAt(indexOfItemWithSamePosition)
+            this.#items.removeAt(indexOfItemWithSamePosition),
           );
           this.#implicitlyDeletedItems.add(displaced);
         }
         const { newItem, newIndex } = this.#createAttachItemAndSort(
           op,
-          op.parentKey
+          op.parentKey,
         );
         return {
           modified: makeUpdate(this, [
             // If there is an item at this position, update is a set, else it's an insert
-            indexOfItemWithSamePosition === -1 ? insertDelta(newIndex, newItem) : setDelta(newIndex, newItem),
-            ...delta
+            indexOfItemWithSamePosition === -1
+              ? insertDelta(newIndex, newItem)
+              : setDelta(newIndex, newItem),
+            ...delta,
           ]),
-          reverse: []
+          reverse: [],
         };
       }
     }
@@ -2667,9 +2745,9 @@ var LiveList = class _LiveList extends AbstractCrdt {
     return {
       modified: makeUpdate(this, [
         insertDelta(newIndex, newItem),
-        ...bumpDeltas
+        ...bumpDeltas,
       ]),
-      reverse: []
+      reverse: [],
     };
   }
   /**
@@ -2756,11 +2834,11 @@ var LiveList = class _LiveList extends AbstractCrdt {
     if (existingItem) {
       if (existingItem._parentKey === key) {
         return {
-          modified: false
+          modified: false,
         };
       } else {
         const oldPositionIndex = this.#items.findIndex(
-          (item) => item === existingItem
+          (item) => item === existingItem,
         );
         if (itemIndexAtPosition !== -1) {
           this.#shiftItemPosition(itemIndexAtPosition, key);
@@ -2772,9 +2850,9 @@ var LiveList = class _LiveList extends AbstractCrdt {
         }
         return {
           modified: makeUpdate(this, [
-            moveDelta(oldPositionIndex, newIndex, existingItem)
+            moveDelta(oldPositionIndex, newIndex, existingItem),
           ]),
-          reverse: []
+          reverse: [],
         };
       }
     } else {
@@ -2786,7 +2864,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
         const newIndex = this._indexOfPosition(key);
         return {
           modified: makeUpdate(this, [insertDelta(newIndex, orphan)]),
-          reverse: []
+          reverse: [],
         };
       } else {
         if (itemIndexAtPosition !== -1) {
@@ -2795,7 +2873,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
         const { newItem, newIndex } = this.#createAttachItemAndSort(op, key);
         return {
           modified: makeUpdate(this, [insertDelta(newIndex, newItem)]),
-          reverse: []
+          reverse: [],
         };
       }
     }
@@ -2820,7 +2898,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
     const newIndex = this._indexOfPosition(newKey);
     return {
       modified: makeUpdate(this, [insertDelta(newIndex, child)]),
-      reverse: [{ type: OpCode.DELETE_CRDT, id }]
+      reverse: [{ type: OpCode.DELETE_CRDT, id }],
     };
   }
   #applySetUndoRedo(op) {
@@ -2841,18 +2919,18 @@ var LiveList = class _LiveList extends AbstractCrdt {
       const reverse = addIntentToRootOp(
         existingItem._toOps(nn(this._id), key),
         "set",
-        op.id
+        op.id,
       );
       const delta = [setDelta(indexOfItemWithSameKey, child)];
       const deletedDelta = this.#detachItemAssociatedToSetOperation(
-        op.deletedId
+        op.deletedId,
       );
       if (deletedDelta) {
         delta.push(deletedDelta);
       }
       return {
         modified: makeUpdate(this, delta),
-        reverse
+        reverse,
       };
     } else {
       this.#insert(child);
@@ -2860,7 +2938,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
       const newIndex = this._indexOfPosition(newKey);
       return {
         reverse: [{ type: OpCode.DELETE_CRDT, id }],
-        modified: makeUpdate(this, [insertDelta(newIndex, child)])
+        modified: makeUpdate(this, [insertDelta(newIndex, child)]),
       };
     }
   }
@@ -2900,7 +2978,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
       const indexToDelete = this.#items.findIndex((item) => item === child);
       if (indexToDelete === -1) {
         return {
-          modified: false
+          modified: false,
         };
       }
       const previousNode = this.#items.at(indexToDelete);
@@ -2909,7 +2987,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
       child._detach();
       return {
         modified: makeUpdate(this, [deleteDelta(indexToDelete, previousNode)]),
-        reverse
+        reverse,
       };
     }
     return { modified: false };
@@ -2921,13 +2999,13 @@ var LiveList = class _LiveList extends AbstractCrdt {
       const newIndex = this.#insert(child);
       return {
         modified: makeUpdate(this, [insertDelta(newIndex, child)]),
-        reverse: []
+        reverse: [],
       };
     }
     const previousKey = child._parentKey;
     if (newKey === previousKey) {
       return {
-        modified: false
+        modified: false,
       };
     }
     const existingItemIndex = this._indexOfPosition(newKey);
@@ -2937,29 +3015,29 @@ var LiveList = class _LiveList extends AbstractCrdt {
       const newIndex = this.#items.findIndex((item) => item === child);
       if (newIndex === previousIndex) {
         return {
-          modified: false
+          modified: false,
         };
       }
       return {
         modified: makeUpdate(this, [moveDelta(previousIndex, newIndex, child)]),
-        reverse: []
+        reverse: [],
       };
     } else {
       this.#updateItemPositionAt(
         existingItemIndex,
-        makePosition(newKey, this.#items.at(existingItemIndex + 1)?._parentPos)
+        makePosition(newKey, this.#items.at(existingItemIndex + 1)?._parentPos),
       );
       const previousIndex = this.#items.findIndex((item) => item === child);
       this.#updateItemPosition(child, newKey);
       const newIndex = this.#items.findIndex((item) => item === child);
       if (newIndex === previousIndex) {
         return {
-          modified: false
+          modified: false,
         };
       }
       return {
         modified: makeUpdate(this, [moveDelta(previousIndex, newIndex, child)]),
-        reverse: []
+        reverse: [],
       };
     }
   }
@@ -2974,8 +3052,8 @@ var LiveList = class _LiveList extends AbstractCrdt {
           this,
           makePosition(
             newKey,
-            this.#items.at(existingItemIndex + 1)?._parentPos
-          )
+            this.#items.at(existingItemIndex + 1)?._parentPos,
+          ),
         );
         this.#items.reposition(existingItem);
       }
@@ -2983,12 +3061,12 @@ var LiveList = class _LiveList extends AbstractCrdt {
       const newIndex = this.#insert(child);
       return {
         modified: makeUpdate(this, [insertDelta(newIndex, child)]),
-        reverse: []
+        reverse: [],
       };
     } else {
       if (newKey === previousKey) {
         return {
-          modified: false
+          modified: false,
         };
       }
       const previousIndex = this.#items.findIndex((item) => item === child);
@@ -2998,22 +3076,22 @@ var LiveList = class _LiveList extends AbstractCrdt {
           existingItemIndex,
           makePosition(
             newKey,
-            this.#items.at(existingItemIndex + 1)?._parentPos
-          )
+            this.#items.at(existingItemIndex + 1)?._parentPos,
+          ),
         );
       }
       this.#updateItemPosition(child, newKey);
       const newIndex = this.#items.findIndex((item) => item === child);
       if (previousIndex === newIndex) {
         return {
-          modified: false
+          modified: false,
         };
       } else {
         return {
           modified: makeUpdate(this, [
-            moveDelta(previousIndex, newIndex, child)
+            moveDelta(previousIndex, newIndex, child),
           ]),
-          reverse: []
+          reverse: [],
         };
       }
     }
@@ -3026,14 +3104,14 @@ var LiveList = class _LiveList extends AbstractCrdt {
     if (existingItemIndex !== -1) {
       actualNewKey = makePosition(
         newKey,
-        this.#items.at(existingItemIndex + 1)?._parentPos
+        this.#items.at(existingItemIndex + 1)?._parentPos,
       );
     }
     this.#updateItemPosition(child, actualNewKey);
     const newIndex = this.#items.findIndex((item) => item === child);
     if (previousIndex === newIndex) {
       return {
-        modified: false
+        modified: false,
       };
     }
     return {
@@ -3042,9 +3120,9 @@ var LiveList = class _LiveList extends AbstractCrdt {
         {
           type: OpCode.SET_PARENT_KEY,
           id: nn(child._id),
-          parentKey: previousKey
-        }
-      ]
+          parentKey: previousKey,
+        },
+      ],
     };
   }
   /** @internal */
@@ -3069,7 +3147,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
     return {
       type: CrdtType.LIST,
       parentId: nn(this.parent.node._id, "Parent node expected to have ID"),
-      parentKey: this.parent.key
+      parentKey: this.parent.key,
     };
   }
   /**
@@ -3103,7 +3181,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
     this._pool?.assertStorageIsWritable();
     if (index < 0 || index > this.#items.length) {
       throw new Error(
-        `Cannot insert list item at index "${index}". index should be between 0 and ${this.#items.length}`
+        `Cannot insert list item at index "${index}". index should be between 0 and ${this.#items.length}`,
       );
     }
     const before2 = this.#items.at(index - 1)?._parentPos;
@@ -3120,8 +3198,8 @@ var LiveList = class _LiveList extends AbstractCrdt {
         intent === "push" ? addIntentToRootOp(ops, "push") : ops,
         [{ type: OpCode.DELETE_CRDT, id }],
         /* @__PURE__ */ new Map([
-          [this._id, makeUpdate(this, [insertDelta(index, value)])]
-        ])
+          [this._id, makeUpdate(this, [insertDelta(index, value)])],
+        ]),
       );
     }
   }
@@ -3137,7 +3215,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
     }
     if (targetIndex >= this.#items.length) {
       throw new Error(
-        "targetIndex cannot be greater or equal than the list length"
+        "targetIndex cannot be greater or equal than the list length",
       );
     }
     if (index < 0) {
@@ -3149,11 +3227,17 @@ var LiveList = class _LiveList extends AbstractCrdt {
     let beforePosition = null;
     let afterPosition = null;
     if (index < targetIndex) {
-      afterPosition = targetIndex === this.#items.length - 1 ? void 0 : this.#items.at(targetIndex + 1)?._parentPos;
+      afterPosition =
+        targetIndex === this.#items.length - 1
+          ? void 0
+          : this.#items.at(targetIndex + 1)?._parentPos;
       beforePosition = this.#items.at(targetIndex)._parentPos;
     } else {
       afterPosition = this.#items.at(targetIndex)._parentPos;
-      beforePosition = targetIndex === 0 ? void 0 : this.#items.at(targetIndex - 1)?._parentPos;
+      beforePosition =
+        targetIndex === 0
+          ? void 0
+          : this.#items.at(targetIndex - 1)?._parentPos;
     }
     const position = makePosition(beforePosition, afterPosition);
     const item = this.#items.at(index);
@@ -3161,7 +3245,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
     this.#updateItemPositionAt(index, position);
     if (this._pool && this._id) {
       const storageUpdates = /* @__PURE__ */ new Map([
-        [this._id, makeUpdate(this, [moveDelta(index, targetIndex, item)])]
+        [this._id, makeUpdate(this, [moveDelta(index, targetIndex, item)])],
       ]);
       this._pool.dispatch(
         [
@@ -3169,17 +3253,17 @@ var LiveList = class _LiveList extends AbstractCrdt {
             type: OpCode.SET_PARENT_KEY,
             id: nn(item._id),
             opId: this._pool.generateOpId(),
-            parentKey: position
-          }
+            parentKey: position,
+          },
         ],
         [
           {
             type: OpCode.SET_PARENT_KEY,
             id: nn(item._id),
-            parentKey: previousPosition
-          }
+            parentKey: previousPosition,
+          },
         ],
-        storageUpdates
+        storageUpdates,
       );
     }
   }
@@ -3191,7 +3275,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
     this._pool?.assertStorageIsWritable();
     if (index < 0 || index >= this.#items.length) {
       throw new Error(
-        `Cannot delete list item at index "${index}". index should be between 0 and ${this.#items.length - 1}`
+        `Cannot delete list item at index "${index}". index should be between 0 and ${this.#items.length - 1}`,
       );
     }
     const item = this.#items.at(index);
@@ -3204,18 +3288,18 @@ var LiveList = class _LiveList extends AbstractCrdt {
         const storageUpdates = /* @__PURE__ */ new Map();
         storageUpdates.set(
           nn(this._id),
-          makeUpdate(this, [deleteDelta(index, item)])
+          makeUpdate(this, [deleteDelta(index, item)]),
         );
         this._pool.dispatch(
           [
             {
               id: childRecordId,
               opId: this._pool.generateOpId(),
-              type: OpCode.DELETE_CRDT
-            }
+              type: OpCode.DELETE_CRDT,
+            },
           ],
           item._toOps(nn(this._id), item._getParentKeyOrThrow()),
-          storageUpdates
+          storageUpdates,
         );
       }
     }
@@ -3233,10 +3317,10 @@ var LiveList = class _LiveList extends AbstractCrdt {
           ops.push({
             type: OpCode.DELETE_CRDT,
             id: childId,
-            opId: this._pool.generateOpId()
+            opId: this._pool.generateOpId(),
           });
           reverseOps.push(
-            ...item._toOps(nn(this._id), item._getParentKeyOrThrow())
+            ...item._toOps(nn(this._id), item._getParentKeyOrThrow()),
           );
           updateDelta.push(deleteDelta(0, item));
         }
@@ -3258,7 +3342,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
     this._pool?.assertStorageIsWritable();
     if (index < 0 || index >= this.#items.length) {
       throw new Error(
-        `Cannot set list item at index "${index}". index should be between 0 and ${this.#items.length - 1}`
+        `Cannot set list item at index "${index}". index should be between 0 and ${this.#items.length - 1}`,
       );
     }
     const existingItem = this.#items.at(index);
@@ -3278,12 +3362,12 @@ var LiveList = class _LiveList extends AbstractCrdt {
       const ops = addIntentToRootOp(
         value._toOpsWithOpId(this._id, position, this._pool),
         "set",
-        existingId
+        existingId,
       );
       const reverseOps = addIntentToRootOp(
         existingItem._toOps(this._id, position),
         "set",
-        id
+        id,
       );
       this._pool.dispatch(ops, reverseOps, storageUpdates);
     }
@@ -3297,8 +3381,8 @@ var LiveList = class _LiveList extends AbstractCrdt {
    * @returns true if the predicate function returns a truthy value for every element. Otherwise, false.
    */
   every(predicate) {
-    return this.#items.rawArray.every(
-      (node, i) => predicate(this.#unwrap(node), i)
+    return this.#items.rawArray.every((node, i) =>
+      predicate(this.#unwrap(node), i),
     );
   }
   /**
@@ -3332,8 +3416,8 @@ var LiveList = class _LiveList extends AbstractCrdt {
    * @returns The index of the first element in the LiveList that passes the test. Otherwise, -1.
    */
   findIndex(predicate) {
-    return this.#items.rawArray.findIndex(
-      (node, i) => predicate(this.#unwrap(node), i)
+    return this.#items.rawArray.findIndex((node, i) =>
+      predicate(this.#unwrap(node), i),
     );
   }
   /**
@@ -3341,8 +3425,8 @@ var LiveList = class _LiveList extends AbstractCrdt {
    * @param callbackfn Function to execute on each element.
    */
   forEach(callbackfn) {
-    this.#items.rawArray.forEach(
-      (node, i) => callbackfn(this.#unwrap(node), i)
+    this.#items.rawArray.forEach((node, i) =>
+      callbackfn(this.#unwrap(node), i),
     );
   }
   /**
@@ -3362,7 +3446,8 @@ var LiveList = class _LiveList extends AbstractCrdt {
    */
   indexOf(searchElement, fromIndex) {
     return this.#items.rawArray.findIndex(
-      (node, i) => i >= (fromIndex ?? 0) && this.#unwrap(node) === searchElement
+      (node, i) =>
+        i >= (fromIndex ?? 0) && this.#unwrap(node) === searchElement,
     );
   }
   /**
@@ -3384,8 +3469,8 @@ var LiveList = class _LiveList extends AbstractCrdt {
    * @returns An array with each element being the result of the callback function.
    */
   map(callback) {
-    return this.#items.rawArray.map(
-      (node, i) => callback(this.#unwrap(node), i)
+    return this.#items.rawArray.map((node, i) =>
+      callback(this.#unwrap(node), i),
     );
   }
   /**
@@ -3394,8 +3479,8 @@ var LiveList = class _LiveList extends AbstractCrdt {
    * @returns true if the callback function returns a truthy value for at least one element. Otherwise, false.
    */
   some(predicate) {
-    return this.#items.rawArray.some(
-      (node, i) => predicate(this.#unwrap(node), i)
+    return this.#items.rawArray.some((node, i) =>
+      predicate(this.#unwrap(node), i),
     );
   }
   *[Symbol.iterator]() {
@@ -3414,7 +3499,9 @@ var LiveList = class _LiveList extends AbstractCrdt {
   #shiftItemPosition(index, key) {
     const shiftedPosition = makePosition(
       key,
-      this.#items.length > index + 1 ? this.#items.at(index + 1)?._parentPos : void 0
+      this.#items.length > index + 1
+        ? this.#items.at(index + 1)?._parentPos
+        : void 0,
     );
     this.#updateItemPositionAt(index, shiftedPosition);
   }
@@ -3430,7 +3517,7 @@ var LiveList = class _LiveList extends AbstractCrdt {
       type: "LiveList",
       id: this._id ?? nanoid(),
       key,
-      payload
+      payload,
     };
   }
   toJSON() {
@@ -3442,16 +3529,14 @@ var LiveList = class _LiveList extends AbstractCrdt {
     return freeze(result);
   }
   clone() {
-    return new _LiveList(
-      Array.from(this.#items, (item) => item.clone())
-    );
+    return new _LiveList(Array.from(this.#items, (item) => item.clone()));
   }
 };
 function makeUpdate(liveList, deltaUpdates) {
   return {
     node: liveList,
     type: "LiveList",
-    updates: deltaUpdates
+    updates: deltaUpdates,
   };
 }
 __name(makeUpdate, "makeUpdate");
@@ -3459,7 +3544,7 @@ function setDelta(index, item) {
   return {
     index,
     type: "set",
-    item: item instanceof LiveRegister ? item.data : item
+    item: item instanceof LiveRegister ? item.data : item,
   };
 }
 __name(setDelta, "setDelta");
@@ -3467,7 +3552,8 @@ function deleteDelta(index, deletedNode) {
   return {
     type: "delete",
     index,
-    deletedItem: deletedNode instanceof LiveRegister ? deletedNode.data : deletedNode
+    deletedItem:
+      deletedNode instanceof LiveRegister ? deletedNode.data : deletedNode,
   };
 }
 __name(deleteDelta, "deleteDelta");
@@ -3475,7 +3561,7 @@ function insertDelta(index, item) {
   return {
     index,
     type: "insert",
-    item: item instanceof LiveRegister ? item.data : item
+    item: item instanceof LiveRegister ? item.data : item,
   };
 }
 __name(insertDelta, "insertDelta");
@@ -3484,7 +3570,7 @@ function moveDelta(previousIndex, index, item) {
     type: "move",
     index,
     item: item instanceof LiveRegister ? item.data : item,
-    previousIndex
+    previousIndex,
   };
 }
 __name(moveDelta, "moveDelta");
@@ -3530,7 +3616,7 @@ var LiveMap = class _LiveMap extends AbstractCrdt {
       id: this._id,
       type: OpCode.CREATE_MAP,
       parentId,
-      parentKey
+      parentKey,
     };
     ops.push(op);
     for (const [key, value] of this.#map) {
@@ -3605,9 +3691,9 @@ var LiveMap = class _LiveMap extends AbstractCrdt {
       modified: {
         node: this,
         type: "LiveMap",
-        updates: { [key]: { type: "update" } }
+        updates: { [key]: { type: "update" } },
       },
-      reverse
+      reverse,
     };
   }
   /** @internal */
@@ -3635,9 +3721,9 @@ var LiveMap = class _LiveMap extends AbstractCrdt {
       updates: {
         [parentKey]: {
           type: "delete",
-          deletedItem: liveNodeToLson(child)
-        }
-      }
+          deletedItem: liveNodeToLson(child),
+        },
+      },
     };
     return { modified: storageUpdate, reverse };
   }
@@ -3649,7 +3735,7 @@ var LiveMap = class _LiveMap extends AbstractCrdt {
     return {
       type: CrdtType.MAP,
       parentId: nn(this.parent.node._id, "Parent node expected to have ID"),
-      parentKey: this.parent.key
+      parentKey: this.parent.key,
     };
   }
   /**
@@ -3686,14 +3772,16 @@ var LiveMap = class _LiveMap extends AbstractCrdt {
       storageUpdates.set(this._id, {
         node: this,
         type: "LiveMap",
-        updates: { [key]: { type: "update" } }
+        updates: { [key]: { type: "update" } },
       });
       const ops = item._toOpsWithOpId(this._id, key, this._pool);
       this.#unacknowledgedSet.set(key, nn(ops[0].opId));
       this._pool.dispatch(
         ops,
-        oldValue ? oldValue._toOps(this._id, key) : [{ type: OpCode.DELETE_CRDT, id }],
-        storageUpdates
+        oldValue
+          ? oldValue._toOps(this._id, key)
+          : [{ type: OpCode.DELETE_CRDT, id }],
+        storageUpdates,
       );
     }
   }
@@ -3733,20 +3821,20 @@ var LiveMap = class _LiveMap extends AbstractCrdt {
         updates: {
           [key]: {
             type: "delete",
-            deletedItem: liveNodeToLson(item)
-          }
-        }
+            deletedItem: liveNodeToLson(item),
+          },
+        },
       });
       this._pool.dispatch(
         [
           {
             type: OpCode.DELETE_CRDT,
             id: item._id,
-            opId: this._pool.generateOpId()
-          }
+            opId: this._pool.generateOpId(),
+          },
         ],
         item._toOps(thisId, key),
-        storageUpdates
+        storageUpdates,
       );
     }
     return true;
@@ -3765,16 +3853,16 @@ var LiveMap = class _LiveMap extends AbstractCrdt {
         if (iteratorValue.done) {
           return {
             done: true,
-            value: void 0
+            value: void 0,
           };
         }
         const entry = iteratorValue.value;
         const key = entry[0];
         const value = liveNodeToLson(iteratorValue.value[1]);
         return {
-          value: [key, value]
+          value: [key, value],
         };
-      }
+      },
     };
   }
   /**
@@ -3803,12 +3891,12 @@ var LiveMap = class _LiveMap extends AbstractCrdt {
         if (iteratorValue.done) {
           return {
             done: true,
-            value: void 0
+            value: void 0,
           };
         }
         const value = liveNodeToLson(iteratorValue.value);
         return { value };
-      }
+      },
     };
   }
   /**
@@ -3826,9 +3914,9 @@ var LiveMap = class _LiveMap extends AbstractCrdt {
       type: "LiveMap",
       id: this._id ?? nanoid(),
       key,
-      payload: Array.from(this.#map.entries()).map(
-        ([key2, val]) => val.toTreeNode(key2)
-      )
+      payload: Array.from(this.#map.entries()).map(([key2, val]) =>
+        val.toTreeNode(key2),
+      ),
     };
   }
   toJSON() {
@@ -3844,7 +3932,7 @@ var LiveMap = class _LiveMap extends AbstractCrdt {
   }
   clone() {
     return new _LiveMap(
-      Array.from(this.#map).map(([key, node]) => [key, node.clone()])
+      Array.from(this.#map).map(([key, node]) => [key, node.clone()]),
     );
   }
 };
@@ -4013,12 +4101,9 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
   }
   /** @private Do not use this API directly */
   static _fromItems(nodes, pool) {
-    const [root, parentToChildren] = _LiveObject.#buildRootAndParentToChildren(nodes);
-    return _LiveObject._deserialize(
-      ["root", root],
-      parentToChildren,
-      pool
-    );
+    const [root, parentToChildren] =
+      _LiveObject.#buildRootAndParentToChildren(nodes);
+    return _LiveObject._deserialize(["root", root], parentToChildren, pool);
   }
   constructor(obj = {}) {
     super();
@@ -4043,7 +4128,7 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
       id: this._id,
       parentId,
       parentKey,
-      data: {}
+      data: {},
     };
     ops.push(op);
     for (const [key, value] of this.#synced) {
@@ -4124,8 +4209,8 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
         {
           type: OpCode.UPDATE_OBJECT,
           id: thisId,
-          data: { [key]: previousValue }
-        }
+          data: { [key]: previousValue },
+        },
       ];
     }
     this.#local.delete(key);
@@ -4140,8 +4225,8 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
       modified: {
         node: this,
         type: "LiveObject",
-        updates: { [key]: { type: "update" } }
-      }
+        updates: { [key]: { type: "update" } },
+      },
     };
   }
   /** @internal */
@@ -4162,8 +4247,8 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
         node: this,
         type: "LiveObject",
         updates: {
-          [parentKey]: { type: "delete", deletedItem }
-        }
+          [parentKey]: { type: "delete", deletedItem },
+        },
       };
       return { modified: storageUpdate, reverse };
     }
@@ -4200,12 +4285,12 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
         type: CrdtType.OBJECT,
         parentId: this.parent.node._id,
         parentKey: this.parent.key,
-        data
+        data,
       };
     } else {
       return {
         type: CrdtType.OBJECT,
-        data
+        data,
       };
     }
   }
@@ -4216,7 +4301,7 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
     const reverseUpdate = {
       type: OpCode.UPDATE_OBJECT,
       id,
-      data: {}
+      data: {},
     };
     for (const key in op.data) {
       const oldValue = this.#synced.get(key);
@@ -4260,14 +4345,16 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
     if (Object.keys(reverseUpdate.data).length !== 0) {
       reverse.unshift(reverseUpdate);
     }
-    return isModified ? {
-      modified: {
-        node: this,
-        type: "LiveObject",
-        updates: updateDelta
-      },
-      reverse
-    } : { modified: false };
+    return isModified
+      ? {
+          modified: {
+            node: this,
+            type: "LiveObject",
+            updates: updateDelta,
+          },
+          reverse,
+        }
+      : { modified: false };
   }
   #applyDeleteObjectKey(op, isLocal) {
     const key = op.key;
@@ -4288,8 +4375,8 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
         {
           type: OpCode.UPDATE_OBJECT,
           id,
-          data: { [key]: oldValue }
-        }
+          data: { [key]: oldValue },
+        },
       ];
     }
     this.#local.delete(key);
@@ -4300,10 +4387,10 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
         node: this,
         type: "LiveObject",
         updates: {
-          [op.key]: { type: "delete", deletedItem: oldValue }
-        }
+          [op.key]: { type: "delete", deletedItem: oldValue },
+        },
       },
-      reverse
+      reverse,
     };
   }
   /** @private */
@@ -4346,8 +4433,8 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
         type: "LiveObject",
         updates: {
           ...existing?.updates,
-          [key]: { type: "update" }
-        }
+          [key]: { type: "update" },
+        },
       });
       this._pool.dispatch(ops, reverse, storageUpdates);
     }
@@ -4379,9 +4466,9 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
           updates: {
             [k]: {
               type: "delete",
-              deletedItem: oldValue2
-            }
-          }
+              deletedItem: oldValue2,
+            },
+          },
         });
         return [[], [], storageUpdates2];
       }
@@ -4405,8 +4492,8 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
         type: OpCode.DELETE_OBJECT_KEY,
         key: k,
         id: this._id,
-        opId: this._pool.generateOpId()
-      }
+        opId: this._pool.generateOpId(),
+      },
     ];
     let reverse;
     if (isLiveNode(oldValue)) {
@@ -4417,8 +4504,8 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
         {
           type: OpCode.UPDATE_OBJECT,
           data: { [k]: oldValue },
-          id: this._id
-        }
+          id: this._id,
+        },
       ];
     }
     this.#synced.delete(k);
@@ -4428,8 +4515,8 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
       node: this,
       type: "LiveObject",
       updates: {
-        [key]: { type: "delete", deletedItem: oldValue }
-      }
+        [key]: { type: "delete", deletedItem: oldValue },
+      },
     });
     return [ops, reverse, storageUpdates];
   }
@@ -4470,7 +4557,7 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
         const preciseSize = new TextEncoder().encode(jsonString).length;
         if (preciseSize > MAX_LIVE_OBJECT_SIZE) {
           throw new Error(
-            `LiveObject size exceeded limit: ${preciseSize} bytes > ${MAX_LIVE_OBJECT_SIZE} bytes. See https://liveblocks.io/docs/platform/limits#Liveblocks-Storage-limits`
+            `LiveObject size exceeded limit: ${preciseSize} bytes > ${MAX_LIVE_OBJECT_SIZE} bytes. See https://liveblocks.io/docs/platform/limits#Liveblocks-Storage-limits`,
           );
         }
       }
@@ -4501,7 +4588,7 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
     const reverseUpdateOp = {
       id: this._id,
       type: OpCode.UPDATE_OBJECT,
-      data: {}
+      data: {},
     };
     const updateDelta = {};
     for (const key in patch) {
@@ -4529,10 +4616,10 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
         const newAttachChildOps = newValue._toOpsWithOpId(
           this._id,
           key,
-          this._pool
+          this._pool,
         );
         const createCrdtOp = newAttachChildOps.find(
-          (op) => op.parentId === this._id
+          (op) => op.parentId === this._id,
         );
         if (createCrdtOp) {
           this.#unackedOpsByKey.set(key, nn(createCrdtOp.opId));
@@ -4557,17 +4644,21 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
         opId,
         id: this._id,
         type: OpCode.UPDATE_OBJECT,
-        data: updatedProps
+        data: updatedProps,
       });
     }
-    if (ops.length === 0 && reverseOps.length === 0 && Object.keys(updateDelta).length === 0) {
+    if (
+      ops.length === 0 &&
+      reverseOps.length === 0 &&
+      Object.keys(updateDelta).length === 0
+    ) {
       return;
     }
     const storageUpdates = /* @__PURE__ */ new Map();
     storageUpdates.set(this._id, {
       node: this,
       type: "LiveObject",
-      updates: updateDelta
+      updates: updateDelta,
     });
     this._pool.dispatch(ops, reverseOps, storageUpdates);
   }
@@ -4581,7 +4672,7 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
     if (this.hasCache(jsonObj)) return;
     if (!isPlainObject(jsonObj))
       throw new Error(
-        "Reconciling the document root expects a plain object value"
+        "Reconciling the document root expects a plain object value",
       );
     reconcileLiveObject(this, jsonObj, "full", config);
   }
@@ -4599,7 +4690,7 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
   reconcilePartially(partialObj, config) {
     if (!isPlainObject(partialObj))
       throw new Error(
-        "Reconciling the document root expects a plain object value"
+        "Reconciling the document root expects a plain object value",
       );
     reconcileLiveObject(this, partialObj, "partial", config);
   }
@@ -4614,9 +4705,16 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
       type: "LiveObject",
       id: nodeId,
       key,
-      payload: Array.from(this.#synced.entries()).map(
-        ([key2, value]) => isLiveNode(value) ? value.toTreeNode(key2) : { type: "Json", id: `${nodeId}:${key2}`, key: key2, payload: value }
-      )
+      payload: Array.from(this.#synced.entries()).map(([key2, value]) =>
+        isLiveNode(value)
+          ? value.toTreeNode(key2)
+          : {
+              type: "Json",
+              id: `${nodeId}:${key2}`,
+              key: key2,
+              payload: value,
+            },
+      ),
     };
   }
   toJSON() {
@@ -4638,9 +4736,9 @@ var LiveObject = class _LiveObject extends AbstractCrdt {
       Object.fromEntries(
         Array.from(this.#synced).map(([key, value]) => [
           key,
-          isLiveStructure(value) ? value.clone() : deepClone(value)
-        ])
-      )
+          isLiveStructure(value) ? value.clone() : deepClone(value),
+        ]),
+      ),
     );
     for (const [key, value] of this.#local) {
       cloned.#local.set(key, deepClone(value));
@@ -4722,7 +4820,11 @@ __name(isLiveRegister, "isLiveRegister");
 function liveNodeToLson(obj) {
   if (obj instanceof LiveRegister) {
     return obj.data;
-  } else if (obj instanceof LiveList || obj instanceof LiveMap || obj instanceof LiveObject) {
+  } else if (
+    obj instanceof LiveList ||
+    obj instanceof LiveMap ||
+    obj instanceof LiveObject
+  ) {
     return obj;
   } else {
     return assertNever(obj, "Unknown AbstractCrdt");
@@ -4730,7 +4832,11 @@ function liveNodeToLson(obj) {
 }
 __name(liveNodeToLson, "liveNodeToLson");
 function lsonToLiveNode(value) {
-  if (value instanceof LiveObject || value instanceof LiveMap || value instanceof LiveList) {
+  if (
+    value instanceof LiveObject ||
+    value instanceof LiveMap ||
+    value instanceof LiveList
+  ) {
     return value;
   } else {
     return new LiveRegister(value);
@@ -4740,7 +4846,10 @@ __name(lsonToLiveNode, "lsonToLiveNode");
 var eventSource = makeEventSource();
 if (process.env.NODE_ENV !== "production" && typeof window !== "undefined") {
   window.addEventListener("message", (event) => {
-    if (event.source === window && event.data?.source === "liveblocks-devtools-panel") {
+    if (
+      event.source === window &&
+      event.data?.source === "liveblocks-devtools-panel"
+    ) {
       eventSource.notify(event.data);
     } else {
     }
@@ -4750,17 +4859,12 @@ var onMessageFromPanel = eventSource.observable;
 var loadedAt = Date.now();
 var kPlain = /* @__PURE__ */ Symbol("notification-settings-plain");
 function createNotificationSettings(plain) {
-  const channels = [
-    "email",
-    "slack",
-    "teams",
-    "webPush"
-  ];
+  const channels = ["email", "slack", "teams", "webPush"];
   const descriptors = {
     [kPlain]: {
       value: plain,
-      enumerable: false
-    }
+      enumerable: false,
+    },
   };
   for (const channel of channels) {
     descriptors[channel] = {
@@ -4780,12 +4884,12 @@ function createNotificationSettings(plain) {
         const value = this[kPlain][channel];
         if (typeof value === "undefined") {
           error2(
-            `In order to use the '${channel}' channel, please set up your project first. For more information: https://liveblocks.io/docs/errors/enable-a-notification-channel`
+            `In order to use the '${channel}' channel, please set up your project first. For more information: https://liveblocks.io/docs/errors/enable-a-notification-channel`,
           );
           return null;
         }
         return value;
-      }
+      },
     };
   }
   return create(null, descriptors);
@@ -4809,12 +4913,18 @@ var ClientMsgCode = Object.freeze({
   DELETE_FEED: 514,
   ADD_FEED_MESSAGE: 515,
   UPDATE_FEED_MESSAGE: 516,
-  DELETE_FEED_MESSAGE: 517
+  DELETE_FEED_MESSAGE: 517,
 });
 function checkBounds(option, value, min, max, recommendedMin) {
-  if (typeof value !== "number" || value < min || max !== void 0 && value > max) {
+  if (
+    typeof value !== "number" ||
+    value < min ||
+    (max !== void 0 && value > max)
+  ) {
     throw new Error(
-      max !== void 0 ? `${option} should be between ${recommendedMin ?? min} and ${max}.` : `${option} should be at least ${recommendedMin ?? min}.`
+      max !== void 0
+        ? `${option} should be between ${recommendedMin ?? min} and ${max}.`
+        : `${option} should be at least ${recommendedMin ?? min}.`,
     );
   }
   return value;
@@ -4825,11 +4935,13 @@ var htmlEscapables = {
   "<": "&lt;",
   ">": "&gt;",
   '"': "&quot;",
-  "'": "&#39;"
+  "'": "&#39;",
 };
 var htmlEscapablesRegex = new RegExp(
-  Object.keys(htmlEscapables).map((entity) => `\\${entity}`).join("|"),
-  "g"
+  Object.keys(htmlEscapables)
+    .map((entity) => `\\${entity}`)
+    .join("|"),
+  "g",
 );
 var markdownEscapables = {
   _: "\\_",
@@ -4844,17 +4956,21 @@ var markdownEscapables = {
   "{": "\\{",
   "}": "\\}",
   "[": "\\[",
-  "]": "\\]"
+  "]": "\\]",
 };
 var markdownEscapablesRegex = new RegExp(
-  Object.keys(markdownEscapables).map((entity) => `\\${entity}`).join("|"),
-  "g"
+  Object.keys(markdownEscapables)
+    .map((entity) => `\\${entity}`)
+    .join("|"),
+  "g",
 );
 function makeAbortController(externalSignal) {
   const ctl = new AbortController();
   return {
-    signal: externalSignal ? AbortSignal.any([ctl.signal, externalSignal]) : ctl.signal,
-    abort: ctl.abort.bind(ctl)
+    signal: externalSignal
+      ? AbortSignal.any([ctl.signal, externalSignal])
+      : ctl.signal,
+    abort: ctl.abort.bind(ctl),
   };
 }
 __name(makeAbortController, "makeAbortController");
@@ -4873,7 +4989,7 @@ function _getDefaults() {
     renderer: null,
     silent: false,
     tokenizer: null,
-    walkTokens: null
+    walkTokens: null,
   };
 }
 __name(_getDefaults, "_getDefaults");
@@ -4894,7 +5010,7 @@ function edit(regex, opt = "") {
     }, "replace"),
     getRegex: /* @__PURE__ */ __name(() => {
       return new RegExp(source, opt);
-    }, "getRegex")
+    }, "getRegex"),
   };
   return obj;
 }
@@ -4940,7 +5056,7 @@ var other = {
   escapeReplace: /[&<>"']/g,
   escapeTestNoEncode: /[<>"']|&(?!(#\d{1,7}|#[Xx][a-fA-F0-9]{1,6}|\w+);)/,
   escapeReplaceNoEncode: /[<>"']|&(?!(#\d{1,7}|#[Xx][a-fA-F0-9]{1,6}|\w+);)/g,
-  unescapeTest: /&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/ig,
+  unescapeTest: /&(#(?:\d+)|(?:#x[0-9A-Fa-f]+)|(?:\w+));?/gi,
   caret: /(^|[^\[])\^/g,
   percentDecode: /%25/g,
   findPipe: /\|/g,
@@ -4950,35 +5066,112 @@ var other = {
   spaceLine: /^ +$/gm,
   notSpaceStart: /^\S*/,
   endingNewline: /\n$/,
-  listItemRegex: /* @__PURE__ */ __name((bull) => new RegExp(`^( {0,3}${bull})((?:[	 ][^\\n]*)?(?:\\n|$))`), "listItemRegex"),
-  nextBulletRegex: /* @__PURE__ */ __name((indent) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?:[ 	][^\\n]*)?(?:\\n|$))`), "nextBulletRegex"),
-  hrRegex: /* @__PURE__ */ __name((indent) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`), "hrRegex"),
-  fencesBeginRegex: /* @__PURE__ */ __name((indent) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:\`\`\`|~~~)`), "fencesBeginRegex"),
-  headingBeginRegex: /* @__PURE__ */ __name((indent) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}#`), "headingBeginRegex"),
-  htmlBeginRegex: /* @__PURE__ */ __name((indent) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}<(?:[a-z].*>|!--)`, "i"), "htmlBeginRegex")
+  listItemRegex: /* @__PURE__ */ __name(
+    (bull) => new RegExp(`^( {0,3}${bull})((?:[	 ][^\\n]*)?(?:\\n|$))`),
+    "listItemRegex",
+  ),
+  nextBulletRegex: /* @__PURE__ */ __name(
+    (indent) =>
+      new RegExp(
+        `^ {0,${Math.min(3, indent - 1)}}(?:[*+-]|\\d{1,9}[.)])((?:[ 	][^\\n]*)?(?:\\n|$))`,
+      ),
+    "nextBulletRegex",
+  ),
+  hrRegex: /* @__PURE__ */ __name(
+    (indent) =>
+      new RegExp(
+        `^ {0,${Math.min(3, indent - 1)}}((?:- *){3,}|(?:_ *){3,}|(?:\\* *){3,})(?:\\n+|$)`,
+      ),
+    "hrRegex",
+  ),
+  fencesBeginRegex: /* @__PURE__ */ __name(
+    (indent) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}(?:\`\`\`|~~~)`),
+    "fencesBeginRegex",
+  ),
+  headingBeginRegex: /* @__PURE__ */ __name(
+    (indent) => new RegExp(`^ {0,${Math.min(3, indent - 1)}}#`),
+    "headingBeginRegex",
+  ),
+  htmlBeginRegex: /* @__PURE__ */ __name(
+    (indent) =>
+      new RegExp(`^ {0,${Math.min(3, indent - 1)}}<(?:[a-z].*>|!--)`, "i"),
+    "htmlBeginRegex",
+  ),
 };
 var newline = /^(?:[ \t]*(?:\n|$))+/;
 var blockCode = /^((?: {4}| {0,3}\t)[^\n]+(?:\n(?:[ \t]*(?:\n|$))*)?)+/;
-var fences = /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)/;
+var fences =
+  /^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})([^\n]*)(?:\n|$)(?:|([\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)/;
 var hr = /^ {0,3}((?:-[\t ]*){3,}|(?:_[ \t]*){3,}|(?:\*[ \t]*){3,})(?:\n+|$)/;
 var heading = /^ {0,3}(#{1,6})(?=\s|$)(.*)(?:\n+|$)/;
 var bullet = /(?:[*+-]|\d{1,9}[.)])/;
-var lheadingCore = /^(?!bull |blockCode|fences|blockquote|heading|html|table)((?:.|\n(?!\s*?\n|bull |blockCode|fences|blockquote|heading|html|table))+?)\n {0,3}(=+|-+) *(?:\n+|$)/;
-var lheading = edit(lheadingCore).replace(/bull/g, bullet).replace(/blockCode/g, /(?: {4}| {0,3}\t)/).replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/).replace(/blockquote/g, / {0,3}>/).replace(/heading/g, / {0,3}#{1,6}/).replace(/html/g, / {0,3}<[^\n>]+>\n/).replace(/\|table/g, "").getRegex();
-var lheadingGfm = edit(lheadingCore).replace(/bull/g, bullet).replace(/blockCode/g, /(?: {4}| {0,3}\t)/).replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/).replace(/blockquote/g, / {0,3}>/).replace(/heading/g, / {0,3}#{1,6}/).replace(/html/g, / {0,3}<[^\n>]+>\n/).replace(/table/g, / {0,3}\|?(?:[:\- ]*\|)+[\:\- ]*\n/).getRegex();
-var _paragraph = /^([^\n]+(?:\n(?!hr|heading|lheading|blockquote|fences|list|html|table| +\n)[^\n]+)*)/;
+var lheadingCore =
+  /^(?!bull |blockCode|fences|blockquote|heading|html|table)((?:.|\n(?!\s*?\n|bull |blockCode|fences|blockquote|heading|html|table))+?)\n {0,3}(=+|-+) *(?:\n+|$)/;
+var lheading = edit(lheadingCore)
+  .replace(/bull/g, bullet)
+  .replace(/blockCode/g, /(?: {4}| {0,3}\t)/)
+  .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/)
+  .replace(/blockquote/g, / {0,3}>/)
+  .replace(/heading/g, / {0,3}#{1,6}/)
+  .replace(/html/g, / {0,3}<[^\n>]+>\n/)
+  .replace(/\|table/g, "")
+  .getRegex();
+var lheadingGfm = edit(lheadingCore)
+  .replace(/bull/g, bullet)
+  .replace(/blockCode/g, /(?: {4}| {0,3}\t)/)
+  .replace(/fences/g, / {0,3}(?:`{3,}|~{3,})/)
+  .replace(/blockquote/g, / {0,3}>/)
+  .replace(/heading/g, / {0,3}#{1,6}/)
+  .replace(/html/g, / {0,3}<[^\n>]+>\n/)
+  .replace(/table/g, / {0,3}\|?(?:[:\- ]*\|)+[\:\- ]*\n/)
+  .getRegex();
+var _paragraph =
+  /^([^\n]+(?:\n(?!hr|heading|lheading|blockquote|fences|list|html|table| +\n)[^\n]+)*)/;
 var blockText = /^[^\n]+/;
 var _blockLabel = /(?!\s*\])(?:\\.|[^\[\]\\])+/;
-var def = edit(/^ {0,3}\[(label)\]: *(?:\n[ \t]*)?([^<\s][^\s]*|<.*?>)(?:(?: +(?:\n[ \t]*)?| *\n[ \t]*)(title))? *(?:\n+|$)/).replace("label", _blockLabel).replace("title", /(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/).getRegex();
-var list = edit(/^( {0,3}bull)([ \t][^\n]+?)?(?:\n|$)/).replace(/bull/g, bullet).getRegex();
-var _tag = "address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul";
+var def = edit(
+  /^ {0,3}\[(label)\]: *(?:\n[ \t]*)?([^<\s][^\s]*|<.*?>)(?:(?: +(?:\n[ \t]*)?| *\n[ \t]*)(title))? *(?:\n+|$)/,
+)
+  .replace("label", _blockLabel)
+  .replace(
+    "title",
+    /(?:"(?:\\"?|[^"\\])*"|'[^'\n]*(?:\n[^'\n]+)*\n?'|\([^()]*\))/,
+  )
+  .getRegex();
+var list = edit(/^( {0,3}bull)([ \t][^\n]+?)?(?:\n|$)/)
+  .replace(/bull/g, bullet)
+  .getRegex();
+var _tag =
+  "address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|iframe|legend|li|link|main|menu|menuitem|meta|nav|noframes|ol|optgroup|option|p|param|search|section|summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul";
 var _comment = /<!--(?:-?>|[\s\S]*?(?:-->|$))/;
 var html = edit(
   "^ {0,3}(?:<(script|pre|style|textarea)[\\s>][\\s\\S]*?(?:</\\1>[^\\n]*\\n+|$)|comment[^\\n]*(\\n+|$)|<\\?[\\s\\S]*?(?:\\?>\\n*|$)|<![A-Z][\\s\\S]*?(?:>\\n*|$)|<!\\[CDATA\\[[\\s\\S]*?(?:\\]\\]>\\n*|$)|</?(tag)(?: +|\\n|/?>)[\\s\\S]*?(?:(?:\\n[ 	]*)+\\n|$)|<(?!script|pre|style|textarea)([a-z][\\w-]*)(?:attribute)*? */?>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ 	]*)+\\n|$)|</(?!script|pre|style|textarea)[a-z][\\w-]*\\s*>(?=[ \\t]*(?:\\n|$))[\\s\\S]*?(?:(?:\\n[ 	]*)+\\n|$))",
-  "i"
-).replace("comment", _comment).replace("tag", _tag).replace("attribute", / +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/).getRegex();
-var paragraph = edit(_paragraph).replace("hr", hr).replace("heading", " {0,3}#{1,6}(?:\\s|$)").replace("|lheading", "").replace("|table", "").replace("blockquote", " {0,3}>").replace("fences", " {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n").replace("list", " {0,3}(?:[*+-]|1[.)]) ").replace("html", "</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)").replace("tag", _tag).getRegex();
-var blockquote = edit(/^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/).replace("paragraph", paragraph).getRegex();
+  "i",
+)
+  .replace("comment", _comment)
+  .replace("tag", _tag)
+  .replace(
+    "attribute",
+    / +[a-zA-Z:_][\w.:-]*(?: *= *"[^"\n]*"| *= *'[^'\n]*'| *= *[^\s"'=<>`]+)?/,
+  )
+  .getRegex();
+var paragraph = edit(_paragraph)
+  .replace("hr", hr)
+  .replace("heading", " {0,3}#{1,6}(?:\\s|$)")
+  .replace("|lheading", "")
+  .replace("|table", "")
+  .replace("blockquote", " {0,3}>")
+  .replace("fences", " {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n")
+  .replace("list", " {0,3}(?:[*+-]|1[.)]) ")
+  .replace(
+    "html",
+    "</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)",
+  )
+  .replace("tag", _tag)
+  .getRegex();
+var blockquote = edit(/^( {0,3}> ?(paragraph|[^\n]*)(?:\n|$))+/)
+  .replace("paragraph", paragraph)
+  .getRegex();
 var blockNormal = {
   blockquote,
   code: blockCode,
@@ -4992,62 +5185,156 @@ var blockNormal = {
   newline,
   paragraph,
   table: noopTest,
-  text: blockText
+  text: blockText,
 };
 var gfmTable = edit(
-  "^ *([^\\n ].*)\\n {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)"
-).replace("hr", hr).replace("heading", " {0,3}#{1,6}(?:\\s|$)").replace("blockquote", " {0,3}>").replace("code", "(?: {4}| {0,3}	)[^\\n]").replace("fences", " {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n").replace("list", " {0,3}(?:[*+-]|1[.)]) ").replace("html", "</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)").replace("tag", _tag).getRegex();
+  "^ *([^\\n ].*)\\n {0,3}((?:\\| *)?:?-+:? *(?:\\| *:?-+:? *)*(?:\\| *)?)(?:\\n((?:(?! *\\n|hr|heading|blockquote|code|fences|list|html).*(?:\\n|$))*)\\n*|$)",
+)
+  .replace("hr", hr)
+  .replace("heading", " {0,3}#{1,6}(?:\\s|$)")
+  .replace("blockquote", " {0,3}>")
+  .replace("code", "(?: {4}| {0,3}	)[^\\n]")
+  .replace("fences", " {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n")
+  .replace("list", " {0,3}(?:[*+-]|1[.)]) ")
+  .replace(
+    "html",
+    "</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)",
+  )
+  .replace("tag", _tag)
+  .getRegex();
 var blockGfm = {
   ...blockNormal,
   lheading: lheadingGfm,
   table: gfmTable,
-  paragraph: edit(_paragraph).replace("hr", hr).replace("heading", " {0,3}#{1,6}(?:\\s|$)").replace("|lheading", "").replace("table", gfmTable).replace("blockquote", " {0,3}>").replace("fences", " {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n").replace("list", " {0,3}(?:[*+-]|1[.)]) ").replace("html", "</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)").replace("tag", _tag).getRegex()
+  paragraph: edit(_paragraph)
+    .replace("hr", hr)
+    .replace("heading", " {0,3}#{1,6}(?:\\s|$)")
+    .replace("|lheading", "")
+    .replace("table", gfmTable)
+    .replace("blockquote", " {0,3}>")
+    .replace("fences", " {0,3}(?:`{3,}(?=[^`\\n]*\\n)|~{3,})[^\\n]*\\n")
+    .replace("list", " {0,3}(?:[*+-]|1[.)]) ")
+    .replace(
+      "html",
+      "</?(?:tag)(?: +|\\n|/?>)|<(?:script|pre|style|textarea|!--)",
+    )
+    .replace("tag", _tag)
+    .getRegex(),
 };
 var blockPedantic = {
   ...blockNormal,
   html: edit(
-    `^ *(?:comment *(?:\\n|\\s*$)|<(tag)[\\s\\S]+?</\\1> *(?:\\n{2,}|\\s*$)|<tag(?:"[^"]*"|'[^']*'|\\s[^'"/>\\s]*)*?/?> *(?:\\n{2,}|\\s*$))`
-  ).replace("comment", _comment).replace(/tag/g, "(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\\b)\\w+(?!:|[^\\w\\s@]*@)\\b").getRegex(),
+    `^ *(?:comment *(?:\\n|\\s*$)|<(tag)[\\s\\S]+?</\\1> *(?:\\n{2,}|\\s*$)|<tag(?:"[^"]*"|'[^']*'|\\s[^'"/>\\s]*)*?/?> *(?:\\n{2,}|\\s*$))`,
+  )
+    .replace("comment", _comment)
+    .replace(
+      /tag/g,
+      "(?!(?:a|em|strong|small|s|cite|q|dfn|abbr|data|time|code|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo|span|br|wbr|ins|del|img)\\b)\\w+(?!:|[^\\w\\s@]*@)\\b",
+    )
+    .getRegex(),
   def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +(["(][^\n]+[")]))? *(?:\n+|$)/,
   heading: /^(#{1,6})(.*)(?:\n+|$)/,
   fences: noopTest,
   // fences not supported
   lheading: /^(.+?)\n {0,3}(=+|-+) *(?:\n+|$)/,
-  paragraph: edit(_paragraph).replace("hr", hr).replace("heading", " *#{1,6} *[^\n]").replace("lheading", lheading).replace("|table", "").replace("blockquote", " {0,3}>").replace("|fences", "").replace("|list", "").replace("|html", "").replace("|tag", "").getRegex()
+  paragraph: edit(_paragraph)
+    .replace("hr", hr)
+    .replace("heading", " *#{1,6} *[^\n]")
+    .replace("lheading", lheading)
+    .replace("|table", "")
+    .replace("blockquote", " {0,3}>")
+    .replace("|fences", "")
+    .replace("|list", "")
+    .replace("|html", "")
+    .replace("|tag", "")
+    .getRegex(),
 };
 var escape = /^\\([!"#$%&'()*+,\-./:;<=>?@\[\]\\^_`{|}~])/;
 var inlineCode = /^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/;
 var br = /^( {2,}|\\)\n(?!\s*$)/;
-var inlineText = /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
+var inlineText =
+  /^(`+|[^`])(?:(?= {2,}\n)|[\s\S]*?(?:(?=[\\<!\[`*_]|\b_|$)|[^ ](?= {2,}\n)))/;
 var _punctuation = /[\p{P}\p{S}]/u;
 var _punctuationOrSpace = /[\s\p{P}\p{S}]/u;
 var _notPunctuationOrSpace = /[^\s\p{P}\p{S}]/u;
-var punctuation = edit(/^((?![*_])punctSpace)/, "u").replace(/punctSpace/g, _punctuationOrSpace).getRegex();
+var punctuation = edit(/^((?![*_])punctSpace)/, "u")
+  .replace(/punctSpace/g, _punctuationOrSpace)
+  .getRegex();
 var _punctuationGfmStrongEm = /(?!~)[\p{P}\p{S}]/u;
 var _punctuationOrSpaceGfmStrongEm = /(?!~)[\s\p{P}\p{S}]/u;
 var _notPunctuationOrSpaceGfmStrongEm = /(?:[^\s\p{P}\p{S}]|~)/u;
-var blockSkip = /\[[^[\]]*?\]\((?:\\.|[^\\\(\)]|\((?:\\.|[^\\\(\)])*\))*\)|`[^`]*?`|<[^<>]*?>/g;
-var emStrongLDelimCore = /^(?:\*+(?:((?!\*)punct)|[^\s*]))|^_+(?:((?!_)punct)|([^\s_]))/;
-var emStrongLDelim = edit(emStrongLDelimCore, "u").replace(/punct/g, _punctuation).getRegex();
-var emStrongLDelimGfm = edit(emStrongLDelimCore, "u").replace(/punct/g, _punctuationGfmStrongEm).getRegex();
-var emStrongRDelimAstCore = "^[^_*]*?__[^_*]*?\\*[^_*]*?(?=__)|[^*]+(?=[^*])|(?!\\*)punct(\\*+)(?=[\\s]|$)|notPunctSpace(\\*+)(?!\\*)(?=punctSpace|$)|(?!\\*)punctSpace(\\*+)(?=notPunctSpace)|[\\s](\\*+)(?!\\*)(?=punct)|(?!\\*)punct(\\*+)(?!\\*)(?=punct)|notPunctSpace(\\*+)(?=notPunctSpace)";
-var emStrongRDelimAst = edit(emStrongRDelimAstCore, "gu").replace(/notPunctSpace/g, _notPunctuationOrSpace).replace(/punctSpace/g, _punctuationOrSpace).replace(/punct/g, _punctuation).getRegex();
-var emStrongRDelimAstGfm = edit(emStrongRDelimAstCore, "gu").replace(/notPunctSpace/g, _notPunctuationOrSpaceGfmStrongEm).replace(/punctSpace/g, _punctuationOrSpaceGfmStrongEm).replace(/punct/g, _punctuationGfmStrongEm).getRegex();
+var blockSkip =
+  /\[[^[\]]*?\]\((?:\\.|[^\\\(\)]|\((?:\\.|[^\\\(\)])*\))*\)|`[^`]*?`|<[^<>]*?>/g;
+var emStrongLDelimCore =
+  /^(?:\*+(?:((?!\*)punct)|[^\s*]))|^_+(?:((?!_)punct)|([^\s_]))/;
+var emStrongLDelim = edit(emStrongLDelimCore, "u")
+  .replace(/punct/g, _punctuation)
+  .getRegex();
+var emStrongLDelimGfm = edit(emStrongLDelimCore, "u")
+  .replace(/punct/g, _punctuationGfmStrongEm)
+  .getRegex();
+var emStrongRDelimAstCore =
+  "^[^_*]*?__[^_*]*?\\*[^_*]*?(?=__)|[^*]+(?=[^*])|(?!\\*)punct(\\*+)(?=[\\s]|$)|notPunctSpace(\\*+)(?!\\*)(?=punctSpace|$)|(?!\\*)punctSpace(\\*+)(?=notPunctSpace)|[\\s](\\*+)(?!\\*)(?=punct)|(?!\\*)punct(\\*+)(?!\\*)(?=punct)|notPunctSpace(\\*+)(?=notPunctSpace)";
+var emStrongRDelimAst = edit(emStrongRDelimAstCore, "gu")
+  .replace(/notPunctSpace/g, _notPunctuationOrSpace)
+  .replace(/punctSpace/g, _punctuationOrSpace)
+  .replace(/punct/g, _punctuation)
+  .getRegex();
+var emStrongRDelimAstGfm = edit(emStrongRDelimAstCore, "gu")
+  .replace(/notPunctSpace/g, _notPunctuationOrSpaceGfmStrongEm)
+  .replace(/punctSpace/g, _punctuationOrSpaceGfmStrongEm)
+  .replace(/punct/g, _punctuationGfmStrongEm)
+  .getRegex();
 var emStrongRDelimUnd = edit(
   "^[^_*]*?\\*\\*[^_*]*?_[^_*]*?(?=\\*\\*)|[^_]+(?=[^_])|(?!_)punct(_+)(?=[\\s]|$)|notPunctSpace(_+)(?!_)(?=punctSpace|$)|(?!_)punctSpace(_+)(?=notPunctSpace)|[\\s](_+)(?!_)(?=punct)|(?!_)punct(_+)(?!_)(?=punct)",
-  "gu"
-).replace(/notPunctSpace/g, _notPunctuationOrSpace).replace(/punctSpace/g, _punctuationOrSpace).replace(/punct/g, _punctuation).getRegex();
-var anyPunctuation = edit(/\\(punct)/, "gu").replace(/punct/g, _punctuation).getRegex();
-var autolink = edit(/^<(scheme:[^\s\x00-\x1f<>]*|email)>/).replace("scheme", /[a-zA-Z][a-zA-Z0-9+.-]{1,31}/).replace("email", /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(@)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(?![-_])/).getRegex();
+  "gu",
+)
+  .replace(/notPunctSpace/g, _notPunctuationOrSpace)
+  .replace(/punctSpace/g, _punctuationOrSpace)
+  .replace(/punct/g, _punctuation)
+  .getRegex();
+var anyPunctuation = edit(/\\(punct)/, "gu")
+  .replace(/punct/g, _punctuation)
+  .getRegex();
+var autolink = edit(/^<(scheme:[^\s\x00-\x1f<>]*|email)>/)
+  .replace("scheme", /[a-zA-Z][a-zA-Z0-9+.-]{1,31}/)
+  .replace(
+    "email",
+    /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+(@)[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(?![-_])/,
+  )
+  .getRegex();
 var _inlineComment = edit(_comment).replace("(?:-->|$)", "-->").getRegex();
 var tag = edit(
-  "^comment|^</[a-zA-Z][\\w:-]*\\s*>|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>|^<\\?[\\s\\S]*?\\?>|^<![a-zA-Z]+\\s[\\s\\S]*?>|^<!\\[CDATA\\[[\\s\\S]*?\\]\\]>"
-).replace("comment", _inlineComment).replace("attribute", /\s+[a-zA-Z:_][\w.:-]*(?:\s*=\s*"[^"]*"|\s*=\s*'[^']*'|\s*=\s*[^\s"'=<>`]+)?/).getRegex();
+  "^comment|^</[a-zA-Z][\\w:-]*\\s*>|^<[a-zA-Z][\\w-]*(?:attribute)*?\\s*/?>|^<\\?[\\s\\S]*?\\?>|^<![a-zA-Z]+\\s[\\s\\S]*?>|^<!\\[CDATA\\[[\\s\\S]*?\\]\\]>",
+)
+  .replace("comment", _inlineComment)
+  .replace(
+    "attribute",
+    /\s+[a-zA-Z:_][\w.:-]*(?:\s*=\s*"[^"]*"|\s*=\s*'[^']*'|\s*=\s*[^\s"'=<>`]+)?/,
+  )
+  .getRegex();
 var _inlineLabel = /(?:\[(?:\\.|[^\[\]\\])*\]|\\.|`[^`]*`|[^\[\]\\`])*?/;
-var link = edit(/^!?\[(label)\]\(\s*(href)(?:(?:[ \t]*(?:\n[ \t]*)?)(title))?\s*\)/).replace("label", _inlineLabel).replace("href", /<(?:\\.|[^\n<>\\])+>|[^ \t\n\x00-\x1f]*/).replace("title", /"(?:\\"?|[^"\\])*"|'(?:\\'?|[^'\\])*'|\((?:\\\)?|[^)\\])*\)/).getRegex();
-var reflink = edit(/^!?\[(label)\]\[(ref)\]/).replace("label", _inlineLabel).replace("ref", _blockLabel).getRegex();
-var nolink = edit(/^!?\[(ref)\](?:\[\])?/).replace("ref", _blockLabel).getRegex();
-var reflinkSearch = edit("reflink|nolink(?!\\()", "g").replace("reflink", reflink).replace("nolink", nolink).getRegex();
+var link = edit(
+  /^!?\[(label)\]\(\s*(href)(?:(?:[ \t]*(?:\n[ \t]*)?)(title))?\s*\)/,
+)
+  .replace("label", _inlineLabel)
+  .replace("href", /<(?:\\.|[^\n<>\\])+>|[^ \t\n\x00-\x1f]*/)
+  .replace(
+    "title",
+    /"(?:\\"?|[^"\\])*"|'(?:\\'?|[^'\\])*'|\((?:\\\)?|[^)\\])*\)/,
+  )
+  .getRegex();
+var reflink = edit(/^!?\[(label)\]\[(ref)\]/)
+  .replace("label", _inlineLabel)
+  .replace("ref", _blockLabel)
+  .getRegex();
+var nolink = edit(/^!?\[(ref)\](?:\[\])?/)
+  .replace("ref", _blockLabel)
+  .getRegex();
+var reflinkSearch = edit("reflink|nolink(?!\\()", "g")
+  .replace("reflink", reflink)
+  .replace("nolink", nolink)
+  .getRegex();
 var inlineNormal = {
   _backpedal: noopTest,
   // only used for GFM url
@@ -5068,46 +5355,65 @@ var inlineNormal = {
   reflinkSearch,
   tag,
   text: inlineText,
-  url: noopTest
+  url: noopTest,
 };
 var inlinePedantic = {
   ...inlineNormal,
-  link: edit(/^!?\[(label)\]\((.*?)\)/).replace("label", _inlineLabel).getRegex(),
-  reflink: edit(/^!?\[(label)\]\s*\[([^\]]*)\]/).replace("label", _inlineLabel).getRegex()
+  link: edit(/^!?\[(label)\]\((.*?)\)/)
+    .replace("label", _inlineLabel)
+    .getRegex(),
+  reflink: edit(/^!?\[(label)\]\s*\[([^\]]*)\]/)
+    .replace("label", _inlineLabel)
+    .getRegex(),
 };
 var inlineGfm = {
   ...inlineNormal,
   emStrongRDelimAst: emStrongRDelimAstGfm,
   emStrongLDelim: emStrongLDelimGfm,
-  url: edit(/^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/, "i").replace("email", /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/).getRegex(),
-  _backpedal: /(?:[^?!.,:;*_'"~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_'"~)]+(?!$))+/,
+  url: edit(
+    /^((?:ftp|https?):\/\/|www\.)(?:[a-zA-Z0-9\-]+\.?)+[^\s<]*|^email/,
+    "i",
+  )
+    .replace(
+      "email",
+      /[A-Za-z0-9._+-]+(@)[a-zA-Z0-9-_]+(?:\.[a-zA-Z0-9-_]*[a-zA-Z0-9])+(?![-_])/,
+    )
+    .getRegex(),
+  _backpedal:
+    /(?:[^?!.,:;*_'"~()&]+|\([^)]*\)|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_'"~)]+(?!$))+/,
   del: /^(~~?)(?=[^\s~])((?:\\.|[^\\])*?(?:\\.|[^\s~\\]))\1(?=[^~]|$)/,
-  text: /^([`~]+|[^`~])(?:(?= {2,}\n)|(?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|https?:\/\/|ftp:\/\/|www\.|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)))/
+  text: /^([`~]+|[^`~])(?:(?= {2,}\n)|(?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)|[\s\S]*?(?:(?=[\\<!\[`*~_]|\b_|https?:\/\/|ftp:\/\/|www\.|$)|[^ ](?= {2,}\n)|[^a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-](?=[a-zA-Z0-9.!#$%&'*+\/=?_`{\|}~-]+@)))/,
 };
 var inlineBreaks = {
   ...inlineGfm,
   br: edit(br).replace("{2,}", "*").getRegex(),
-  text: edit(inlineGfm.text).replace("\\b_", "\\b_| {2,}\\n").replace(/\{2,\}/g, "*").getRegex()
+  text: edit(inlineGfm.text)
+    .replace("\\b_", "\\b_| {2,}\\n")
+    .replace(/\{2,\}/g, "*")
+    .getRegex(),
 };
 var block = {
   normal: blockNormal,
   gfm: blockGfm,
-  pedantic: blockPedantic
+  pedantic: blockPedantic,
 };
 var inline = {
   normal: inlineNormal,
   gfm: inlineGfm,
   breaks: inlineBreaks,
-  pedantic: inlinePedantic
+  pedantic: inlinePedantic,
 };
 var escapeReplacements = {
   "&": "&amp;",
   "<": "&lt;",
   ">": "&gt;",
   '"': "&quot;",
-  "'": "&#39;"
+  "'": "&#39;",
 };
-var getEscapeReplacement = /* @__PURE__ */ __name((ch) => escapeReplacements[ch], "getEscapeReplacement");
+var getEscapeReplacement = /* @__PURE__ */ __name(
+  (ch) => escapeReplacements[ch],
+  "getEscapeReplacement",
+);
 function escape2(html2, encode2) {
   if (encode2) {
     if (other.escapeTest.test(html2)) {
@@ -5132,15 +5438,16 @@ function cleanUrl(href) {
 __name(cleanUrl, "cleanUrl");
 function splitCells(tableRow, count) {
   const row = tableRow.replace(other.findPipe, (match, offset, str) => {
-    let escaped = false;
-    let curr = offset;
-    while (--curr >= 0 && str[curr] === "\\") escaped = !escaped;
-    if (escaped) {
-      return "|";
-    } else {
-      return " |";
-    }
-  }), cells = row.split(other.splitPipe);
+      let escaped = false;
+      let curr = offset;
+      while (--curr >= 0 && str[curr] === "\\") escaped = !escaped;
+      if (escaped) {
+        return "|";
+      } else {
+        return " |";
+      }
+    }),
+    cells = row.split(other.splitPipe);
   let i = 0;
   if (!cells[0].trim()) {
     cells.shift();
@@ -5214,7 +5521,7 @@ function outputLink(cap, link2, raw, lexer2, rules) {
     href,
     title,
     text,
-    tokens: lexer2.inlineTokens(text)
+    tokens: lexer2.inlineTokens(text),
   };
   lexer2.state.inLink = false;
   return token;
@@ -5226,17 +5533,20 @@ function indentCodeCompensation(raw, text, rules) {
     return text;
   }
   const indentToCode = matchIndentToCode[1];
-  return text.split("\n").map((node) => {
-    const matchIndentInNode = node.match(rules.other.beginningSpace);
-    if (matchIndentInNode === null) {
+  return text
+    .split("\n")
+    .map((node) => {
+      const matchIndentInNode = node.match(rules.other.beginningSpace);
+      if (matchIndentInNode === null) {
+        return node;
+      }
+      const [indentInNode] = matchIndentInNode;
+      if (indentInNode.length >= indentToCode.length) {
+        return node.slice(indentToCode.length);
+      }
       return node;
-    }
-    const [indentInNode] = matchIndentInNode;
-    if (indentInNode.length >= indentToCode.length) {
-      return node.slice(indentToCode.length);
-    }
-    return node;
-  }).join("\n");
+    })
+    .join("\n");
 }
 __name(indentCodeCompensation, "indentCodeCompensation");
 var _Tokenizer = class {
@@ -5256,7 +5566,7 @@ var _Tokenizer = class {
     if (cap && cap[0].length > 0) {
       return {
         type: "space",
-        raw: cap[0]
+        raw: cap[0],
       };
     }
   }
@@ -5268,7 +5578,7 @@ var _Tokenizer = class {
         type: "code",
         raw: cap[0],
         codeBlockStyle: "indented",
-        text: !this.options.pedantic ? rtrim(text, "\n") : text
+        text: !this.options.pedantic ? rtrim(text, "\n") : text,
       };
     }
   }
@@ -5280,8 +5590,10 @@ var _Tokenizer = class {
       return {
         type: "code",
         raw,
-        lang: cap[2] ? cap[2].trim().replace(this.rules.inline.anyPunctuation, "$1") : cap[2],
-        text
+        lang: cap[2]
+          ? cap[2].trim().replace(this.rules.inline.anyPunctuation, "$1")
+          : cap[2],
+        text,
       };
     }
   }
@@ -5302,7 +5614,7 @@ var _Tokenizer = class {
         raw: cap[0],
         depth: cap[1].length,
         text,
-        tokens: this.lexer.inline(text)
+        tokens: this.lexer.inline(text),
       };
     }
   }
@@ -5311,7 +5623,7 @@ var _Tokenizer = class {
     if (cap) {
       return {
         type: "hr",
-        raw: rtrim(cap[0], "\n")
+        raw: rtrim(cap[0], "\n"),
       };
     }
   }
@@ -5338,11 +5650,17 @@ var _Tokenizer = class {
         }
         lines = lines.slice(i);
         const currentRaw = currentLines.join("\n");
-        const currentText = currentRaw.replace(this.rules.other.blockquoteSetextReplace, "\n    $1").replace(this.rules.other.blockquoteSetextReplace2, "");
-        raw = raw ? `${raw}
-${currentRaw}` : currentRaw;
-        text = text ? `${text}
-${currentText}` : currentText;
+        const currentText = currentRaw
+          .replace(this.rules.other.blockquoteSetextReplace, "\n    $1")
+          .replace(this.rules.other.blockquoteSetextReplace2, "");
+        raw = raw
+          ? `${raw}
+${currentRaw}`
+          : currentRaw;
+        text = text
+          ? `${text}
+${currentText}`
+          : currentText;
         const top = this.lexer.state.top;
         this.lexer.state.top = true;
         this.lexer.blockTokens(currentText, tokens, true);
@@ -5358,16 +5676,21 @@ ${currentText}` : currentText;
           const newText = oldToken.raw + "\n" + lines.join("\n");
           const newToken = this.blockquote(newText);
           tokens[tokens.length - 1] = newToken;
-          raw = raw.substring(0, raw.length - oldToken.raw.length) + newToken.raw;
-          text = text.substring(0, text.length - oldToken.text.length) + newToken.text;
+          raw =
+            raw.substring(0, raw.length - oldToken.raw.length) + newToken.raw;
+          text =
+            text.substring(0, text.length - oldToken.text.length) +
+            newToken.text;
           break;
         } else if (lastToken?.type === "list") {
           const oldToken = lastToken;
           const newText = oldToken.raw + "\n" + lines.join("\n");
           const newToken = this.list(newText);
           tokens[tokens.length - 1] = newToken;
-          raw = raw.substring(0, raw.length - lastToken.raw.length) + newToken.raw;
-          text = text.substring(0, text.length - oldToken.raw.length) + newToken.raw;
+          raw =
+            raw.substring(0, raw.length - lastToken.raw.length) + newToken.raw;
+          text =
+            text.substring(0, text.length - oldToken.raw.length) + newToken.raw;
           lines = newText.substring(tokens.at(-1).raw.length).split("\n");
           continue;
         }
@@ -5376,7 +5699,7 @@ ${currentText}` : currentText;
         type: "blockquote",
         raw,
         tokens,
-        text
+        text,
       };
     }
   }
@@ -5391,7 +5714,7 @@ ${currentText}` : currentText;
         ordered: isordered,
         start: isordered ? +bull.slice(0, -1) : "",
         loose: false,
-        items: []
+        items: [],
       };
       bull = isordered ? `\\d{1,9}\\${bull.slice(-1)}` : `\\${bull}`;
       if (this.options.pedantic) {
@@ -5411,7 +5734,11 @@ ${currentText}` : currentText;
         }
         raw = cap[0];
         src = src.substring(raw.length);
-        let line = cap[2].split("\n", 1)[0].replace(this.rules.other.listReplaceTabs, (t) => " ".repeat(3 * t.length));
+        let line = cap[2]
+          .split("\n", 1)[0]
+          .replace(this.rules.other.listReplaceTabs, (t) =>
+            " ".repeat(3 * t.length),
+          );
         let nextLine = src.split("\n", 1)[0];
         let blankLine = !line.trim();
         let indent = 0;
@@ -5442,10 +5769,16 @@ ${currentText}` : currentText;
             let nextLineWithoutTabs;
             nextLine = rawLine;
             if (this.options.pedantic) {
-              nextLine = nextLine.replace(this.rules.other.listReplaceNesting, "  ");
+              nextLine = nextLine.replace(
+                this.rules.other.listReplaceNesting,
+                "  ",
+              );
               nextLineWithoutTabs = nextLine;
             } else {
-              nextLineWithoutTabs = nextLine.replace(this.rules.other.tabCharGlobal, "    ");
+              nextLineWithoutTabs = nextLine.replace(
+                this.rules.other.tabCharGlobal,
+                "    ",
+              );
             }
             if (fencesBeginRegex.test(nextLine)) {
               break;
@@ -5462,13 +5795,21 @@ ${currentText}` : currentText;
             if (hrRegex.test(nextLine)) {
               break;
             }
-            if (nextLineWithoutTabs.search(this.rules.other.nonSpaceChar) >= indent || !nextLine.trim()) {
+            if (
+              nextLineWithoutTabs.search(this.rules.other.nonSpaceChar) >=
+                indent ||
+              !nextLine.trim()
+            ) {
               itemContents += "\n" + nextLineWithoutTabs.slice(indent);
             } else {
               if (blankLine) {
                 break;
               }
-              if (line.replace(this.rules.other.tabCharGlobal, "    ").search(this.rules.other.nonSpaceChar) >= 4) {
+              if (
+                line
+                  .replace(this.rules.other.tabCharGlobal, "    ")
+                  .search(this.rules.other.nonSpaceChar) >= 4
+              ) {
                 break;
               }
               if (fencesBeginRegex.test(line)) {
@@ -5503,7 +5844,10 @@ ${currentText}` : currentText;
           istask = this.rules.other.listIsTask.exec(itemContents);
           if (istask) {
             ischecked = istask[0] !== "[ ] ";
-            itemContents = itemContents.replace(this.rules.other.listReplaceTask, "");
+            itemContents = itemContents.replace(
+              this.rules.other.listReplaceTask,
+              "",
+            );
           }
         }
         list2.items.push({
@@ -5513,7 +5857,7 @@ ${currentText}` : currentText;
           checked: ischecked,
           loose: false,
           text: itemContents,
-          tokens: []
+          tokens: [],
         });
         list2.raw += raw;
       }
@@ -5529,8 +5873,12 @@ ${currentText}` : currentText;
         this.lexer.state.top = false;
         list2.items[i].tokens = this.lexer.blockTokens(list2.items[i].text, []);
         if (!list2.loose) {
-          const spacers = list2.items[i].tokens.filter((t) => t.type === "space");
-          const hasMultipleLineBreaks = spacers.length > 0 && spacers.some((t) => this.rules.other.anyLine.test(t.raw));
+          const spacers = list2.items[i].tokens.filter(
+            (t) => t.type === "space",
+          );
+          const hasMultipleLineBreaks =
+            spacers.length > 0 &&
+            spacers.some((t) => this.rules.other.anyLine.test(t.raw));
           list2.loose = hasMultipleLineBreaks;
         }
       }
@@ -5550,7 +5898,7 @@ ${currentText}` : currentText;
         block: true,
         raw: cap[0],
         pre: cap[1] === "pre" || cap[1] === "script" || cap[1] === "style",
-        text: cap[0]
+        text: cap[0],
       };
       return token;
     }
@@ -5558,15 +5906,25 @@ ${currentText}` : currentText;
   def(src) {
     const cap = this.rules.block.def.exec(src);
     if (cap) {
-      const tag2 = cap[1].toLowerCase().replace(this.rules.other.multipleSpaceGlobal, " ");
-      const href = cap[2] ? cap[2].replace(this.rules.other.hrefBrackets, "$1").replace(this.rules.inline.anyPunctuation, "$1") : "";
-      const title = cap[3] ? cap[3].substring(1, cap[3].length - 1).replace(this.rules.inline.anyPunctuation, "$1") : cap[3];
+      const tag2 = cap[1]
+        .toLowerCase()
+        .replace(this.rules.other.multipleSpaceGlobal, " ");
+      const href = cap[2]
+        ? cap[2]
+            .replace(this.rules.other.hrefBrackets, "$1")
+            .replace(this.rules.inline.anyPunctuation, "$1")
+        : "";
+      const title = cap[3]
+        ? cap[3]
+            .substring(1, cap[3].length - 1)
+            .replace(this.rules.inline.anyPunctuation, "$1")
+        : cap[3];
       return {
         type: "def",
         tag: tag2,
         raw: cap[0],
         href,
-        title
+        title,
       };
     }
   }
@@ -5579,14 +5937,18 @@ ${currentText}` : currentText;
       return;
     }
     const headers = splitCells(cap[1]);
-    const aligns = cap[2].replace(this.rules.other.tableAlignChars, "").split("|");
-    const rows = cap[3]?.trim() ? cap[3].replace(this.rules.other.tableRowBlankLine, "").split("\n") : [];
+    const aligns = cap[2]
+      .replace(this.rules.other.tableAlignChars, "")
+      .split("|");
+    const rows = cap[3]?.trim()
+      ? cap[3].replace(this.rules.other.tableRowBlankLine, "").split("\n")
+      : [];
     const item = {
       type: "table",
       raw: cap[0],
       header: [],
       align: [],
-      rows: []
+      rows: [],
     };
     if (headers.length !== aligns.length) {
       return;
@@ -5607,18 +5969,20 @@ ${currentText}` : currentText;
         text: headers[i],
         tokens: this.lexer.inline(headers[i]),
         header: true,
-        align: item.align[i]
+        align: item.align[i],
       });
     }
     for (const row of rows) {
-      item.rows.push(splitCells(row, item.header.length).map((cell, i) => {
-        return {
-          text: cell,
-          tokens: this.lexer.inline(cell),
-          header: false,
-          align: item.align[i]
-        };
-      }));
+      item.rows.push(
+        splitCells(row, item.header.length).map((cell, i) => {
+          return {
+            text: cell,
+            tokens: this.lexer.inline(cell),
+            header: false,
+            align: item.align[i],
+          };
+        }),
+      );
     }
     return item;
   }
@@ -5630,19 +5994,22 @@ ${currentText}` : currentText;
         raw: cap[0],
         depth: cap[2].charAt(0) === "=" ? 1 : 2,
         text: cap[1],
-        tokens: this.lexer.inline(cap[1])
+        tokens: this.lexer.inline(cap[1]),
       };
     }
   }
   paragraph(src) {
     const cap = this.rules.block.paragraph.exec(src);
     if (cap) {
-      const text = cap[1].charAt(cap[1].length - 1) === "\n" ? cap[1].slice(0, -1) : cap[1];
+      const text =
+        cap[1].charAt(cap[1].length - 1) === "\n"
+          ? cap[1].slice(0, -1)
+          : cap[1];
       return {
         type: "paragraph",
         raw: cap[0],
         text,
-        tokens: this.lexer.inline(text)
+        tokens: this.lexer.inline(text),
       };
     }
   }
@@ -5653,7 +6020,7 @@ ${currentText}` : currentText;
         type: "text",
         raw: cap[0],
         text: cap[0],
-        tokens: this.lexer.inline(cap[0])
+        tokens: this.lexer.inline(cap[0]),
       };
     }
   }
@@ -5663,7 +6030,7 @@ ${currentText}` : currentText;
       return {
         type: "escape",
         raw: cap[0],
-        text: cap[1]
+        text: cap[1],
       };
     }
   }
@@ -5672,12 +6039,21 @@ ${currentText}` : currentText;
     if (cap) {
       if (!this.lexer.state.inLink && this.rules.other.startATag.test(cap[0])) {
         this.lexer.state.inLink = true;
-      } else if (this.lexer.state.inLink && this.rules.other.endATag.test(cap[0])) {
+      } else if (
+        this.lexer.state.inLink &&
+        this.rules.other.endATag.test(cap[0])
+      ) {
         this.lexer.state.inLink = false;
       }
-      if (!this.lexer.state.inRawBlock && this.rules.other.startPreScriptTag.test(cap[0])) {
+      if (
+        !this.lexer.state.inRawBlock &&
+        this.rules.other.startPreScriptTag.test(cap[0])
+      ) {
         this.lexer.state.inRawBlock = true;
-      } else if (this.lexer.state.inRawBlock && this.rules.other.endPreScriptTag.test(cap[0])) {
+      } else if (
+        this.lexer.state.inRawBlock &&
+        this.rules.other.endPreScriptTag.test(cap[0])
+      ) {
         this.lexer.state.inRawBlock = false;
       }
       return {
@@ -5686,7 +6062,7 @@ ${currentText}` : currentText;
         inLink: this.lexer.state.inLink,
         inRawBlock: this.lexer.state.inRawBlock,
         block: false,
-        text: cap[0]
+        text: cap[0],
       };
     }
   }
@@ -5694,7 +6070,10 @@ ${currentText}` : currentText;
     const cap = this.rules.inline.link.exec(src);
     if (cap) {
       const trimmedUrl = cap[2].trim();
-      if (!this.options.pedantic && this.rules.other.startAngleBracket.test(trimmedUrl)) {
+      if (
+        !this.options.pedantic &&
+        this.rules.other.startAngleBracket.test(trimmedUrl)
+      ) {
         if (!this.rules.other.endAngleBracket.test(trimmedUrl)) {
           return;
         }
@@ -5728,29 +6107,48 @@ ${currentText}` : currentText;
       }
       href = href.trim();
       if (this.rules.other.startAngleBracket.test(href)) {
-        if (this.options.pedantic && !this.rules.other.endAngleBracket.test(trimmedUrl)) {
+        if (
+          this.options.pedantic &&
+          !this.rules.other.endAngleBracket.test(trimmedUrl)
+        ) {
           href = href.slice(1);
         } else {
           href = href.slice(1, -1);
         }
       }
-      return outputLink(cap, {
-        href: href ? href.replace(this.rules.inline.anyPunctuation, "$1") : href,
-        title: title ? title.replace(this.rules.inline.anyPunctuation, "$1") : title
-      }, cap[0], this.lexer, this.rules);
+      return outputLink(
+        cap,
+        {
+          href: href
+            ? href.replace(this.rules.inline.anyPunctuation, "$1")
+            : href,
+          title: title
+            ? title.replace(this.rules.inline.anyPunctuation, "$1")
+            : title,
+        },
+        cap[0],
+        this.lexer,
+        this.rules,
+      );
     }
   }
   reflink(src, links) {
     let cap;
-    if ((cap = this.rules.inline.reflink.exec(src)) || (cap = this.rules.inline.nolink.exec(src))) {
-      const linkString = (cap[2] || cap[1]).replace(this.rules.other.multipleSpaceGlobal, " ");
+    if (
+      (cap = this.rules.inline.reflink.exec(src)) ||
+      (cap = this.rules.inline.nolink.exec(src))
+    ) {
+      const linkString = (cap[2] || cap[1]).replace(
+        this.rules.other.multipleSpaceGlobal,
+        " ",
+      );
       const link2 = links[linkString.toLowerCase()];
       if (!link2) {
         const text = cap[0].charAt(0);
         return {
           type: "text",
           raw: text,
-          text
+          text,
         };
       }
       return outputLink(cap, link2, cap[0], this.lexer, this.rules);
@@ -5759,16 +6157,28 @@ ${currentText}` : currentText;
   emStrong(src, maskedSrc, prevChar = "") {
     let match = this.rules.inline.emStrongLDelim.exec(src);
     if (!match) return;
-    if (match[3] && prevChar.match(this.rules.other.unicodeAlphaNumeric)) return;
+    if (match[3] && prevChar.match(this.rules.other.unicodeAlphaNumeric))
+      return;
     const nextChar = match[1] || match[2] || "";
-    if (!nextChar || !prevChar || this.rules.inline.punctuation.exec(prevChar)) {
+    if (
+      !nextChar ||
+      !prevChar ||
+      this.rules.inline.punctuation.exec(prevChar)
+    ) {
       const lLength = [...match[0]].length - 1;
-      let rDelim, rLength, delimTotal = lLength, midDelimTotal = 0;
-      const endReg = match[0][0] === "*" ? this.rules.inline.emStrongRDelimAst : this.rules.inline.emStrongRDelimUnd;
+      let rDelim,
+        rLength,
+        delimTotal = lLength,
+        midDelimTotal = 0;
+      const endReg =
+        match[0][0] === "*"
+          ? this.rules.inline.emStrongRDelimAst
+          : this.rules.inline.emStrongRDelimUnd;
       endReg.lastIndex = 0;
       maskedSrc = maskedSrc.slice(-1 * src.length + lLength);
       while ((match = endReg.exec(maskedSrc)) != null) {
-        rDelim = match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
+        rDelim =
+          match[1] || match[2] || match[3] || match[4] || match[5] || match[6];
         if (!rDelim) continue;
         rLength = [...rDelim].length;
         if (match[3] || match[4]) {
@@ -5784,14 +6194,17 @@ ${currentText}` : currentText;
         if (delimTotal > 0) continue;
         rLength = Math.min(rLength, rLength + delimTotal + midDelimTotal);
         const lastCharLength = [...match[0]][0].length;
-        const raw = src.slice(0, lLength + match.index + lastCharLength + rLength);
+        const raw = src.slice(
+          0,
+          lLength + match.index + lastCharLength + rLength,
+        );
         if (Math.min(lLength, rLength) % 2) {
           const text2 = raw.slice(1, -1);
           return {
             type: "em",
             raw,
             text: text2,
-            tokens: this.lexer.inlineTokens(text2)
+            tokens: this.lexer.inlineTokens(text2),
           };
         }
         const text = raw.slice(2, -2);
@@ -5799,7 +6212,7 @@ ${currentText}` : currentText;
           type: "strong",
           raw,
           text,
-          tokens: this.lexer.inlineTokens(text)
+          tokens: this.lexer.inlineTokens(text),
         };
       }
     }
@@ -5809,14 +6222,16 @@ ${currentText}` : currentText;
     if (cap) {
       let text = cap[2].replace(this.rules.other.newLineCharGlobal, " ");
       const hasNonSpaceChars = this.rules.other.nonSpaceChar.test(text);
-      const hasSpaceCharsOnBothEnds = this.rules.other.startingSpaceChar.test(text) && this.rules.other.endingSpaceChar.test(text);
+      const hasSpaceCharsOnBothEnds =
+        this.rules.other.startingSpaceChar.test(text) &&
+        this.rules.other.endingSpaceChar.test(text);
       if (hasNonSpaceChars && hasSpaceCharsOnBothEnds) {
         text = text.substring(1, text.length - 1);
       }
       return {
         type: "codespan",
         raw: cap[0],
-        text
+        text,
       };
     }
   }
@@ -5825,7 +6240,7 @@ ${currentText}` : currentText;
     if (cap) {
       return {
         type: "br",
-        raw: cap[0]
+        raw: cap[0],
       };
     }
   }
@@ -5836,7 +6251,7 @@ ${currentText}` : currentText;
         type: "del",
         raw: cap[0],
         text: cap[2],
-        tokens: this.lexer.inlineTokens(cap[2])
+        tokens: this.lexer.inlineTokens(cap[2]),
       };
     }
   }
@@ -5860,15 +6275,15 @@ ${currentText}` : currentText;
           {
             type: "text",
             raw: text,
-            text
-          }
-        ]
+            text,
+          },
+        ],
       };
     }
   }
   url(src) {
     let cap;
-    if (cap = this.rules.inline.url.exec(src)) {
+    if ((cap = this.rules.inline.url.exec(src))) {
       let text, href;
       if (cap[2] === "@") {
         text = cap[0];
@@ -5895,9 +6310,9 @@ ${currentText}` : currentText;
           {
             type: "text",
             raw: text,
-            text
-          }
-        ]
+            text,
+          },
+        ],
       };
     }
   }
@@ -5909,7 +6324,7 @@ ${currentText}` : currentText;
         type: "text",
         raw: cap[0],
         text: cap[0],
-        escaped
+        escaped,
       };
     }
   }
@@ -5935,12 +6350,12 @@ var _Lexer = class __Lexer {
     this.state = {
       inLink: false,
       inRawBlock: false,
-      top: true
+      top: true,
     };
     const rules = {
       other,
       block: block.normal,
-      inline: inline.normal
+      inline: inline.normal,
     };
     if (this.options.pedantic) {
       rules.block = block.pedantic;
@@ -5961,7 +6376,7 @@ var _Lexer = class __Lexer {
   static get rules() {
     return {
       block,
-      inline
+      inline,
     };
   }
   /**
@@ -5993,21 +6408,25 @@ var _Lexer = class __Lexer {
   }
   blockTokens(src, tokens = [], lastParagraphClipped = false) {
     if (this.options.pedantic) {
-      src = src.replace(other.tabCharGlobal, "    ").replace(other.spaceLine, "");
+      src = src
+        .replace(other.tabCharGlobal, "    ")
+        .replace(other.spaceLine, "");
     }
     while (src) {
       let token;
-      if (this.options.extensions?.block?.some((extTokenizer) => {
-        if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
-          src = src.substring(token.raw.length);
-          tokens.push(token);
-          return true;
-        }
-        return false;
-      })) {
+      if (
+        this.options.extensions?.block?.some((extTokenizer) => {
+          if ((token = extTokenizer.call({ lexer: this }, src, tokens))) {
+            src = src.substring(token.raw.length);
+            tokens.push(token);
+            return true;
+          }
+          return false;
+        })
+      ) {
         continue;
       }
-      if (token = this.tokenizer.space(src)) {
+      if ((token = this.tokenizer.space(src))) {
         src = src.substring(token.raw.length);
         const lastToken = tokens.at(-1);
         if (token.raw.length === 1 && lastToken !== void 0) {
@@ -6017,7 +6436,7 @@ var _Lexer = class __Lexer {
         }
         continue;
       }
-      if (token = this.tokenizer.code(src)) {
+      if ((token = this.tokenizer.code(src))) {
         src = src.substring(token.raw.length);
         const lastToken = tokens.at(-1);
         if (lastToken?.type === "paragraph" || lastToken?.type === "text") {
@@ -6029,37 +6448,37 @@ var _Lexer = class __Lexer {
         }
         continue;
       }
-      if (token = this.tokenizer.fences(src)) {
+      if ((token = this.tokenizer.fences(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.heading(src)) {
+      if ((token = this.tokenizer.heading(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.hr(src)) {
+      if ((token = this.tokenizer.hr(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.blockquote(src)) {
+      if ((token = this.tokenizer.blockquote(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.list(src)) {
+      if ((token = this.tokenizer.list(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.html(src)) {
+      if ((token = this.tokenizer.html(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.def(src)) {
+      if ((token = this.tokenizer.def(src))) {
         src = src.substring(token.raw.length);
         const lastToken = tokens.at(-1);
         if (lastToken?.type === "paragraph" || lastToken?.type === "text") {
@@ -6069,17 +6488,17 @@ var _Lexer = class __Lexer {
         } else if (!this.tokens.links[token.tag]) {
           this.tokens.links[token.tag] = {
             href: token.href,
-            title: token.title
+            title: token.title,
           };
         }
         continue;
       }
-      if (token = this.tokenizer.table(src)) {
+      if ((token = this.tokenizer.table(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.lheading(src)) {
+      if ((token = this.tokenizer.lheading(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -6113,7 +6532,7 @@ var _Lexer = class __Lexer {
         src = src.substring(token.raw.length);
         continue;
       }
-      if (token = this.tokenizer.text(src)) {
+      if ((token = this.tokenizer.text(src))) {
         src = src.substring(token.raw.length);
         const lastToken = tokens.at(-1);
         if (lastToken?.type === "text") {
@@ -6152,18 +6571,43 @@ var _Lexer = class __Lexer {
     if (this.tokens.links) {
       const links = Object.keys(this.tokens.links);
       if (links.length > 0) {
-        while ((match = this.tokenizer.rules.inline.reflinkSearch.exec(maskedSrc)) != null) {
-          if (links.includes(match[0].slice(match[0].lastIndexOf("[") + 1, -1))) {
-            maskedSrc = maskedSrc.slice(0, match.index) + "[" + "a".repeat(match[0].length - 2) + "]" + maskedSrc.slice(this.tokenizer.rules.inline.reflinkSearch.lastIndex);
+        while (
+          (match = this.tokenizer.rules.inline.reflinkSearch.exec(maskedSrc)) !=
+          null
+        ) {
+          if (
+            links.includes(match[0].slice(match[0].lastIndexOf("[") + 1, -1))
+          ) {
+            maskedSrc =
+              maskedSrc.slice(0, match.index) +
+              "[" +
+              "a".repeat(match[0].length - 2) +
+              "]" +
+              maskedSrc.slice(
+                this.tokenizer.rules.inline.reflinkSearch.lastIndex,
+              );
           }
         }
       }
     }
-    while ((match = this.tokenizer.rules.inline.anyPunctuation.exec(maskedSrc)) != null) {
-      maskedSrc = maskedSrc.slice(0, match.index) + "++" + maskedSrc.slice(this.tokenizer.rules.inline.anyPunctuation.lastIndex);
+    while (
+      (match = this.tokenizer.rules.inline.anyPunctuation.exec(maskedSrc)) !=
+      null
+    ) {
+      maskedSrc =
+        maskedSrc.slice(0, match.index) +
+        "++" +
+        maskedSrc.slice(this.tokenizer.rules.inline.anyPunctuation.lastIndex);
     }
-    while ((match = this.tokenizer.rules.inline.blockSkip.exec(maskedSrc)) != null) {
-      maskedSrc = maskedSrc.slice(0, match.index) + "[" + "a".repeat(match[0].length - 2) + "]" + maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
+    while (
+      (match = this.tokenizer.rules.inline.blockSkip.exec(maskedSrc)) != null
+    ) {
+      maskedSrc =
+        maskedSrc.slice(0, match.index) +
+        "[" +
+        "a".repeat(match[0].length - 2) +
+        "]" +
+        maskedSrc.slice(this.tokenizer.rules.inline.blockSkip.lastIndex);
     }
     let keepPrevChar = false;
     let prevChar = "";
@@ -6173,32 +6617,34 @@ var _Lexer = class __Lexer {
       }
       keepPrevChar = false;
       let token;
-      if (this.options.extensions?.inline?.some((extTokenizer) => {
-        if (token = extTokenizer.call({ lexer: this }, src, tokens)) {
-          src = src.substring(token.raw.length);
-          tokens.push(token);
-          return true;
-        }
-        return false;
-      })) {
+      if (
+        this.options.extensions?.inline?.some((extTokenizer) => {
+          if ((token = extTokenizer.call({ lexer: this }, src, tokens))) {
+            src = src.substring(token.raw.length);
+            tokens.push(token);
+            return true;
+          }
+          return false;
+        })
+      ) {
         continue;
       }
-      if (token = this.tokenizer.escape(src)) {
+      if ((token = this.tokenizer.escape(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.tag(src)) {
+      if ((token = this.tokenizer.tag(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.link(src)) {
+      if ((token = this.tokenizer.link(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.reflink(src, this.tokens.links)) {
+      if ((token = this.tokenizer.reflink(src, this.tokens.links))) {
         src = src.substring(token.raw.length);
         const lastToken = tokens.at(-1);
         if (token.type === "text" && lastToken?.type === "text") {
@@ -6209,27 +6655,27 @@ var _Lexer = class __Lexer {
         }
         continue;
       }
-      if (token = this.tokenizer.emStrong(src, maskedSrc, prevChar)) {
+      if ((token = this.tokenizer.emStrong(src, maskedSrc, prevChar))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.codespan(src)) {
+      if ((token = this.tokenizer.codespan(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.br(src)) {
+      if ((token = this.tokenizer.br(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.del(src)) {
+      if ((token = this.tokenizer.del(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
       }
-      if (token = this.tokenizer.autolink(src)) {
+      if ((token = this.tokenizer.autolink(src))) {
         src = src.substring(token.raw.length);
         tokens.push(token);
         continue;
@@ -6254,7 +6700,7 @@ var _Lexer = class __Lexer {
           cutSrc = src.substring(0, startIndex + 1);
         }
       }
-      if (token = this.tokenizer.inlineText(cutSrc)) {
+      if ((token = this.tokenizer.inlineText(cutSrc))) {
         src = src.substring(token.raw.length);
         if (token.raw.slice(-1) !== "_") {
           prevChar = token.raw.slice(-1);
@@ -6299,9 +6745,19 @@ var _Renderer = class {
     const langString = (lang || "").match(other.notSpaceStart)?.[0];
     const code = text.replace(other.endingNewline, "") + "\n";
     if (!langString) {
-      return "<pre><code>" + (escaped ? code : escape2(code, true)) + "</code></pre>\n";
+      return (
+        "<pre><code>" +
+        (escaped ? code : escape2(code, true)) +
+        "</code></pre>\n"
+      );
     }
-    return '<pre><code class="language-' + escape2(langString) + '">' + (escaped ? code : escape2(code, true)) + "</code></pre>\n";
+    return (
+      '<pre><code class="language-' +
+      escape2(langString) +
+      '">' +
+      (escaped ? code : escape2(code, true)) +
+      "</code></pre>\n"
+    );
   }
   blockquote({ tokens }) {
     const body = this.parser.parse(tokens);
@@ -6338,8 +6794,13 @@ ${body}</blockquote>
       if (item.loose) {
         if (item.tokens[0]?.type === "paragraph") {
           item.tokens[0].text = checkbox + " " + item.tokens[0].text;
-          if (item.tokens[0].tokens && item.tokens[0].tokens.length > 0 && item.tokens[0].tokens[0].type === "text") {
-            item.tokens[0].tokens[0].text = checkbox + " " + escape2(item.tokens[0].tokens[0].text);
+          if (
+            item.tokens[0].tokens &&
+            item.tokens[0].tokens.length > 0 &&
+            item.tokens[0].tokens[0].type === "text"
+          ) {
+            item.tokens[0].tokens[0].text =
+              checkbox + " " + escape2(item.tokens[0].tokens[0].text);
             item.tokens[0].tokens[0].escaped = true;
           }
         } else {
@@ -6347,7 +6808,7 @@ ${body}</blockquote>
             type: "text",
             raw: checkbox + " ",
             text: checkbox + " ",
-            escaped: true
+            escaped: true,
           });
         }
       } else {
@@ -6359,7 +6820,11 @@ ${body}</blockquote>
 `;
   }
   checkbox({ checked }) {
-    return "<input " + (checked ? 'checked="" ' : "") + 'disabled="" type="checkbox">';
+    return (
+      "<input " +
+      (checked ? 'checked="" ' : "") +
+      'disabled="" type="checkbox">'
+    );
   }
   paragraph({ tokens }) {
     return `<p>${this.parser.parseInline(tokens)}</p>
@@ -6393,8 +6858,12 @@ ${text}</tr>
     const content = this.parser.parseInline(token.tokens);
     const type = token.header ? "th" : "td";
     const tag2 = token.align ? `<${type} align="${token.align}">` : `<${type}>`;
-    return tag2 + content + `</${type}>
-`;
+    return (
+      tag2 +
+      content +
+      `</${type}>
+`
+    );
   }
   /**
    * span level renderer
@@ -6445,7 +6914,11 @@ ${text}</tr>
     return out;
   }
   text(token) {
-    return "tokens" in token && token.tokens ? this.parser.parseInline(token.tokens) : "escaped" in token && token.escaped ? token.text : escape2(token.text);
+    return "tokens" in token && token.tokens
+      ? this.parser.parseInline(token.tokens)
+      : "escaped" in token && token.escaped
+        ? token.text
+        : escape2(token.text);
   }
 };
 var _TextRenderer = class {
@@ -6519,8 +6992,25 @@ var _Parser = class __Parser {
       const anyToken = tokens[i];
       if (this.options.extensions?.renderers?.[anyToken.type]) {
         const genericToken = anyToken;
-        const ret = this.options.extensions.renderers[genericToken.type].call({ parser: this }, genericToken);
-        if (ret !== false || !["space", "hr", "heading", "code", "table", "blockquote", "list", "html", "paragraph", "text"].includes(genericToken.type)) {
+        const ret = this.options.extensions.renderers[genericToken.type].call(
+          { parser: this },
+          genericToken,
+        );
+        if (
+          ret !== false ||
+          ![
+            "space",
+            "hr",
+            "heading",
+            "code",
+            "table",
+            "blockquote",
+            "list",
+            "html",
+            "paragraph",
+            "text",
+          ].includes(genericToken.type)
+        ) {
           out += ret || "";
           continue;
         }
@@ -6575,7 +7065,7 @@ var _Parser = class __Parser {
               type: "paragraph",
               raw: body,
               text: body,
-              tokens: [{ type: "text", raw: body, text: body, escaped: true }]
+              tokens: [{ type: "text", raw: body, text: body, escaped: true }],
             });
           } else {
             out += body;
@@ -6603,8 +7093,25 @@ var _Parser = class __Parser {
     for (let i = 0; i < tokens.length; i++) {
       const anyToken = tokens[i];
       if (this.options.extensions?.renderers?.[anyToken.type]) {
-        const ret = this.options.extensions.renderers[anyToken.type].call({ parser: this }, anyToken);
-        if (ret !== false || !["escape", "html", "link", "image", "strong", "em", "codespan", "br", "del", "text"].includes(anyToken.type)) {
+        const ret = this.options.extensions.renderers[anyToken.type].call(
+          { parser: this },
+          anyToken,
+        );
+        if (
+          ret !== false ||
+          ![
+            "escape",
+            "html",
+            "link",
+            "image",
+            "strong",
+            "em",
+            "codespan",
+            "br",
+            "del",
+            "text",
+          ].includes(anyToken.type)
+        ) {
           out += ret || "";
           continue;
         }
@@ -6677,7 +7184,7 @@ var _Hooks = class {
   static passThroughHooks = /* @__PURE__ */ new Set([
     "preprocess",
     "postprocess",
-    "processAllTokens"
+    "processAllTokens",
   ]);
   /**
    * Process markdown before marked
@@ -6755,12 +7262,16 @@ var Marked = class {
         default: {
           const genericToken = token;
           if (this.defaults.extensions?.childTokens?.[genericToken.type]) {
-            this.defaults.extensions.childTokens[genericToken.type].forEach((childTokens) => {
-              const tokens2 = genericToken[childTokens].flat(Infinity);
-              values = values.concat(this.walkTokens(tokens2, callback));
-            });
+            this.defaults.extensions.childTokens[genericToken.type].forEach(
+              (childTokens) => {
+                const tokens2 = genericToken[childTokens].flat(Infinity);
+                values = values.concat(this.walkTokens(tokens2, callback));
+              },
+            );
           } else if (genericToken.tokens) {
-            values = values.concat(this.walkTokens(genericToken.tokens, callback));
+            values = values.concat(
+              this.walkTokens(genericToken.tokens, callback),
+            );
           }
         }
       }
@@ -6768,7 +7279,10 @@ var Marked = class {
     return values;
   }
   use(...args) {
-    const extensions = this.defaults.extensions || { renderers: {}, childTokens: {} };
+    const extensions = this.defaults.extensions || {
+      renderers: {},
+      childTokens: {},
+    };
     args.forEach((pack) => {
       const opts = { ...pack };
       opts.async = this.defaults.async || opts.async || false;
@@ -6780,7 +7294,7 @@ var Marked = class {
           if ("renderer" in ext) {
             const prevRenderer = extensions.renderers[ext.name];
             if (prevRenderer) {
-              extensions.renderers[ext.name] = function(...args2) {
+              extensions.renderers[ext.name] = function (...args2) {
                 let ret = ext.renderer.apply(this, args2);
                 if (ret === false) {
                   ret = prevRenderer.apply(this, args2);
@@ -6792,7 +7306,10 @@ var Marked = class {
             }
           }
           if ("tokenizer" in ext) {
-            if (!ext.level || ext.level !== "block" && ext.level !== "inline") {
+            if (
+              !ext.level ||
+              (ext.level !== "block" && ext.level !== "inline")
+            ) {
               throw new Error("extension level must be 'block' or 'inline'");
             }
             const extLevel = extensions[ext.level];
@@ -6846,7 +7363,8 @@ var Marked = class {
         opts.renderer = renderer;
       }
       if (pack.tokenizer) {
-        const tokenizer = this.defaults.tokenizer || new _Tokenizer(this.defaults);
+        const tokenizer =
+          this.defaults.tokenizer || new _Tokenizer(this.defaults);
         for (const prop in pack.tokenizer) {
           if (!(prop in tokenizer)) {
             throw new Error(`tokenizer '${prop}' does not exist`);
@@ -6882,9 +7400,11 @@ var Marked = class {
           if (_Hooks.passThroughHooks.has(prop)) {
             hooks[hooksProp] = (arg) => {
               if (this.defaults.async) {
-                return Promise.resolve(hooksFunc.call(hooks, arg)).then((ret2) => {
-                  return prevHook.call(hooks, ret2);
-                });
+                return Promise.resolve(hooksFunc.call(hooks, arg)).then(
+                  (ret2) => {
+                    return prevHook.call(hooks, ret2);
+                  },
+                );
               }
               const ret = hooksFunc.call(hooks, arg);
               return prevHook.call(hooks, ret);
@@ -6904,7 +7424,7 @@ var Marked = class {
       if (pack.walkTokens) {
         const walkTokens2 = this.defaults.walkTokens;
         const packWalktokens = pack.walkTokens;
-        opts.walkTokens = function(token) {
+        opts.walkTokens = function (token) {
           let values = [];
           values.push(packWalktokens.call(this, token));
           if (walkTokens2) {
@@ -6933,22 +7453,56 @@ var Marked = class {
       const opt = { ...this.defaults, ...origOpt };
       const throwError = this.onError(!!opt.silent, !!opt.async);
       if (this.defaults.async === true && origOpt.async === false) {
-        return throwError(new Error("marked(): The async option was set to true by an extension. Remove async: false from the parse options object to return a Promise."));
+        return throwError(
+          new Error(
+            "marked(): The async option was set to true by an extension. Remove async: false from the parse options object to return a Promise.",
+          ),
+        );
       }
       if (typeof src === "undefined" || src === null) {
-        return throwError(new Error("marked(): input parameter is undefined or null"));
+        return throwError(
+          new Error("marked(): input parameter is undefined or null"),
+        );
       }
       if (typeof src !== "string") {
-        return throwError(new Error("marked(): input parameter is of type " + Object.prototype.toString.call(src) + ", string expected"));
+        return throwError(
+          new Error(
+            "marked(): input parameter is of type " +
+              Object.prototype.toString.call(src) +
+              ", string expected",
+          ),
+        );
       }
       if (opt.hooks) {
         opt.hooks.options = opt;
         opt.hooks.block = blockType;
       }
-      const lexer2 = opt.hooks ? opt.hooks.provideLexer() : blockType ? _Lexer.lex : _Lexer.lexInline;
-      const parser2 = opt.hooks ? opt.hooks.provideParser() : blockType ? _Parser.parse : _Parser.parseInline;
+      const lexer2 = opt.hooks
+        ? opt.hooks.provideLexer()
+        : blockType
+          ? _Lexer.lex
+          : _Lexer.lexInline;
+      const parser2 = opt.hooks
+        ? opt.hooks.provideParser()
+        : blockType
+          ? _Parser.parse
+          : _Parser.parseInline;
       if (opt.async) {
-        return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src).then((src2) => lexer2(src2, opt)).then((tokens) => opt.hooks ? opt.hooks.processAllTokens(tokens) : tokens).then((tokens) => opt.walkTokens ? Promise.all(this.walkTokens(tokens, opt.walkTokens)).then(() => tokens) : tokens).then((tokens) => parser2(tokens, opt)).then((html2) => opt.hooks ? opt.hooks.postprocess(html2) : html2).catch(throwError);
+        return Promise.resolve(opt.hooks ? opt.hooks.preprocess(src) : src)
+          .then((src2) => lexer2(src2, opt))
+          .then((tokens) =>
+            opt.hooks ? opt.hooks.processAllTokens(tokens) : tokens,
+          )
+          .then((tokens) =>
+            opt.walkTokens
+              ? Promise.all(this.walkTokens(tokens, opt.walkTokens)).then(
+                  () => tokens,
+                )
+              : tokens,
+          )
+          .then((tokens) => parser2(tokens, opt))
+          .then((html2) => (opt.hooks ? opt.hooks.postprocess(html2) : html2))
+          .catch(throwError);
       }
       try {
         if (opt.hooks) {
@@ -6974,9 +7528,13 @@ var Marked = class {
   }
   onError(silent, async) {
     return (e) => {
-      e.message += "\nPlease report this to https://github.com/markedjs/marked.";
+      e.message +=
+        "\nPlease report this to https://github.com/markedjs/marked.";
       if (silent) {
-        const msg = "<p>An error occurred:</p><pre>" + escape2(e.message + "", true) + "</pre>";
+        const msg =
+          "<p>An error occurred:</p><pre>" +
+          escape2(e.message + "", true) +
+          "</pre>";
         if (async) {
           return Promise.resolve(msg);
         }
@@ -6994,7 +7552,7 @@ function marked(src, opt) {
   return markedInstance.parse(src, opt);
 }
 __name(marked, "marked");
-marked.options = marked.setOptions = function(options2) {
+marked.options = marked.setOptions = function (options2) {
   markedInstance.setOptions(options2);
   marked.defaults = markedInstance.defaults;
   changeDefaults(marked.defaults);
@@ -7002,13 +7560,13 @@ marked.options = marked.setOptions = function(options2) {
 };
 marked.getDefaults = _getDefaults;
 marked.defaults = _defaults;
-marked.use = function(...args) {
+marked.use = function (...args) {
   markedInstance.use(...args);
   marked.defaults = markedInstance.defaults;
   changeDefaults(marked.defaults);
   return marked;
 };
-marked.walkTokens = function(tokens, callback) {
+marked.walkTokens = function (tokens, callback) {
   return markedInstance.walkTokens(tokens, callback);
 };
 marked.parseInline = markedInstance.parseInline;
@@ -7086,7 +7644,7 @@ var LineStream = class extends TransformStream {
         if (buffer.length > 0) {
           controller.enqueue(buffer);
         }
-      }
+      },
     });
   }
 };
@@ -7099,7 +7657,7 @@ var NdJsonStream = class extends TransformStream {
       transform(line, controller) {
         const json = JSON.parse(line);
         controller.enqueue(json);
-      }
+      },
     });
   }
 };
@@ -7126,7 +7684,9 @@ function getBaseUrl(baseUrl) {
 }
 __name(getBaseUrl, "getBaseUrl");
 async function fetchPolyfill() {
-  return typeof globalThis.fetch !== "undefined" ? globalThis.fetch : (await import("./lib-5M2X3GZO.mjs")).default;
+  return typeof globalThis.fetch !== "undefined"
+    ? globalThis.fetch
+    : (await import("./lib-5M2X3GZO.mjs")).default;
 }
 __name(fetchPolyfill, "fetchPolyfill");
 function isString(value) {
@@ -7144,7 +7704,7 @@ __name(isNonEmpty, "isNonEmpty");
 function assertNonEmpty(value, field) {
   if (!isNonEmpty(value)) {
     throw new Error(
-      `Invalid value for field '${field}'. Please provide a non-empty string. For more information: https://liveblocks.io/docs/api-reference/liveblocks-node#authorize`
+      `Invalid value for field '${field}'. Please provide a non-empty string. For more information: https://liveblocks.io/docs/api-reference/liveblocks-node#authorize`,
     );
   }
 }
@@ -7152,12 +7712,12 @@ __name(assertNonEmpty, "assertNonEmpty");
 function assertSecretKey(value, field) {
   if (!startsWith(value, "sk_")) {
     throw new Error(
-      `Invalid value for field '${field}'. Secret keys must start with 'sk_'. Please provide the secret key from your Liveblocks dashboard at https://liveblocks.io/dashboard/apikeys.`
+      `Invalid value for field '${field}'. Secret keys must start with 'sk_'. Please provide the secret key from your Liveblocks dashboard at https://liveblocks.io/dashboard/apikeys.`,
     );
   }
   if (!VALID_KEY_CHARS_REGEX.test(value)) {
     throw new Error(
-      `Invalid chars found in field '${field}'. Please check that you correctly copied the secret key from your Liveblocks dashboard at https://liveblocks.io/dashboard/apikeys.`
+      `Invalid chars found in field '${field}'. Please check that you correctly copied the secret key from your Liveblocks dashboard at https://liveblocks.io/dashboard/apikeys.`,
     );
   }
 }
@@ -7215,7 +7775,7 @@ var Session = class {
     } else {
       if (this.#permissions.size >= MAX_PERMS_PER_SET) {
         throw new Error(
-          "You cannot add permissions for more than 10 rooms in a single token"
+          "You cannot add permissions for more than 10 rooms in a single token",
         );
       }
       perms = /* @__PURE__ */ new Set();
@@ -7248,7 +7808,7 @@ var Session = class {
   seal() {
     if (this.#sealed) {
       throw new Error(
-        "You cannot reuse Session instances. Please create a new session every time."
+        "You cannot reuse Session instances. Please create a new session every time.",
       );
     }
     this.#sealed = true;
@@ -7258,8 +7818,8 @@ var Session = class {
     return Object.fromEntries(
       Array.from(this.#permissions.entries()).map(([pat, perms]) => [
         pat,
-        Array.from(perms)
-      ])
+        Array.from(perms),
+      ]),
     );
   }
   /**
@@ -7271,7 +7831,7 @@ var Session = class {
     this.seal();
     if (!this.hasPermissions()) {
       console.warn(
-        "Access tokens without any permission will not be supported soon, you should use wildcards when the client requests a token for resources outside a room. See https://liveblocks.io/docs/errors/liveblocks-client/access-tokens-not-enough-permissions"
+        "Access tokens without any permission will not be supported soon, you should use wildcards when the client requests a token for resources outside a room. See https://liveblocks.io/docs/errors/liveblocks-client/access-tokens-not-enough-permissions",
       );
     }
     try {
@@ -7280,7 +7840,7 @@ var Session = class {
         userId: this.#userId,
         permissions: this.serializePermissions(),
         // Optional metadata
-        userInfo: this.#userInfo
+        userInfo: this.#userInfo,
       };
       if (this.#organizationId !== void 0) {
         body.organizationId = this.#organizationId;
@@ -7288,24 +7848,28 @@ var Session = class {
       const resp = await this.#postFn(url`/v2/authorize-user`, body);
       return {
         status: normalizeStatusCode(resp.status),
-        body: await resp.text()
+        body: await resp.text(),
       };
     } catch (er) {
       return {
         status: 503,
-        body: this.#localDev ? "Could not connect to your Liveblocks dev server. Is it running?" : 'Call to /v2/authorize-user failed. See "error" for more information.',
-        error: er
+        body: this.#localDev
+          ? "Could not connect to your Liveblocks dev server. Is it running?"
+          : 'Call to /v2/authorize-user failed. See "error" for more information.',
+        error: er,
       };
     }
   }
 };
 function inflateRoomData(room) {
   const createdAt = new Date(room.createdAt);
-  const lastConnectionAt = room.lastConnectionAt ? new Date(room.lastConnectionAt) : void 0;
+  const lastConnectionAt = room.lastConnectionAt
+    ? new Date(room.lastConnectionAt)
+    : void 0;
   return {
     ...room,
     createdAt,
-    lastConnectionAt
+    lastConnectionAt,
   };
 }
 __name(inflateRoomData, "inflateRoomData");
@@ -7314,16 +7878,19 @@ function normalizeCreateRoomOptions(options2) {
     ...options2,
     defaultAccesses: normalizeRoomPermissions(options2.defaultAccesses),
     groupsAccesses: normalizeRoomAccesses(options2.groupsAccesses),
-    usersAccesses: normalizeRoomAccesses(options2.usersAccesses)
+    usersAccesses: normalizeRoomAccesses(options2.usersAccesses),
   };
 }
 __name(normalizeCreateRoomOptions, "normalizeCreateRoomOptions");
 function normalizeUpdateRoomOptions(options2) {
   return {
     ...options2,
-    defaultAccesses: options2.defaultAccesses === void 0 || options2.defaultAccesses === null ? options2.defaultAccesses : normalizeRoomPermissions(options2.defaultAccesses),
+    defaultAccesses:
+      options2.defaultAccesses === void 0 || options2.defaultAccesses === null
+        ? options2.defaultAccesses
+        : normalizeRoomPermissions(options2.defaultAccesses),
     groupsAccesses: normalizeUpdateRoomAccesses(options2.groupsAccesses),
-    usersAccesses: normalizeUpdateRoomAccesses(options2.usersAccesses)
+    usersAccesses: normalizeUpdateRoomAccesses(options2.usersAccesses),
   };
 }
 __name(normalizeUpdateRoomOptions, "normalizeUpdateRoomOptions");
@@ -7332,7 +7899,7 @@ function inflateAiCopilot(copilot) {
     ...copilot,
     createdAt: new Date(copilot.createdAt),
     updatedAt: new Date(copilot.updatedAt),
-    lastUsedAt: copilot.lastUsedAt ? new Date(copilot.lastUsedAt) : void 0
+    lastUsedAt: copilot.lastUsedAt ? new Date(copilot.lastUsedAt) : void 0,
   };
 }
 __name(inflateAiCopilot, "inflateAiCopilot");
@@ -7341,7 +7908,7 @@ function inflateKnowledgeSource(source) {
     ...source,
     createdAt: new Date(source.createdAt),
     updatedAt: new Date(source.updatedAt),
-    lastIndexedAt: new Date(source.lastIndexedAt)
+    lastIndexedAt: new Date(source.lastIndexedAt),
   };
 }
 __name(inflateKnowledgeSource, "inflateKnowledgeSource");
@@ -7349,7 +7916,7 @@ function inflateWebKnowledgeSourceLink(link2) {
   return {
     ...link2,
     createdAt: new Date(link2.createdAt),
-    lastIndexedAt: new Date(link2.lastIndexedAt)
+    lastIndexedAt: new Date(link2.lastIndexedAt),
   };
 }
 __name(inflateWebKnowledgeSourceLink, "inflateWebKnowledgeSourceLink");
@@ -7370,20 +7937,21 @@ var Liveblocks = class {
     assertSecretKey(secret, "secret");
     this.#secret = secret;
     this.#baseUrl = new URL(getBaseUrl(options2.baseUrl));
-    this.#localDev = !!options2.baseUrl && /^https?:\/\/localhost[:/]/.test(options2.baseUrl);
+    this.#localDev =
+      !!options2.baseUrl && /^https?:\/\/localhost[:/]/.test(options2.baseUrl);
   }
   async #post(path, json, options2) {
     const url3 = urljoin(this.#baseUrl, path);
     const headers = {
       Authorization: `Bearer ${this.#secret}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
     const fetch2 = await fetchPolyfill();
     const res = await fetch2(url3, {
       method: "POST",
       headers,
       body: JSON.stringify(json),
-      signal: options2?.signal
+      signal: options2?.signal,
     });
     xwarn(res, "POST", path);
     return res;
@@ -7392,14 +7960,14 @@ var Liveblocks = class {
     const url3 = urljoin(this.#baseUrl, path);
     const headers = {
       Authorization: `Bearer ${this.#secret}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     };
     const fetch2 = await fetchPolyfill();
     const res = await fetch2(url3, {
       method: "PATCH",
       headers,
       body: JSON.stringify(json),
-      signal: options2?.signal
+      signal: options2?.signal,
     });
     xwarn(res, "PATCH", path);
     return res;
@@ -7408,14 +7976,14 @@ var Liveblocks = class {
     const url3 = urljoin(this.#baseUrl, path, params);
     const headers = {
       Authorization: `Bearer ${this.#secret}`,
-      "Content-Type": "application/octet-stream"
+      "Content-Type": "application/octet-stream",
     };
     const fetch2 = await fetchPolyfill();
     const res = await fetch2(url3, {
       method: "PUT",
       headers,
       body,
-      signal: options2?.signal
+      signal: options2?.signal,
     });
     xwarn(res, "PUT", path);
     return res;
@@ -7423,13 +7991,13 @@ var Liveblocks = class {
   async #delete(path, params, options2) {
     const url3 = urljoin(this.#baseUrl, path, params);
     const headers = {
-      Authorization: `Bearer ${this.#secret}`
+      Authorization: `Bearer ${this.#secret}`,
     };
     const fetch2 = await fetchPolyfill();
     const res = await fetch2(url3, {
       method: "DELETE",
       headers,
-      signal: options2?.signal
+      signal: options2?.signal,
     });
     xwarn(res, "DELETE", path);
     return res;
@@ -7437,13 +8005,13 @@ var Liveblocks = class {
   async #get(path, params, options2) {
     const url3 = urljoin(this.#baseUrl, path, params);
     const headers = {
-      Authorization: `Bearer ${this.#secret}`
+      Authorization: `Bearer ${this.#secret}`,
     };
     const fetch2 = await fetchPolyfill();
     const res = await fetch2(url3, {
       method: "GET",
       headers,
-      signal: options2?.signal
+      signal: options2?.signal,
     });
     xwarn(res, "GET", path);
     return res;
@@ -7476,7 +8044,7 @@ var Liveblocks = class {
       userId,
       options2?.userInfo,
       options2?.organizationId ?? options2?.tenantId,
-      this.#localDev
+      this.#localDev,
     );
   }
   /**
@@ -7515,17 +8083,20 @@ var Liveblocks = class {
   async identifyUser(identity, ...rest) {
     const options2 = rest[0];
     const path = url`/v2/identify-user`;
-    const { userId, groupIds, tenantId, organizationId } = typeof identity === "string" ? {
-      userId: identity,
-      groupIds: void 0,
-      tenantId: void 0,
-      organizationId: void 0
-    } : identity;
+    const { userId, groupIds, tenantId, organizationId } =
+      typeof identity === "string"
+        ? {
+            userId: identity,
+            groupIds: void 0,
+            tenantId: void 0,
+            organizationId: void 0,
+          }
+        : identity;
     assertNonEmpty(userId, "userId");
     const body = {
       userId,
       groupIds,
-      userInfo: options2?.userInfo
+      userInfo: options2?.userInfo,
     };
     if (organizationId !== void 0) {
       body.organizationId = organizationId;
@@ -7536,16 +8107,18 @@ var Liveblocks = class {
       const resp = await this.#post(path, body);
       return {
         status: normalizeStatusCode(resp.status),
-        body: await resp.text()
+        body: await resp.text(),
       };
     } catch (er) {
       return {
         status: 503,
-        body: this.#localDev ? "Could not connect to your Liveblocks dev server. Is it running?" : `Call to ${urljoin(
-          this.#baseUrl,
-          path
-        )} failed. See "error" for more information.`,
-        error: er
+        body: this.#localDev
+          ? "Could not connect to your Liveblocks dev server. Is it running?"
+          : `Call to ${urljoin(
+              this.#baseUrl,
+              path,
+            )} failed. See "error" for more information.`,
+        error: er,
       };
     }
   }
@@ -7577,7 +8150,7 @@ var Liveblocks = class {
       startingAfter: params.startingAfter,
       userId: params.userId,
       groupIds: params.groupIds ? params.groupIds.join(",") : void 0,
-      query
+      query,
     };
     if (params.organizationId !== void 0) {
       queryParams.organizationId = params.organizationId;
@@ -7592,7 +8165,7 @@ var Liveblocks = class {
     const rooms = page.data.map(inflateRoomData);
     return {
       ...page,
-      data: rooms
+      data: rooms,
     };
   }
   /**
@@ -7616,7 +8189,7 @@ var Liveblocks = class {
     while (true) {
       const { nextCursor, data } = await this.getRooms(
         { ...criteria, startingAfter: cursor, limit: pageSize },
-        { signal }
+        { signal },
       );
       for (const item of data) {
         yield item;
@@ -7646,14 +8219,14 @@ var Liveblocks = class {
       usersAccesses,
       metadata: metadata2,
       tenantId,
-      organizationId
+      organizationId,
     } = normalizedParams;
     const body = {
       id: roomId,
       defaultAccesses,
       groupsAccesses,
       usersAccesses,
-      metadata: metadata2
+      metadata: metadata2,
     };
     if (organizationId !== void 0) {
       body.organizationId = organizationId;
@@ -7663,7 +8236,7 @@ var Liveblocks = class {
     const res = await this.#post(
       options2?.idempotent ? url`/v2/rooms?idempotent` : url`/v2/rooms`,
       body,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7687,7 +8260,7 @@ var Liveblocks = class {
   async getOrCreateRoom(roomId, params, options2) {
     return await this.createRoom(roomId, params, {
       ...options2,
-      idempotent: true
+      idempotent: true,
     });
   }
   /**
@@ -7702,12 +8275,15 @@ var Liveblocks = class {
   async upsertRoom(roomId, params, options2) {
     const body = {
       update: normalizeUpdateRoomOptions(params.update),
-      create: params.create === void 0 ? void 0 : normalizeCreateRoomOptions(params.create)
+      create:
+        params.create === void 0
+          ? void 0
+          : normalizeCreateRoomOptions(params.create),
     };
     const res = await this.#post(
       url`/v2/rooms/${roomId}/upsert`,
       body,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7741,16 +8317,21 @@ var Liveblocks = class {
    * @returns The updated room.
    */
   async updateRoom(roomId, params, options2) {
-    const { defaultAccesses, groupsAccesses, usersAccesses, metadata: metadata2 } = normalizeUpdateRoomOptions(params);
+    const {
+      defaultAccesses,
+      groupsAccesses,
+      usersAccesses,
+      metadata: metadata2,
+    } = normalizeUpdateRoomOptions(params);
     const res = await this.#post(
       url`/v2/rooms/${roomId}`,
       {
         defaultAccesses,
         groupsAccesses,
         usersAccesses,
-        metadata: metadata2
+        metadata: metadata2,
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7764,11 +8345,7 @@ var Liveblocks = class {
    * @param options.signal (optional) An abort signal to cancel the request.
    */
   async deleteRoom(roomId, options2) {
-    const res = await this.#delete(
-      url`/v2/rooms/${roomId}`,
-      void 0,
-      options2
-    );
+    const res = await this.#delete(url`/v2/rooms/${roomId}`, void 0, options2);
     if (!res.ok) {
       throw await LiveblocksError.from(res);
     }
@@ -7782,7 +8359,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/prewarm`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7798,7 +8375,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/active_users`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7815,7 +8392,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/rooms/${roomId}/broadcast_event`,
       message,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7840,9 +8417,9 @@ var Liveblocks = class {
         userId: params.userId,
         data: params.data,
         userInfo: params.userInfo,
-        ttl: params.ttl
+        ttl: params.ttl,
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7852,7 +8429,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/storage`,
       { format },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7863,7 +8440,7 @@ var Liveblocks = class {
     const resp = await this.#post(
       url`/v2/rooms/${roomId}/request-storage-mutation`,
       {},
-      options2
+      options2,
     );
     if (!resp.ok) {
       throw await LiveblocksError.from(resp);
@@ -7874,7 +8451,10 @@ var Liveblocks = class {
     if (resp.body === null) {
       throw new Error("Unexpected null body in response");
     }
-    const stream = resp.body.pipeThrough(new TextDecoderStream()).pipeThrough(new LineStream()).pipeThrough(new NdJsonStream());
+    const stream = resp.body
+      .pipeThrough(new TextDecoderStream())
+      .pipeThrough(new LineStream())
+      .pipeThrough(new NdJsonStream());
     const iter = stream[Symbol.asyncIterator]();
     const first = (await iter.next()).value;
     if (!isPlainObject(first) || typeof first.actor !== "number") {
@@ -7896,7 +8476,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/rooms/${roomId}/storage`,
       document2,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7912,7 +8492,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/rooms/${roomId}/storage`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7936,7 +8516,7 @@ var Liveblocks = class {
     const res = await this.#get(
       path,
       { formatting: format ? "true" : void 0, key, type },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7955,7 +8535,7 @@ var Liveblocks = class {
       url`/v2/rooms/${roomId}/ydoc`,
       update,
       { guid: params.guid },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -7973,7 +8553,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/ydoc-binary`,
       { guid: params.guid },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8002,14 +8582,14 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/threads`,
       { query },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
     }
     const { data } = await res.json();
     return {
-      data: data.map((thread) => convertToThreadData(thread))
+      data: data.map((thread) => convertToThreadData(thread)),
     };
   }
   /**
@@ -8025,7 +8605,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/threads/${threadId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8052,7 +8632,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/threads/${threadId}/participants`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8072,14 +8652,14 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/threads/${threadId}/subscriptions`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
     }
     const { data } = await res.json();
     return {
-      data: data.map(convertToUserSubscriptionData)
+      data: data.map(convertToUserSubscriptionData),
     };
   }
   /**
@@ -8096,7 +8676,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/threads/${threadId}/comments/${commentId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8121,9 +8701,9 @@ var Liveblocks = class {
       url`/v2/rooms/${roomId}/threads/${threadId}/comments`,
       {
         ...data,
-        createdAt: data.createdAt?.toISOString()
+        createdAt: data.createdAt?.toISOString(),
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8148,9 +8728,9 @@ var Liveblocks = class {
       {
         body: data.body,
         editedAt: data.editedAt?.toISOString(),
-        metadata: data.metadata
+        metadata: data.metadata,
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8169,7 +8749,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/rooms/${roomId}/threads/${threadId}/comments/${commentId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8188,7 +8768,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/attachments/${attachmentId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8215,10 +8795,10 @@ var Liveblocks = class {
         ...data,
         comment: {
           ...data.comment,
-          createdAt: data.comment.createdAt?.toISOString()
-        }
+          createdAt: data.comment.createdAt?.toISOString(),
+        },
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8236,7 +8816,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/rooms/${roomId}/threads/${threadId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8255,7 +8835,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/rooms/${roomId}/threads/${threadId}/mark-as-resolved`,
       { userId: params.data.userId },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8275,7 +8855,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/rooms/${roomId}/threads/${threadId}/mark-as-unresolved`,
       { userId: params.data.userId },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8295,14 +8875,12 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/rooms/${roomId}/threads/${threadId}/subscribe`,
       { userId: params.data.userId },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
     }
-    return convertToSubscriptionData(
-      await res.json()
-    );
+    return convertToSubscriptionData(await res.json());
   }
   /**
    * Unsubscribes a user from a thread.
@@ -8316,7 +8894,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/rooms/${roomId}/threads/${threadId}/unsubscribe`,
       { userId: params.data.userId },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8338,9 +8916,9 @@ var Liveblocks = class {
       url`/v2/rooms/${roomId}/threads/${threadId}/metadata`,
       {
         ...data,
-        updatedAt: data.updatedAt?.toISOString()
+        updatedAt: data.updatedAt?.toISOString(),
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8364,9 +8942,9 @@ var Liveblocks = class {
       url`/v2/rooms/${roomId}/threads/${threadId}/comments/${commentId}/metadata`,
       {
         ...data,
-        updatedAt: data.updatedAt?.toISOString()
+        updatedAt: data.updatedAt?.toISOString(),
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8390,9 +8968,9 @@ var Liveblocks = class {
       url`/v2/rooms/${roomId}/threads/${threadId}/comments/${commentId}/add-reaction`,
       {
         ...data,
-        createdAt: data.createdAt?.toISOString()
+        createdAt: data.createdAt?.toISOString(),
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8416,9 +8994,9 @@ var Liveblocks = class {
       url`/v2/rooms/${roomId}/threads/${threadId}/comments/${params.commentId}/remove-reaction`,
       {
         ...data,
-        removedAt: data.removedAt?.toISOString()
+        removedAt: data.removedAt?.toISOString(),
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8435,14 +9013,12 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/users/${userId}/inbox-notifications/${inboxNotificationId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
     }
-    return convertToInboxNotificationData(
-      await res.json()
-    );
+    return convertToInboxNotificationData(await res.json());
   }
   /**
    * Returns the inbox notifications for a user.
@@ -8462,7 +9038,7 @@ var Liveblocks = class {
     const queryParams = {
       query,
       limit,
-      startingAfter
+      startingAfter,
     };
     if (organizationId !== void 0) {
       queryParams.organizationId = organizationId;
@@ -8472,7 +9048,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/users/${userId}/inbox-notifications`,
       queryParams,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8480,7 +9056,7 @@ var Liveblocks = class {
     const page = await res.json();
     return {
       ...page,
-      data: page.data.map(convertToInboxNotificationData)
+      data: page.data.map(convertToInboxNotificationData),
     };
   }
   /**
@@ -8502,7 +9078,7 @@ var Liveblocks = class {
     while (true) {
       const { nextCursor, data } = await this.getInboxNotifications(
         { ...criteria, startingAfter: cursor, limit: pageSize },
-        { signal }
+        { signal },
       );
       for (const item of data) {
         yield item;
@@ -8525,7 +9101,7 @@ var Liveblocks = class {
     const { userId, tenantId, organizationId, startingAfter, limit } = params;
     const queryParams = {
       startingAfter,
-      limit
+      limit,
     };
     if (organizationId !== void 0) {
       queryParams.organizationId = organizationId;
@@ -8535,7 +9111,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/users/${userId}/room-subscription-settings`,
       queryParams,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8553,7 +9129,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/users/${userId}/subscription-settings`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8572,7 +9148,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/rooms/${roomId}/users/${userId}/subscription-settings`,
       data,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8590,7 +9166,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/rooms/${roomId}/users/${userId}/subscription-settings`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8607,7 +9183,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/rooms/${currentRoomId}/update-room-id`,
       { newRoomId },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8628,7 +9204,7 @@ var Liveblocks = class {
   async triggerInboxNotification(params, options2) {
     const { tenantId, organizationId, ...restParams } = params;
     const body = {
-      ...restParams
+      ...restParams,
     };
     if (organizationId !== void 0) {
       body.organizationId = organizationId;
@@ -8638,7 +9214,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/inbox-notifications/trigger`,
       body,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8655,7 +9231,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/users/${userId}/inbox-notifications/${inboxNotificationId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8678,7 +9254,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/users/${userId}/inbox-notifications`,
       queryParams,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8694,7 +9270,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/users/${userId}/notification-settings`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8714,7 +9290,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/users/${userId}/notification-settings`,
       data,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8733,7 +9309,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/users/${userId}/notification-settings`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8753,7 +9329,7 @@ var Liveblocks = class {
       ...restParams,
       // The REST API uses `id` since a group is a resource,
       // but we use `groupId` here for consistency with the other methods.
-      id: params.groupId
+      id: params.groupId,
     };
     if (organizationId !== void 0) {
       body.organizationId = organizationId;
@@ -8776,7 +9352,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/groups/${params.groupId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8794,7 +9370,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/groups/${params.groupId}/add-members`,
       { memberIds: params.memberIds },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8812,7 +9388,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/groups/${params.groupId}/remove-members`,
       { memberIds: params.memberIds },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8829,7 +9405,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/groups/${params.groupId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8845,7 +9421,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/groups`,
       { startingAfter: params?.startingAfter, limit: params?.limit },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8853,7 +9429,7 @@ var Liveblocks = class {
     const page = await res.json();
     return {
       ...page,
-      data: page.data.map(convertToGroupData)
+      data: page.data.map(convertToGroupData),
     };
   }
   /**
@@ -8868,7 +9444,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/users/${userId}/groups`,
       { startingAfter, limit },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -8876,7 +9452,7 @@ var Liveblocks = class {
     const page = await res.json();
     return {
       ...page,
-      data: page.data.map(convertToGroupData)
+      data: page.data.map(convertToGroupData),
     };
   }
   /**
@@ -8908,7 +9484,7 @@ var Liveblocks = class {
       "concurrency",
       massOptions?.concurrency ?? 8,
       1,
-      20
+      20,
     );
     const pageSize = Math.max(20, concurrency * 4);
     const { signal } = massOptions ?? {};
@@ -8916,8 +9492,9 @@ var Liveblocks = class {
     const options2 = { signal };
     await runConcurrently(
       rooms,
-      (roomData) => this.#_mutateOneRoom(roomData.id, roomData, callback, options2),
-      concurrency
+      (roomData) =>
+        this.#_mutateOneRoom(roomData.id, roomData, callback, options2),
+      concurrency,
     );
   }
   async #_mutateOneRoom(roomId, room, callback, options2) {
@@ -8927,8 +9504,7 @@ var Liveblocks = class {
     let outstandingFlush$ = void 0;
     let lastFlush = performance.now();
     const flushIfNeeded = /* @__PURE__ */ __name((force) => {
-      if (opsBuffer.length === 0)
-        return;
+      if (opsBuffer.length === 0) return;
       if (outstandingFlush$) {
         return;
       }
@@ -8942,18 +9518,23 @@ var Liveblocks = class {
       outstandingFlush$ = this.#sendMessage(
         roomId,
         [{ type: ClientMsgCode.UPDATE_STORAGE, ops }],
-        { signal }
-      ).catch((err) => {
-        abort(err);
-      }).finally(() => {
-        outstandingFlush$ = void 0;
-      });
+        { signal },
+      )
+        .catch((err) => {
+          abort(err);
+        })
+        .finally(() => {
+          outstandingFlush$ = void 0;
+        });
     }, "flushIfNeeded");
     try {
       const resp = await this.#requestStorageMutation(roomId, { signal });
       const { actor, nodes } = resp;
       const pool = createManagedPool(roomId, {
-        getCurrentConnectionId: /* @__PURE__ */ __name(() => actor, "getCurrentConnectionId"),
+        getCurrentConnectionId: /* @__PURE__ */ __name(
+          () => actor,
+          "getCurrentConnectionId",
+        ),
         onDispatch: /* @__PURE__ */ __name((ops, _reverse, _storageUpdates) => {
           if (ops.length === 0) return;
           for (const op of ops) {
@@ -8961,15 +9542,15 @@ var Liveblocks = class {
           }
           flushIfNeeded(
             /* force */
-            false
+            false,
           );
-        }, "onDispatch")
+        }, "onDispatch"),
       });
       const root = LiveObject._fromItems(nodes, pool);
       const callback$ = callback({ room, root });
       flushIfNeeded(
         /* force */
-        true
+        true,
       );
       await callback$;
     } catch (e) {
@@ -8979,7 +9560,7 @@ var Liveblocks = class {
       await outstandingFlush$;
       flushIfNeeded(
         /* force */
-        true
+        true,
       );
       await outstandingFlush$;
     }
@@ -8988,7 +9569,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/rooms/${roomId}/send-message`,
       { messages },
-      { signal: options2?.signal }
+      { signal: options2?.signal },
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9006,9 +9587,9 @@ var Liveblocks = class {
       url`/v2/ai/copilots`,
       {
         limit: params.limit,
-        startingAfter: params.startingAfter
+        startingAfter: params.startingAfter,
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9016,7 +9597,7 @@ var Liveblocks = class {
     const page = await res.json();
     return {
       ...page,
-      data: page.data.map(inflateAiCopilot)
+      data: page.data.map(inflateAiCopilot),
     };
   }
   /**
@@ -9042,7 +9623,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/ai/copilots/${copilotId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9060,7 +9641,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/ai/copilots/${copilotId}`,
       params,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9077,7 +9658,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/ai/copilots/${copilotId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9094,7 +9675,7 @@ var Liveblocks = class {
     const res = await this.#post(
       url`/v2/ai/copilots/${params.copilotId}/knowledge/web`,
       params,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9115,7 +9696,7 @@ var Liveblocks = class {
     const res = await fetch2(
       urljoin(
         this.#baseUrl,
-        url`/v2/ai/copilots/${params.copilotId}/knowledge/file/${params.file.name}`
+        url`/v2/ai/copilots/${params.copilotId}/knowledge/file/${params.file.name}`,
       ),
       {
         method: "PUT",
@@ -9123,10 +9704,10 @@ var Liveblocks = class {
         headers: {
           Authorization: `Bearer ${this.#secret}`,
           "Content-Type": params.file.type,
-          "Content-Length": String(params.file.size)
+          "Content-Length": String(params.file.size),
         },
-        signal: options2?.signal
-      }
+        signal: options2?.signal,
+      },
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9144,7 +9725,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/ai/copilots/${params.copilotId}/knowledge/file/${params.knowledgeSourceId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9160,7 +9741,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/ai/copilots/${params.copilotId}/knowledge/web/${params.knowledgeSourceId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9179,9 +9760,9 @@ var Liveblocks = class {
       url`/v2/ai/copilots/${params.copilotId}/knowledge`,
       {
         limit: params.limit,
-        startingAfter: params.startingAfter
+        startingAfter: params.startingAfter,
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9189,7 +9770,7 @@ var Liveblocks = class {
     const page = await res.json();
     return {
       ...page,
-      data: page.data.map(inflateKnowledgeSource)
+      data: page.data.map(inflateKnowledgeSource),
     };
   }
   /**
@@ -9203,7 +9784,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/ai/copilots/${params.copilotId}/knowledge/${params.knowledgeSourceId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9222,7 +9803,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/ai/copilots/${params.copilotId}/knowledge/file/${params.knowledgeSourceId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9244,9 +9825,9 @@ var Liveblocks = class {
       url`/v2/ai/copilots/${params.copilotId}/knowledge/web/${params.knowledgeSourceId}/links`,
       {
         limit: params.limit,
-        startingAfter: params.startingAfter
+        startingAfter: params.startingAfter,
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9254,7 +9835,7 @@ var Liveblocks = class {
     const page = await res.json();
     return {
       ...page,
-      data: page.data.map(inflateWebKnowledgeSourceLink)
+      data: page.data.map(inflateWebKnowledgeSourceLink),
     };
   }
   /* -------------------------------------------------------------------------------------------------
@@ -9271,7 +9852,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/feeds`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9293,10 +9874,10 @@ var Liveblocks = class {
       url`/v2/rooms/${roomId}/feeds`,
       {
         feedId,
-        ...metadata2 !== void 0 ? { metadata: metadata2 } : {},
-        ...createdAt !== void 0 ? { timestamp: createdAt } : {}
+        ...(metadata2 !== void 0 ? { metadata: metadata2 } : {}),
+        ...(createdAt !== void 0 ? { timestamp: createdAt } : {}),
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9315,7 +9896,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/feeds/${feedId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9335,7 +9916,7 @@ var Liveblocks = class {
     const res = await this.#patch(
       url`/v2/rooms/${roomId}/feeds/${feedId}`,
       { metadata: metadata2 },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9353,7 +9934,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/rooms/${roomId}/feeds/${feedId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9371,7 +9952,7 @@ var Liveblocks = class {
     const res = await this.#get(
       url`/v2/rooms/${roomId}/feeds/${feedId}/messages`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9394,10 +9975,10 @@ var Liveblocks = class {
       url`/v2/rooms/${roomId}/feeds/${feedId}/messages`,
       {
         data,
-        ...id !== void 0 ? { id } : {},
-        ...createdAt !== void 0 ? { timestamp: createdAt } : {}
+        ...(id !== void 0 ? { id } : {}),
+        ...(createdAt !== void 0 ? { timestamp: createdAt } : {}),
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9420,9 +10001,9 @@ var Liveblocks = class {
       url`/v2/rooms/${roomId}/feeds/${feedId}/messages/${messageId}`,
       {
         data,
-        ...updatedAt !== void 0 ? { timestamp: updatedAt } : {}
+        ...(updatedAt !== void 0 ? { timestamp: updatedAt } : {}),
       },
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9441,7 +10022,7 @@ var Liveblocks = class {
     const res = await this.#delete(
       url`/v2/rooms/${roomId}/feeds/${feedId}/messages/${messageId}`,
       void 0,
-      options2
+      options2,
     );
     if (!res.ok) {
       throw await LiveblocksError.from(res);
@@ -9480,10 +10061,13 @@ ${this.details}`;
     }
     const obj = tryParseJson(text) ?? { message: text };
     const message = obj.message || FALLBACK;
-    const details = [
-      obj.suggestion ? `Suggestion: ${String(obj.suggestion)}` : void 0,
-      obj.docs ? `See also: ${String(obj.docs)}` : void 0
-    ].filter(Boolean).join("\n") || void 0;
+    const details =
+      [
+        obj.suggestion ? `Suggestion: ${String(obj.suggestion)}` : void 0,
+        obj.docs ? `See also: ${String(obj.docs)}` : void 0,
+      ]
+        .filter(Boolean)
+        .join("\n") || void 0;
     const err = new _LiveblocksError(message, res.status, details);
     err.stack = origErrLocation.stack;
     return err;
@@ -9494,79 +10078,101 @@ detectDupes(PKG_NAME2, PKG_VERSION2, PKG_FORMAT2);
 
 // trigger/design-agent.ts
 var google = createGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_AI_API_KEY
+  apiKey: process.env.GOOGLE_AI_API_KEY,
 });
 var designAgent = task({
   id: "design-agent",
   run: /* @__PURE__ */ __name(async (payload) => {
     const liveblocks = new Liveblocks({
-      secret: process.env.LIVEBLOCKS_SECRET_KEY
+      secret: process.env.LIVEBLOCKS_SECRET_KEY,
     });
     const broadcastStatus = /* @__PURE__ */ __name(async (message) => {
       await liveblocks.broadcastEvent(payload.roomId, {
         type: "ai-status",
-        message
+        message,
       });
     }, "broadcastStatus");
-    const updatePresence = /* @__PURE__ */ __name(async (thinking, x = 0, y = 0) => {
-      await fetch(
-        `https://api.liveblocks.io/v2/rooms/${payload.roomId}/presence`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${process.env.LIVEBLOCKS_SECRET_KEY}`,
-            "Content-Type": "application/json"
+    const updatePresence = /* @__PURE__ */ __name(
+      async (thinking, x = 0, y = 0) => {
+        await fetch(
+          `https://api.liveblocks.io/v2/rooms/${payload.roomId}/presence`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${process.env.LIVEBLOCKS_SECRET_KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: "ghost-ai",
+              userInfo: {
+                name: "Ghost AI",
+                avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=ghost",
+                color: "#8B5CF6",
+                // Violet
+              },
+              presence: {
+                cursor: { x, y },
+                thinking,
+              },
+              timeout: 3e4,
+              // Expire automatically after 30 seconds
+            }),
           },
-          body: JSON.stringify({
-            userId: "ghost-ai",
-            userInfo: {
-              name: "Ghost AI",
-              avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=ghost",
-              color: "#8B5CF6"
-              // Violet
-            },
-            presence: {
-              cursor: { x, y },
-              thinking
-            },
-            timeout: 3e4
-            // Expire automatically after 30 seconds
-          })
-        }
-      ).catch((err) => console.error("Failed to update AI presence:", err));
-    }, "updatePresence");
+        ).catch((err) => console.error("Failed to update AI presence:", err));
+      },
+      "updatePresence",
+    );
     try {
       metadata.set("status", "interpreting");
       await broadcastStatus("Interpreting requirements...");
       await updatePresence(true, 50, 50);
       const schema = external_exports.object({
-        summary: external_exports.string().describe("A brief explanation of what was designed and why, formatted as a short message to the user."),
+        summary: external_exports
+          .string()
+          .describe(
+            "A brief explanation of what was designed and why, formatted as a short message to the user.",
+          ),
         nodes: external_exports.array(
           external_exports.object({
-            id: external_exports.string().describe("Unique identifier for the node"),
-            label: external_exports.string().describe("Descriptive label for the node"),
-            shape: external_exports.enum([
-              "rectangle",
-              "circle",
-              "diamond",
-              "pill",
-              "cylinder",
-              "hexagon"
-            ]).describe("The shape of the node"),
+            id: external_exports
+              .string()
+              .describe("Unique identifier for the node"),
+            label: external_exports
+              .string()
+              .describe("Descriptive label for the node"),
+            shape: external_exports
+              .enum([
+                "rectangle",
+                "circle",
+                "diamond",
+                "pill",
+                "cylinder",
+                "hexagon",
+              ])
+              .describe("The shape of the node"),
             x: external_exports.number().describe("X coordinate on the canvas"),
             y: external_exports.number().describe("Y coordinate on the canvas"),
-            width: external_exports.number().describe("Width in pixels (e.g. 180 for rect, 100 for circle)"),
-            height: external_exports.number().describe("Height in pixels (e.g. 80 for rect, 100 for circle)")
-          })
+            width: external_exports
+              .number()
+              .describe("Width in pixels (e.g. 180 for rect, 100 for circle)"),
+            height: external_exports
+              .number()
+              .describe("Height in pixels (e.g. 80 for rect, 100 for circle)"),
+          }),
         ),
         edges: external_exports.array(
           external_exports.object({
-            id: external_exports.string().describe("Unique identifier for the edge"),
+            id: external_exports
+              .string()
+              .describe("Unique identifier for the edge"),
             source: external_exports.string().describe("ID of the source node"),
             target: external_exports.string().describe("ID of the target node"),
-            label: external_exports.string().optional().describe("Optional label describing the connection")
-          })
-        )
+            label: external_exports
+              .string()
+              .optional()
+              .describe("Optional label describing the connection"),
+          }),
+        ),
       });
       const { object } = await generateObject({
         model: google("gemini-3.5-flash"),
@@ -9576,7 +10182,7 @@ var designAgent = task({
         Position the nodes logically (e.g. clients on left/top, databases on right/bottom) using absolute coordinates (x, y).
         Keep typical distances between connected nodes to 200-400px.
         Avoid overlapping nodes.
-        Standard dimensions: rectangle (180x80), circle (100x100), cylinder (120x100), diamond (140x140).`
+        Standard dimensions: rectangle (180x80), circle (100x100), cylinder (120x100), diamond (140x140).`,
       });
       metadata.set("status", "drawing");
       await broadcastStatus("Drawing components...");
@@ -9591,14 +10197,14 @@ var designAgent = task({
             label: node.label,
             shape: node.shape,
             color: NODE_COLOR,
-            textColor: TEXT_COLOR
+            textColor: TEXT_COLOR,
           },
-          style: { width: node.width, height: node.height }
+          style: { width: node.width, height: node.height },
         };
         await updatePresence(true, node.x, node.y);
         await liveblocks.broadcastEvent(payload.roomId, {
           type: "ai-add-node",
-          payload: flowNode
+          payload: flowNode,
         });
         await new Promise((r) => setTimeout(r, 400));
       }
@@ -9610,7 +10216,7 @@ var designAgent = task({
           source: edge.source,
           target: edge.target,
           type: "canvasEdge",
-          data: { label: edge.label || "" }
+          data: { label: edge.label || "" },
         };
         const sourceNode = object.nodes.find((n) => n.id === edge.source);
         const targetNode = object.nodes.find((n) => n.id === edge.target);
@@ -9618,12 +10224,12 @@ var designAgent = task({
           await updatePresence(
             true,
             (sourceNode.x + targetNode.x) / 2,
-            (sourceNode.y + targetNode.y) / 2
+            (sourceNode.y + targetNode.y) / 2,
           );
         }
         await liveblocks.broadcastEvent(payload.roomId, {
           type: "ai-add-edge",
-          payload: flowEdge
+          payload: flowEdge,
         });
         await new Promise((r) => setTimeout(r, 300));
       }
@@ -9638,19 +10244,17 @@ var designAgent = task({
         success: true,
         summary: object.summary,
         nodesGenerated: object.nodes.length,
-        edgesGenerated: object.edges.length
+        edgesGenerated: object.edges.length,
       };
     } catch (error3) {
       console.error(error3);
       await liveblocks.broadcastEvent(payload.roomId, {
         type: "ai-error",
-        message: "Generation failed."
+        message: "Generation failed.",
       });
       return { success: false, error: String(error3) };
     }
-  }, "run")
+  }, "run"),
 });
-export {
-  designAgent
-};
+export { designAgent };
 //# sourceMappingURL=design-agent.mjs.map
