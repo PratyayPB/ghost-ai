@@ -7,12 +7,15 @@ export async function POST(req: Request) {
   try {
     const identity = await getIdentity();
     if (!identity) {
+      console.log("[SPEC_TOKEN] ❌ Unauthorized — no identity");
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
     const { runId } = await req.json();
+    console.log(`[SPEC_TOKEN] Requesting token for runId: ${runId} by user: ${identity.userId}`);
 
     if (!runId) {
+      console.log("[SPEC_TOKEN] ❌ Missing runId");
       return new NextResponse("Missing runId", { status: 400 });
     }
 
@@ -22,6 +25,7 @@ export async function POST(req: Request) {
     });
 
     if (!taskRun || taskRun.userId !== identity.userId) {
+      console.log(`[SPEC_TOKEN] ❌ Forbidden — user ${identity.userId} does not own run ${runId}`);
       return new NextResponse("Forbidden", { status: 403 });
     }
 
@@ -34,10 +38,11 @@ export async function POST(req: Request) {
       },
       expirationTime: "1h",
     });
+    console.log(`[SPEC_TOKEN] ✅ Generated public token for runId: ${runId}`);
 
     return NextResponse.json({ token: publicToken });
   } catch (error) {
-    console.error("[SPEC_TOKEN_POST]", error);
+    console.error("[SPEC_TOKEN] ❌ Internal error:", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

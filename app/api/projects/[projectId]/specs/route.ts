@@ -8,9 +8,11 @@ export async function GET(
 ) {
   try {
     const { projectId } = await params;
+    console.log(`[SPECS_GET] Listing specs for project ${projectId}`);
     const identity = await getIdentity();
 
     if (!identity) {
+      console.log(`[SPECS_GET] ❌ Unauthorized`);
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -21,6 +23,7 @@ export async function GET(
     );
 
     if (!project) {
+      console.log(`[SPECS_GET] ❌ Project not found or access denied for project ${projectId}`);
       return NextResponse.json({ error: "Project not found or access denied" }, { status: 404 });
     }
 
@@ -30,9 +33,10 @@ export async function GET(
       orderBy: { createdAt: "desc" },
     });
 
+    console.log(`[DB:ProjectSpec] ✅ Fetched ${specs.length} specs for project ${projectId}`);
     return NextResponse.json(specs);
   } catch (error) {
-    console.error("Error listing project specifications:", error);
+    console.error("[SPECS_GET] ❌ Error listing project specifications:", error);
     return NextResponse.json({ error: "Failed to list specifications" }, { status: 500 });
   }
 }

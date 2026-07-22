@@ -11,6 +11,7 @@ const google = createGoogleGenerativeAI({
 export const designAgent = task({
   id: "design-agent",
   run: async (payload: { prompt: string; roomId: string }) => {
+    console.log(`[DESIGN_AGENT] 🚀 Task started — roomId: ${payload.roomId}, prompt: "${payload.prompt}"`);
     const liveblocks = new Liveblocks({
       secret: process.env.LIVEBLOCKS_SECRET_KEY!,
     });
@@ -19,8 +20,9 @@ export const designAgent = task({
     const safeBroadcastEvent = async (event: any) => {
       try {
         await liveblocks.broadcastEvent(payload.roomId, event);
+        console.log(`[EXT:Liveblocks] ✅ Broadcast event "${event.type}" to room ${payload.roomId}`);
       } catch (err) {
-        console.warn("Liveblocks broadcast failed:", err);
+        console.warn(`[EXT:Liveblocks] ⚠️ Liveblocks broadcast failed for room ${payload.roomId}:`, err);
       }
     };
 
@@ -60,7 +62,11 @@ export const designAgent = task({
             timeout: 30000, // Expire automatically after 30 seconds
           }),
         },
-      ).catch((err) => console.error("Failed to update AI presence:", err));
+      )
+        .then(() => {
+          console.log(`[EXT:Liveblocks] ✅ Presence updated — thinking: ${thinking}, cursor: (${x}, ${y})`);
+        })
+        .catch((err) => console.error("[EXT:Liveblocks] ❌ Failed to update AI presence:", err));
     };
 
     try {
@@ -108,16 +114,34 @@ export const designAgent = task({
         ),
       });
 
-      const { object } = await generateObject({
-        model: google("gemini-3.5-flash"),
-        schema,
-        prompt: `You are an expert software architect. The user requested: "${payload.prompt}". 
+      const llmModel = "gemini-3.5-flash";
+      const llmStartTime = Date.now();
+      console.log(`[LLM:Gemini] Calling generateObject — model: ${llmModel}, prompt length: ${payload.prompt.length} chars`);
+
+      let object: z.infer<typeof schema>;
+      try {
+        const result = await generateObject({
+          model: google(llmModel),
+          schema,
+          prompt: `You are an expert software architect. The user requested: "${payload.prompt}". 
         Generate a system architecture diagram composed of nodes and edges.
         Position the nodes logically (e.g. clients on left/top, databases on right/bottom) using absolute coordinates (x, y).
         Keep typical distances between connected nodes to 200-400px.
         Avoid overlapping nodes.
         Standard dimensions: rectangle (180x80), circle (100x100), cylinder (120x100), diamond (140x140).`,
-      });
+        });
+        object = result.object;
+
+        const llmDuration = Date.now() - llmStartTime;
+        console.log(`[LLM:Gemini] ✅ generateObject completed in ${llmDuration}ms — model: ${llmModel}`);
+        console.log(`[LLM:Gemini] 📊 Token usage — input: ${result.usage?.inputTokens ?? "N/A"}, output: ${result.usage?.outputTokens ?? "N/A"}, total: ${result.usage?.totalTokens ?? "N/A"}`);
+        console.log(`[LLM:Gemini] 📦 Result — ${object.nodes.length} nodes, ${object.edges.length} edges, summary: "${object.summary.substring(0, 80)}..."`);
+      } catch (llmError) {
+        const llmDuration = Date.now() - llmStartTime;
+        console.error(`[LLM:Gemini] ❌ generateObject FAILED after ${llmDuration}ms — model: ${llmModel}`);
+        console.error(`[LLM:Gemini] ❌ Error details:`, llmError);
+        throw llmError;
+      }
 
       metadata.set("status", "drawing");
       await broadcastStatus("Drawing components...");
@@ -147,6 +171,7 @@ export const designAgent = task({
           type: "ai-add-node",
           payload: flowNode,
         });
+        console.log(`[DESIGN_AGENT] ✅ Node broadcasted: ${node.id} (${node.label}) at (${node.x}, ${node.y})`);
 
         await new Promise((r) => setTimeout(r, 400));
       }
@@ -179,6 +204,7 @@ export const designAgent = task({
           type: "ai-add-edge",
           payload: flowEdge,
         });
+        console.log(`[DESIGN_AGENT] ✅ Edge broadcasted: ${edge.id} (${edge.source} -> ${edge.target})`);
 
         await new Promise((r) => setTimeout(r, 300));
       }
@@ -193,6 +219,8 @@ export const designAgent = task({
       await safeBroadcastEvent({ type: "ai-complete" });
       await updatePresence(false, 0, 0); // Presence will expire due to TTL anyway
 
+      console.log(`[DESIGN_AGENT] ✅ Task complete — ${object.nodes.length} nodes, ${object.edges.length} edges generated for room ${payload.roomId}`);
+
       return {
         success: true,
         summary: object.summary,
@@ -200,7 +228,7 @@ export const designAgent = task({
         edgesGenerated: object.edges.length,
       };
     } catch (error) {
-      console.error(error);
+      console.error("[DESIGN_AGENT] ❌ Task failed with error:", error);
       await safeBroadcastEvent({
         type: "ai-error",
         message: "Generation failed.",

@@ -16,7 +16,7 @@ export function useCanvasAutosave(projectId: string, nodes: Node[], edges: Edge[
 
     const saveCanvas = async () => {
       setStatus("saving");
-      console.log("Canvas JSON data on autosave:", JSON.stringify({ nodes, edges }, null, 2));
+      console.log(`[AUTOSAVE] Saving canvas for project ${projectId} — ${nodes.length} nodes, ${edges.length} edges`);
       try {
         const response = await fetch(`/api/projects/${projectId}/canvas`, {
           method: "PUT",
@@ -30,6 +30,7 @@ export function useCanvasAutosave(projectId: string, nodes: Node[], edges: Edge[
           throw new Error("Failed to save");
         }
 
+        console.log(`[AUTOSAVE] ✅ Canvas saved successfully for project ${projectId}`);
         setStatus("saved");
         
         // Return to idle after a few seconds
@@ -37,7 +38,7 @@ export function useCanvasAutosave(projectId: string, nodes: Node[], edges: Edge[
           setStatus((prev) => (prev === "saved" ? "idle" : prev));
         }, 3000);
       } catch (error) {
-        console.error("Autosave error:", error);
+        console.error("[AUTOSAVE] ❌ Canvas autosave error:", error);
         setStatus("error");
       }
     };

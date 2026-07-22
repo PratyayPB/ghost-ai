@@ -15,20 +15,24 @@ export async function PATCH(request: Request, context: RouteContext) {
   const { userId } = await auth();
 
   if (!userId) {
+    console.log("[PROJECT_PATCH] ❌ Unauthorized");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { projectId } = await context.params;
+  console.log(`[PROJECT_PATCH] Request to rename project ${projectId} by user ${userId}`);
 
   const project = await prisma.project.findUnique({
     where: { id: projectId },
   });
 
   if (!project) {
+    console.log(`[PROJECT_PATCH] ❌ Project not found: ${projectId}`);
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
 
   if (project.ownerId !== userId) {
+    console.log(`[PROJECT_PATCH] ❌ Forbidden — user ${userId} does not own project ${projectId}`);
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -37,6 +41,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   try {
     const body = await request.json();
     if (!body.name || typeof body.name !== "string" || !body.name.trim()) {
+      console.log("[PROJECT_PATCH] ❌ Bad request — name is required");
       return NextResponse.json(
         { error: "Name is required" },
         { status: 400 }
@@ -44,6 +49,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     }
     name = body.name.trim();
   } catch {
+    console.log("[PROJECT_PATCH] ❌ Bad request — invalid request body");
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
 
@@ -58,6 +64,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   });
 
   if (duplicate) {
+    console.log(`[PROJECT_PATCH] ❌ Conflict — user already has another project named "${name}"`);
     return NextResponse.json(
       { error: `You already have a project named "${name}". Please choose a different name.` },
       { status: 409 }
@@ -69,6 +76,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     data: { name },
   });
 
+  console.log(`[DB:Project] ✅ Renamed project ${projectId} to "${updated.name}"`);
   return NextResponse.json(updated);
 }
 
@@ -80,20 +88,24 @@ export async function DELETE(_request: Request, context: RouteContext) {
   const { userId } = await auth();
 
   if (!userId) {
+    console.log("[PROJECT_DELETE] ❌ Unauthorized");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { projectId } = await context.params;
+  console.log(`[PROJECT_DELETE] Request to delete project ${projectId} by user ${userId}`);
 
   const project = await prisma.project.findUnique({
     where: { id: projectId },
   });
 
   if (!project) {
+    console.log(`[PROJECT_DELETE] ❌ Project not found: ${projectId}`);
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
 
   if (project.ownerId !== userId) {
+    console.log(`[PROJECT_DELETE] ❌ Forbidden — user ${userId} does not own project ${projectId}`);
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -101,5 +113,6 @@ export async function DELETE(_request: Request, context: RouteContext) {
     where: { id: projectId },
   });
 
+  console.log(`[DB:Project] ✅ Deleted project ${projectId}`);
   return NextResponse.json({ success: true });
 }

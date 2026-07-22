@@ -9,9 +9,11 @@ export async function GET(
 ) {
   try {
     const { projectId, specId } = await params;
+    console.log(`[SPEC_DOWNLOAD] Request to download spec ${specId} for project ${projectId}`);
     const identity = await getIdentity();
 
     if (!identity) {
+      console.log(`[SPEC_DOWNLOAD] ❌ Unauthorized`);
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -22,6 +24,7 @@ export async function GET(
     );
 
     if (!project) {
+      console.log(`[SPEC_DOWNLOAD] ❌ Project not found or access denied: ${projectId}`);
       return NextResponse.json({ error: "Project not found or access denied" }, { status: 404 });
     }
 
@@ -31,6 +34,7 @@ export async function GET(
     });
 
     if (!spec || spec.projectId !== projectId) {
+      console.log(`[SPEC_DOWNLOAD] ❌ Specification not found or mismatch: specId ${specId}, projectId ${projectId}`);
       return NextResponse.json({ error: "Specification not found" }, { status: 404 });
     }
 
@@ -40,11 +44,14 @@ export async function GET(
     });
 
     if (!result || result.statusCode !== 200) {
+      console.error(`[BLOB] ❌ Failed to fetch spec from private store: status ${result?.statusCode}`);
       throw new Error("Failed to fetch spec from private store");
     }
 
     const markdown = await new Response(result.stream).text();
+    console.log(`[BLOB] ✅ Fetched spec from Vercel Blob (${markdown.length} chars)`);
 
+    console.log(`[SPEC_DOWNLOAD] ✅ Returning spec file response for ${specId}`);
     // Return the markdown content as an attachment to force a browser download
     return new NextResponse(markdown, {
       status: 200,
@@ -54,7 +61,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("Error downloading specification:", error);
+    console.error("[SPEC_DOWNLOAD] ❌ Error downloading specification:", error);
     return NextResponse.json({ error: "Failed to download specification" }, { status: 500 });
   }
 }

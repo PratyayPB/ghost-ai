@@ -75,16 +75,17 @@ export type GenerateSpecPayload = z.infer<typeof specPayloadSchema>;
 export const generateSpec = task({
   id: "generate-spec",
   run: async (payloadInput: unknown) => {
-    console.log("Validating payload input for generate-spec task...");
+    console.log("[GENERATE_SPEC] Validating payload input for generate-spec task...");
 
     // Validate inputs
     const payload = specPayloadSchema.parse(payloadInput);
+    console.log("[GENERATE_SPEC] ✅ Payload validated successfully");
 
     console.log(
-      `Spec generation task triggered for project ${payload.projectId}, room ${payload.roomId}`,
+      `[GENERATE_SPEC] 🚀 Spec generation task started for project ${payload.projectId}, room ${payload.roomId}`,
     );
     console.log(
-      `Payload summary: ${payload.nodes.length} nodes, ${payload.edges.length} edges, ${payload.chatHistory.length} chat messages.`,
+      `[GENERATE_SPEC] 📊 Payload summary: ${payload.nodes.length} nodes, ${payload.edges.length} edges, ${payload.chatHistory.length} chat messages.`,
     );
 
     try {
@@ -133,14 +134,31 @@ Please generate a professional Markdown technical specification document contain
 Output the technical specification as a clean, valid Markdown document. Use clear, nested headings (H1, H2, H3), lists, tables, and code snippets where appropriate. Do not include any wrapper HTML or markdown block decorators (like wrapping the output in a markdown code block itself unless you are showing a code example). Return ONLY the Markdown content.
 `;
 
-      const { text } = await generateText({
-        model: google("gemini-3.5-flash"),
-        prompt: promptText,
-      });
+      const llmModel = "gemini-3.5-flash";
+      const llmStartTime = Date.now();
+      console.log(`[LLM:Gemini] Calling generateText — model: ${llmModel}, prompt length: ${promptText.length} chars`);
 
-      console.log(text);
+      let text: string;
+      try {
+        const result = await generateText({
+          model: google(llmModel),
+          prompt: promptText,
+        });
+        text = result.text;
+
+        const llmDuration = Date.now() - llmStartTime;
+        console.log(`[LLM:Gemini] ✅ generateText completed in ${llmDuration}ms — model: ${llmModel}`);
+        console.log(`[LLM:Gemini] 📊 Token usage — input: ${result.usage?.inputTokens ?? "N/A"}, output: ${result.usage?.outputTokens ?? "N/A"}, total: ${result.usage?.totalTokens ?? "N/A"}`);
+        console.log(`[LLM:Gemini] 📦 Result — generated spec: ${text.length} chars`);
+      } catch (llmError) {
+        const llmDuration = Date.now() - llmStartTime;
+        console.error(`[LLM:Gemini] ❌ generateText FAILED after ${llmDuration}ms — model: ${llmModel}`);
+        console.error(`[LLM:Gemini] ❌ Error details:`, llmError);
+        throw llmError;
+      }
+
       console.log(
-        "Successfully generated technical specification. Persisting...",
+        "[GENERATE_SPEC] ✅ Technical specification generated. Persisting to storage and database...",
       );
 
       // Generate a unique ID for the spec
@@ -154,7 +172,7 @@ Output the technical specification as a clean, valid Markdown document. Use clea
         addRandomSuffix: false,
       });
 
-      console.log(`Uploaded spec to Vercel Blob: ${blob.url}`);
+      console.log(`[BLOB] ✅ Uploaded spec to Vercel Blob: ${blob.url}`);
 
       // Save ProjectSpec record in database
       const projectSpec = await prisma.projectSpec.create({
@@ -165,7 +183,7 @@ Output the technical specification as a clean, valid Markdown document. Use clea
         },
       });
 
-      console.log(`Saved ProjectSpec record in database: ${projectSpec.id}`);
+      console.log(`[DB:ProjectSpec] ✅ Created ProjectSpec record: ${projectSpec.id}`);
 
       return {
         success: true,
@@ -174,7 +192,7 @@ Output the technical specification as a clean, valid Markdown document. Use clea
         filePath: projectSpec.filePath,
       };
     } catch (error) {
-      console.error("Failed to generate spec:", error);
+      console.error("[GENERATE_SPEC] ❌ Failed to generate spec:", error);
       throw error;
     }
   },

@@ -37,15 +37,17 @@ export default function SpecList({ projectId, onGenerateSpec, isGenerating, refr
   const fetchSpecs = React.useCallback(async () => {
     setIsLoading(true);
     setError(null);
+    console.log(`[SPEC_LIST] Fetching specifications for project ${projectId}`);
     try {
       const response = await fetch(`/api/projects/${projectId}/specs`);
       if (!response.ok) {
         throw new Error(`Failed to fetch specs: ${response.statusText}`);
       }
       const data = await response.json();
+      console.log(`[SPEC_LIST] ✅ Fetched ${data.length} specifications for project ${projectId}`);
       setSpecs(data);
     } catch (err: any) {
-      console.error("Error loading specs:", err);
+      console.error("[SPEC_LIST] ❌ Error loading specs:", err);
       setError(err.message || "Failed to load specifications.");
     } finally {
       setIsLoading(false);
@@ -57,6 +59,7 @@ export default function SpecList({ projectId, onGenerateSpec, isGenerating, refr
   }, [fetchSpecs, refreshKey]);
 
   const handleOpenPreview = (spec: SpecItem) => {
+    console.log(`[SPEC_LIST] Opening preview modal for spec: ${spec.id}`);
     setSelectedSpecId(spec.id);
     setSelectedSpecCreated(spec.createdAt);
     setIsPreviewOpen(true);
@@ -65,6 +68,7 @@ export default function SpecList({ projectId, onGenerateSpec, isGenerating, refr
   const handleDownload = (e: React.MouseEvent, spec: SpecItem) => {
     e.stopPropagation(); // prevent opening preview modal
     const filename = `specification-${spec.id.substring(0, 8)}.md`;
+    console.log(`[SPEC_LIST] Triggering download for spec: ${spec.id}`);
     const link = document.createElement("a");
     link.href = `/api/projects/${projectId}/specs/${spec.id}/download`;
     link.download = filename;
@@ -77,6 +81,7 @@ export default function SpecList({ projectId, onGenerateSpec, isGenerating, refr
     e.stopPropagation();
     if (deletingSpecId) return;
 
+    console.log(`[SPEC_LIST] Requesting deletion of spec: ${spec.id}`);
     setDeletingSpecId(spec.id);
     setDeleteError(null);
     try {
@@ -86,9 +91,10 @@ export default function SpecList({ projectId, onGenerateSpec, isGenerating, refr
       if (!res.ok) {
         throw new Error("Failed to delete spec");
       }
+      console.log(`[SPEC_LIST] ✅ Successfully deleted spec: ${spec.id}`);
       setSpecs((prev) => prev.filter((s) => s.id !== spec.id));
     } catch (err: any) {
-      console.error(err);
+      console.error(`[SPEC_LIST] ❌ Error deleting spec ${spec.id}:`, err);
       setDeleteError(`Failed to delete ${spec.id.substring(0, 8)}`);
       setTimeout(() => setDeleteError(null), 3000);
     } finally {

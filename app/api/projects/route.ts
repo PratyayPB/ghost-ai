@@ -10,14 +10,17 @@ export async function GET() {
   const { userId } = await auth();
 
   if (!userId) {
+    console.log("[PROJECTS_GET] ❌ Unauthorized");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  console.log(`[PROJECTS_GET] Fetching projects for user: ${userId}`);
   const projects = await prisma.project.findMany({
     where: { ownerId: userId },
     orderBy: { createdAt: "desc" },
   });
 
+  console.log(`[DB:Project] ✅ Fetched ${projects.length} projects for user: ${userId}`);
   return NextResponse.json(projects);
 }
 
@@ -30,6 +33,7 @@ export async function POST(request: Request) {
   const { userId } = await auth();
 
   if (!userId) {
+    console.log("[PROJECTS_POST] ❌ Unauthorized");
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -44,6 +48,8 @@ export async function POST(request: Request) {
     // No body or invalid JSON — use default name
   }
 
+  console.log(`[PROJECTS_POST] Creating project "${name}" for user: ${userId}`);
+
   // Enforce uniqueness: no two projects with the same name (case-insensitive) per owner
   const existing = await prisma.project.findFirst({
     where: {
@@ -53,6 +59,7 @@ export async function POST(request: Request) {
   });
 
   if (existing) {
+    console.log(`[PROJECTS_POST] ❌ Conflict — user already has a project named "${name}"`);
     return NextResponse.json(
       { error: `You already have a project named "${name}". Please choose a different name.` },
       { status: 409 }
@@ -66,5 +73,6 @@ export async function POST(request: Request) {
     },
   });
 
+  console.log(`[DB:Project] ✅ Created project "${project.name}" (id: ${project.id}) for user: ${userId}`);
   return NextResponse.json(project, { status: 201 });
 }

@@ -102,7 +102,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
     if (!isRunActive) return;
 
     const timer = setTimeout(() => {
-      console.warn("AI generation timed out after 120s");
+      console.warn("[AI_CHAT_SIDEBAR] ⚠️ AI generation timed out after 120s");
       sendMessage("AI Generation timed out. Please try again.", "assistant", "design");
       setRunId(null);
       setPublicToken(null);
@@ -118,7 +118,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
     if (run?.status !== "QUEUED") return;
 
     const timer = setTimeout(() => {
-      console.warn("Task queued timeout after 15s - worker likely offline");
+      console.warn("[AI_CHAT_SIDEBAR] ⚠️ Task queued timeout after 15s - worker likely offline");
       sendMessage("Task is queued but no worker is processing it. Did you forget to run \`npx trigger.dev@latest dev\` locally?", "assistant", "design");
       setRunId(null);
       setPublicToken(null);
@@ -143,6 +143,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
 
     if (run.status === "COMPLETED") {
       const output = run.output as any;
+      console.log(`[AI_CHAT_SIDEBAR] ✅ Task run ${run.id} completed!`, output);
       if (output?.success === false) {
         sendMessage(
           `AI Generation failed: ${output.error || "Unknown error"}`,
@@ -168,11 +169,13 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
       setPublicToken(null);
       setRunType(null);
     } else if (run.status === "FAILED") {
+      console.error(`[AI_CHAT_SIDEBAR] ❌ Task run ${run.id} FAILED!`);
       sendMessage("AI Generation failed due to a system error. Please try again.", "assistant", "design");
       setRunId(null);
       setPublicToken(null);
       setRunType(null);
     } else if (run.status === "CANCELED") {
+      console.log(`[AI_CHAT_SIDEBAR] ℹ️ Task run ${run.id} was CANCELED.`);
       if (!isCanceling) {
         sendMessage("AI Generation was canceled.", "assistant", "design");
         setRunId(null);
@@ -185,7 +188,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
   // Handle realtime tracking connection error
   React.useEffect(() => {
     if (runError) {
-      console.error("Realtime run error:", runError);
+      console.error("[AI_CHAT_SIDEBAR] ❌ Realtime run error:", runError);
       sendMessage(`Error tracking AI status: ${runError.message || "Unknown error"}`, "assistant", "design");
       setRunId(null);
       setPublicToken(null);
@@ -197,6 +200,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
     if (isRunActive) return;
     setRunType("spec");
     
+    console.log("[AI_CHAT_SIDEBAR] Requesting spec generation...");
     sendMessage("Generate a technical specification.", "user", "design");
     setIsSubmitting(true);
     try {
@@ -227,10 +231,11 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
         throw new Error("No runId or token returned from spec API");
       }
 
+      console.log(`[AI_CHAT_SIDEBAR] ✅ Spec API responded — runId: ${newRunId}`);
       setRunId(newRunId);
       setPublicToken(newToken);
     } catch (err: any) {
-      console.error("Failed to start AI spec agent:", err);
+      console.error("[AI_CHAT_SIDEBAR] ❌ Failed to start AI spec agent:", err);
       sendMessage(`Failed to start spec generation: ${err.message || "Unknown error"}`, "assistant", "design");
     } finally {
       setIsSubmitting(false);
@@ -242,6 +247,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
     if (!prompt.trim() || isRunActive) return;
     
     const userPrompt = prompt.trim();
+    console.log(`[AI_CHAT_SIDEBAR] Sending design prompt: "${userPrompt}"`);
     sendMessage(userPrompt, "user", "design");
     setPrompt("");
     
@@ -272,10 +278,11 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
         throw new Error("No runId or token returned from design API");
       }
 
+      console.log(`[AI_CHAT_SIDEBAR] ✅ Design API responded — runId: ${newRunId}`);
       setRunId(newRunId);
       setPublicToken(newToken);
     } catch (err: any) {
-      console.error("Failed to start AI design agent:", err);
+      console.error("[AI_CHAT_SIDEBAR] ❌ Failed to start AI design agent:", err);
       sendMessage(`Failed to start diagram generation: ${err.message || "Unknown error"}`, "assistant", "design");
     } finally {
       setIsSubmitting(false);
@@ -284,6 +291,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
 
   const handleCancel = async () => {
     if (!runId || isCanceling) return;
+    console.log(`[AI_CHAT_SIDEBAR] Initiating cancellation for runId: ${runId}`);
     setIsCanceling(true);
 
     aiStatusEmitter.dispatchEvent(
@@ -299,6 +307,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
         body: JSON.stringify({ runId, projectId: room.id }),
       });
       if (res.ok) {
+        console.log(`[AI_CHAT_SIDEBAR] ✅ Run ${runId} canceled successfully via API`);
         // Cleanup nodes
         setNodes((nds) => nds.filter((n) => preRunNodeIds.has(n.id)));
         setEdges((eds) => eds.filter((e) => preRunNodeIds.has(e.source) && preRunNodeIds.has(e.target)));
@@ -316,7 +325,7 @@ export default function AiChatSidebar({ onClose }: AiChatSidebarProps) {
         setPreRunNodeIds(new Set());
       }
     } catch (err) {
-      console.error("Failed to cancel run:", err);
+      console.error("[AI_CHAT_SIDEBAR] ❌ Failed to cancel run:", err);
       aiStatusEmitter.dispatchEvent(
         new CustomEvent("override", { detail: null })
       );

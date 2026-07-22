@@ -10,11 +10,15 @@ export async function getIdentity(): Promise<{
   email: string | null;
 } | null> {
   const { userId } = await auth();
-  if (!userId) return null;
+  if (!userId) {
+    console.log("[AUTH] ❌ No authenticated user");
+    return null;
+  }
 
   const user = await currentUser();
   const email = user?.primaryEmailAddress?.emailAddress ?? null;
 
+  console.log(`[AUTH] ✅ Identity resolved — userId: ${userId}, email: ${email ?? "none"}`);
   return { userId, email };
 }
 
@@ -32,18 +36,28 @@ export async function checkProjectAccess(
     include: { collaborators: true },
   });
 
-  if (!project) return null;
+  if (!project) {
+    console.log(`[ACCESS] ❌ Project not found — projectId: ${projectId}`);
+    return null;
+  }
 
   // Owner check
-  if (project.ownerId === userId) return project;
+  if (project.ownerId === userId) {
+    console.log(`[ACCESS] ✅ Owner access granted — projectId: ${projectId}, userId: ${userId}`);
+    return project;
+  }
 
   // Collaborator check (by email)
   if (email) {
     const isCollaborator = project.collaborators.some(
-      (c) => c.email === email,
+      (c) => c.email.toLowerCase() === email.toLowerCase(),
     );
-    if (isCollaborator) return project;
+    if (isCollaborator) {
+      console.log(`[ACCESS] ✅ Collaborator access granted — projectId: ${projectId}, email: ${email}`);
+      return project;
+    }
   }
 
+  console.log(`[ACCESS] ❌ Access denied — projectId: ${projectId}, userId: ${userId}, email: ${email ?? "none"}`);
   return null;
 }

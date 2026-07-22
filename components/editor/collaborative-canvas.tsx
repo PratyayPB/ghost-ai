@@ -91,7 +91,7 @@ export default function CollaborativeCanvas({
 
   useEventListener(({ event }) => {
     if (!isLeader) return;
-    console.log("Received event:", event);
+    console.log("[CANVAS] Received Liveblocks event:", event);
     if (event.type === "ai-add-node") {
       addNodes(event.payload);
     } else if (event.type === "ai-add-edge") {
@@ -118,6 +118,7 @@ export default function CollaborativeCanvas({
     // simply because it's a new room. We wait a small tick to see if it's truly empty.
     const loadFromBlob = async () => {
       try {
+        console.log(`[CANVAS] Loading initial canvas state from blob for project ${projectId}...`);
         const response = await fetch(`/api/projects/${projectId}/canvas`);
         if (response.ok) {
           const data = await response.json();
@@ -127,6 +128,7 @@ export default function CollaborativeCanvas({
             edges.length === 0 &&
             data.nodes?.length > 0
           ) {
+            console.log(`[CANVAS] ✅ Loaded initial canvas state from blob — ${data.nodes.length} nodes, ${data.edges?.length ?? 0} edges`);
             setNodes(data.nodes);
             setEdges(data.edges);
             setTimeout(() => {
@@ -135,7 +137,7 @@ export default function CollaborativeCanvas({
           }
         }
       } catch (err) {
-        console.error("Failed to load initial canvas state:", err);
+        console.error("[CANVAS] ❌ Failed to load initial canvas state:", err);
       } finally {
         isInitialLoadDone.current = true;
       }

@@ -53,6 +53,7 @@ export default function SpecPreviewModal({
     setError(null);
     setContent(null);
 
+    console.log(`[SPEC_PREVIEW] Fetching content for spec ${specId} in project ${projectId}`);
     try {
       const response = await fetch(
         `/api/projects/${projectId}/specs/${specId}/download`
@@ -63,9 +64,10 @@ export default function SpecPreviewModal({
       }
 
       const text = await response.text();
+      console.log(`[SPEC_PREVIEW] ✅ Loaded specification content (${text.length} chars)`);
       setContent(text);
     } catch (err: any) {
-      console.error("Error loading spec content:", err);
+      console.error("[SPEC_PREVIEW] ❌ Error loading spec content:", err);
       setError(err.message || "Failed to load specification preview.");
     } finally {
       setIsLoading(false);

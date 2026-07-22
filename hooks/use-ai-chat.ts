@@ -64,8 +64,9 @@ export function useAiChat() {
       } else {
         list.push(parsed.data);
       }
+      console.log(`[AI_CHAT] ✅ Chat message sent — channel: ${channel}, role: ${role}, sender: ${senderName}`);
     } catch (err: any) {
-      console.error("Error sending chat message:", err);
+      console.error("[AI_CHAT] ❌ Error sending chat message:", err);
       setSendError(err?.message || "Failed to send message");
       // Clear error after a delay
       setTimeout(() => {
@@ -75,6 +76,7 @@ export function useAiChat() {
   }, []);
 
   const clearMessages = useMutation(({ storage }, channel?: "design" | "chat") => {
+    console.log(`[AI_CHAT] Clearing chat messages — channel: ${channel ?? "all"}`);
     const list = storage.get("chatMessages");
     if (!list) {
       storage.set("chatMessages", new LiveList([]));
