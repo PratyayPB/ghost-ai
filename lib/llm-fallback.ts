@@ -65,10 +65,9 @@ export async function generateObjectWithFallback<T>({
         `[LLM:Gemini] 📊 Token usage — input: ${result.usage?.inputTokens ?? "N/A"}, output: ${result.usage?.outputTokens ?? "N/A"}, total: ${result.usage?.totalTokens ?? "N/A"}`,
       );
 
-      return {
-        ...result,
+      return Object.assign(result, {
         usedModel: modelName,
-      };
+      });
     } catch (err: any) {
       const duration = Date.now() - startTime;
       errors.push({ model: modelName, error: err });
@@ -141,10 +140,9 @@ export async function generateTextWithFallback({
         `[LLM:Gemini] 📊 Token usage — input: ${result.usage?.inputTokens ?? "N/A"}, output: ${result.usage?.outputTokens ?? "N/A"}, total: ${result.usage?.totalTokens ?? "N/A"}`,
       );
 
-      return {
-        ...result,
+      return Object.assign(result, {
         usedModel: modelName,
-      };
+      });
     } catch (err: any) {
       const duration = Date.now() - startTime;
       errors.push({ model: modelName, error: err });
